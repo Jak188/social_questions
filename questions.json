@@ -33,5 +33,26 @@
     "o": ["x", "2x", "x^2", "2"],
     "c": 1,
     "exp": "Using the Power Rule: d/dx(x^n) = nx^(n-1). So, d/dx(x^2) = 2x^(2-1) = 2x."
+  },
+  {
+    "subject": "Mathematics",
+    "q": "What is the square root of 144?",
+    "o": ["10", "12", "14", "16"],
+    "c": 1,
+    "exp": "12 * 12 = 144, so the square root is 12."
+  },
+  {
+    "subject": "History",
+    "q": "Who was the first President of the United States?",
+    "o": ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "John Adams"],
+    "c": 2,
+    "exp": "George Washington served as the first president from 1789 to 1797."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which is the longest river in the world?",
+    "o": ["Amazon", "Nile", "Mississippi", "Yangtze"],
+    "c": 1,
+    "exp": "The Nile is traditionally considered the longest river in the world."
   }
-]
+  ]
