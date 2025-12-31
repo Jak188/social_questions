@@ -2927,4 +2927,1875 @@
     "c": 2,
     "subject": "History"
   },
-  
+  {
+    "q": "If $f(x) = e^{2x}$, what is the derivative $f'(x)$?",
+    "o": ["$e^{2x}$", "$2e^{2x}$", "$\frac{1}{2}e^{2x}$", "$2xe^{2x-1}$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of the following is an example of a 'Relative Pronoun'?",
+    "o": ["Who", "This", "Each", "All"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Berlin Conference' (1884-1885) was primarily held to:",
+    "o": ["End slavery in Africa", "Partition Africa among Europeans", "Promote trade with Africa", "Spread Christianity"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of map projection is most accurate for showing the shapes of continents?",
+    "o": ["Mercator", "Robinson", "Conic", "Cylindrical"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve the inequality: $2x - 5 > 9$",
+    "o": ["$x < 7$", "$x > 7$", "$x > 2$", "$x < 14$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct conditional: 'If I ___ you, I would study harder.'",
+    "o": ["am", "was", "were", "be"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the architect of the 'Great Leap Forward' in China?",
+    "o": ["Sun Yat-sen", "Deng Xiaoping", "Mao Zedong", "Chiang Kai-shek"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the process where water vapor turns directly into ice?",
+    "o": ["Evaporation", "Condensation", "Sublimation", "Deposition"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the limit of $\frac{\sin x}{x}$ as $x$ approaches $0$?",
+    "o": ["$0$", "$1$", "$\infty$", "Undefined"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which sentence is in the 'Passive Voice'?",
+    "o": ["He broke the vase.", "The vase was broken by him.", "He is breaking the vase.", "The vase breaks easily."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Cold War' term refers to the rivalry between which two ideologies?",
+    "o": ["Monarchy vs Democracy", "Capitalism vs Communism", "Fascism vs Nazism", "Religion vs Science"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which layer of the atmosphere contains the Ozone Layer?",
+    "o": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If the slope of a line is $3$ and it passes through $(0, 2)$, what is its equation?",
+    "o": ["$y = 2x + 3$", "$y = 3x + 2$", "$y = 3x - 2$", "$x = 3y + 2$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct phrasal verb: 'Don't ___ up; you are almost there!'",
+    "o": ["put", "give", "set", "break"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Yalta Conference' was held towards the end of which war?",
+    "o": ["World War I", "World War II", "The Korean War", "The Vietnam War"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the main cause of 'Tsunami'?",
+    "o": ["Heavy Rain", "Strong Wind", "Underwater Earthquake", "Tides"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\log_{10} 1000$?",
+    "o": ["$2$", "$3$", "$10$", "$100$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Gerund' in the sentence: 'Swimming is a good exercise.'",
+    "o": ["Swimming", "Is", "Good", "Exercise"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Which Ethiopian ruler is famous for modernizing the army and centralizing power first?",
+    "o": ["Tewodros II", "Yohannes IV", "Menelik II", "Haile Selassie"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "The 'Prime Meridian' passes through which city?",
+    "o": ["Paris", "Greenwich", "New York", "Cairo"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the area of a triangle with base $10$ cm and height $8$ cm.",
+    "o": ["$80\text{ cm}^2$", "$40\text{ cm}^2$", "$18\text{ cm}^2$", "$20\text{ cm}^2$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is an antonym of 'Ambiguous'?",
+    "o": ["Unclear", "Vague", "Precise", "Doubtful"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The League of Nations failed primarily because:",
+    "o": ["It had too much power", "The USA did not join", "It was only for Africa", "It had no budget"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which soil type is best for agriculture due to its high nutrient content?",
+    "o": ["Sandy soil", "Clay soil", "Loam soil", "Silt soil"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $x$ in $\sqrt{x+2} = 5$?",
+    "o": ["$3$", "$23$", "$25$", "$27$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which 'Modal Verb' expresses obligation?",
+    "o": ["Can", "Might", "Must", "Would"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Industrial Revolution' began in which country?",
+    "o": ["USA", "Germany", "Great Britain", "France"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the distance between the points $(0,0)$ and $(3,4)$?",
+    "o": ["$5$", "$7$", "$12$", "$25$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct spelling:",
+    "o": ["Accommodate", "Acomodate", "Accomodate", "Acommodate"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Which country was the first to experience the 'Arab Spring'?",
+    "o": ["Egypt", "Libya", "Tunisia", "Syria"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The study of the relationship between organisms and their environment is:",
+    "o": ["Biology", "Geology", "Ecology", "Anthropology"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the median of the numbers: $2, 8, 3, 7, 5$?",
+    "o": ["$3$", "$5$", "$7$", "$8$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the meaning of the idiom 'A piece of cake'?",
+    "o": ["Delicious", "Difficult", "Very easy", "Small portion"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Which civilization is credited with the invention of the wheel?",
+    "o": ["Egyptian", "Mesopotamian", "Indus Valley", "Chinese"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which rock type is formed from the cooling of magma?",
+    "o": ["Sedimentary", "Metamorphic", "Igneous", "Fossilized"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "In a right-angled triangle, if $a=3$ and $b=4$, what is the hypotenuse $c$?",
+    "o": ["$5$", "$6$", "$7$", "$25$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Adjective Clause' in: 'The man who is wearing a hat is my uncle.'",
+    "o": ["The man", "who is wearing a hat", "is my uncle", "wearing a hat"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first African woman to win the Nobel Peace Prize?",
+    "o": ["Ellen Johnson Sirleaf", "Wangari Maathai", "Leymah Gbowee", "Sahle-Work Zewde"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the scale of a map that shows a large area with little detail?",
+    "o": ["Large-scale", "Small-scale", "Linear-scale", "Ratio-scale"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $2^0 + 2^1 + 2^2$?",
+    "o": ["$6$", "$7$", "$8$", "$9$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+{
+    "q": "What is the slope of the line tangent to $f(x) = x^2$ at $x = 3$?",
+    "o": ["3", "6", "9", "1"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the reported speech: 'I am tired,' she said.",
+    "o": ["She said she is tired.", "She said she was tired.", "She says she was tired.", "She said I am tired."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Which conference officially divided Africa among European powers?",
+    "o": ["Paris Conference", "London Conference", "Berlin Conference", "Brussels Conference"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The core of the Earth is primarily composed of which two elements?",
+    "o": ["Silicon and Oxygen", "Iron and Nickel", "Carbon and Iron", "Aluminum and Silicon"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\int_0^2 3x^2 dx$?",
+    "o": ["4", "8", "12", "16"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Complete the sentence: 'By next June, I ____ my degree.'",
+    "o": ["will finish", "will have finished", "finish", "am finishing"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Cold War' was a state of tension primarily between which two countries?",
+    "o": ["Germany and Russia", "USA and China", "USA and USSR", "UK and France"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of rainfall occurs when air is forced to rise over a mountain range?",
+    "o": ["Convectional", "Cyclonic", "Orographic", "Frontal"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $3^{x-1} = 27$, what is the value of $x$?",
+    "o": ["3", "4", "5", "6"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the word that is spelled correctly:",
+    "o": ["Maintanance", "Maintenance", "Maintenence", "Maintenance"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Fascist party in Italy?",
+    "o": ["Adolf Hitler", "Benito Mussolini", "Francisco Franco", "Joseph Stalin"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which instrument is used to measure air pressure?",
+    "o": ["Anemometer", "Hygrometer", "Barometer", "Thermometer"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the solution set of $|x - 3| = 5$?",
+    "o": ["{8}", "{-2, 8}", "{2, -8}", "{-2}"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the passive voice: 'The project ___ by the team next week.'",
+    "o": ["will finish", "will be finished", "finishes", "is finishing"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The main cause of the 1974 Ethiopian Revolution was:",
+    "o": ["Religious conflict", "The Famine and land tenure system", "Invasion by Somalia", "The spread of Islam"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which line of latitude is located at 23.5 degrees North?",
+    "o": ["Equator", "Tropic of Capricorn", "Tropic of Cancer", "Arctic Circle"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the derivative of $\cos(x)$?",
+    "o": ["$\sin(x)$", "$-\sin(x)$", "$\tan(x)$", "$-\cos(x)$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct preposition: 'She is interested ____ learning French.'",
+    "o": ["on", "at", "in", "with"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Industrial Revolution' first began in which country?",
+    "o": ["France", "USA", "Great Britain", "Germany"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The Mercator projection is most useful for which of the following?",
+    "o": ["Measuring land area", "Navigation", "Showing population density", "Geological surveys"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the domain of $f(x) = \frac{1}{x-2}$.",
+    "o": ["$x \neq 0$", "$x \neq 2$", "All real numbers", "$x > 2$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the meaning of the idiom 'Under the weather'?",
+    "o": ["In the rain", "Feeling sick", "Happy", "Traveling"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Which global organization was formed in 1945 to maintain world peace?",
+    "o": ["League of Nations", "African Union", "United Nations", "NATO"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the largest planet in our solar system?",
+    "o": ["Saturn", "Jupiter", "Neptune", "Uranus"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If the determinant of a $2 \times 2$ matrix is zero, the matrix is:",
+    "o": ["Identity", "Singular", "Invertible", "Diagonal"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct connector: 'He studied hard; ____, he passed the exam.'",
+    "o": ["however", "therefore", "but", "although"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The French Revolution broke out in which year?",
+    "o": ["1776", "1789", "1804", "1815"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the term for the disintegration of rocks in situ?",
+    "o": ["Erosion", "Weathering", "Deposition", "Mass wasting"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\log_2 32$?",
+    "o": ["4", "5", "6", "16"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which part of the sentence is the 'Infinitive'? 'I want to sleep.'",
+    "o": ["I", "want", "to sleep", "sleep"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Aksumite King who converted to Christianity was:",
+    "o": ["King Kaleb", "King Ezana", "King Armah", "King Gebre Meskel"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which layer of the atmosphere contains the ozone layer?",
+    "o": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the sum of the interior angles of a triangle?",
+    "o": ["90°", "180°", "270°", "360°"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct form: 'Neither the students nor the teacher ____ present.'",
+    "o": ["are", "is", "were", "have been"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Nazi Party in Germany?",
+    "o": ["Mussolini", "Hitler", "Stalin", "Churchill"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The 'Great Rift Valley' was formed by which process?",
+    "o": ["Volcanism", "Faulting", "Folding", "Erosion"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the probability of flipping a coin and getting heads?",
+    "o": ["0", "0.5", "1", "2"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a synonym for 'Abundant'?",
+    "o": ["Scarce", "Plentiful", "Rare", "Small"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did Ethiopia defeat Italy at the Battle of Adwa?",
+    "o": ["1889", "1896", "1935", "1941"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the most populous continent in the world?",
+    "o": ["Africa", "Asia", "Europe", "North America"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If the function $f(x) = \frac{x^2 - 1}{x - 1}$ is continuous at $x = 1$, what must be the value of $f(1)$?",
+    "o": ["0", "1", "2", "Undefined"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Conditional Sentence Type 3':",
+    "o": ["If it rains, I will stay.", "If it rained, I would stay.", "If it had rained, I would have stayed.", "If it rains, I stay."],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Marshall Plan' was designed to provide economic aid to:",
+    "o": ["Post-WWII Europe", "Post-WWI Africa", "Post-Cold War Russia", "Post-Vietnam Asia"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of clouds are often called 'thunderheads' and produce heavy rain?",
+    "o": ["Cirrus", "Stratus", "Cumulonimbus", "Altocumulus"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the inverse of the matrix $A = \begin{bmatrix} 1 & 2 \\ 0 & 1 \end{bmatrix}$?",
+    "o": ["$\begin{bmatrix} 1 & -2 \\ 0 & 1 \end{bmatrix}$", "$\begin{bmatrix} 1 & 0 \\ -2 & 1 \end{bmatrix}$", "$\begin{bmatrix} -1 & -2 \\ 0 & -1 \end{bmatrix}$", "$\begin{bmatrix} 1 & 2 \\ 0 & -1 \end{bmatrix}$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct phrase: 'She is looking forward ____ her results.'",
+    "o": ["to see", "to seeing", "at seeing", "for seeing"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The Scramble for Africa was formalized during which conference?",
+    "o": ["Paris Conference", "Berlin Conference", "Vienna Conference", "Rome Conference"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The process by which liquid water changes into water vapor is:",
+    "o": ["Condensation", "Precipitation", "Evaporation", "Transpiration"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $\vec{a} = (2, 3)$ and $\vec{b} = (-1, 4)$, what is the dot product $\vec{a} \cdot \vec{b}$?",
+    "o": ["5", "10", "14", "11"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which sentence contains a 'Dangling Participle'?",
+    "o": ["Walking down the street, the sun was shining.", "While walking, I saw the sun.", "I saw the sun walking down the street.", "The sun shone while I walked."],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first General Secretary of the United Nations?",
+    "o": ["Dag Hammarskjöld", "Trygve Lie", "U Thant", "Kofi Annan"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which instrument is used to measure wind speed?",
+    "o": ["Barometer", "Thermometer", "Anemometer", "Hygrometer"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the area of a circle whose circumference is $10\pi$?",
+    "o": ["$5\pi$", "$10\pi$", "$25\pi$", "$100\pi$"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the synonym of 'Prudent':",
+    "o": ["Careless", "Wise", "Fast", "Strong"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 1935 Italian invasion of Ethiopia was led by:",
+    "o": ["Mussolini", "Badoglio", "Graziani", "Both B and C"],
+    "c": 3,
+    "subject": "History"
+  },
+  {
+    "q": "The point on the Earth's surface directly above the focus of an earthquake is the:",
+    "o": ["Hypocenter", "Epicenter", "Seismic point", "Fault line"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the limit of $\frac{1}{x}$ as $x$ approaches $\infty$?",
+    "o": ["$\infty$", "1", "0", "Undefined"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is an antonym for 'Diligent'?",
+    "o": ["Hardworking", "Lazy", "Smart", "Active"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The Bolshevik Revolution took place in which country?",
+    "o": ["Germany", "France", "Russia", "China"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which soil layer is rich in organic matter (humus)?",
+    "o": ["Horizon A", "Horizon B", "Horizon C", "Bedrock"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve for $x$: $\log_3(x) + \log_3(x-2) = 1$",
+    "o": ["1", "3", "-1", "3 and -1"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Complete the idiom: 'To kill two birds with one ____.'",
+    "o": ["Stick", "Bullet", "Stone", "Arrow"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'New Economic Policy' (NEP) was introduced in Russia by:",
+    "o": ["Stalin", "Lenin", "Trotsky", "Gorbachev"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the largest ocean in the world?",
+    "o": ["Atlantic", "Indian", "Arctic", "Pacific"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the derivative of $\ln(x)$?",
+    "o": ["$e^x$", "$\frac{1}{x}$", "$x$", "$\frac{1}{x^2}$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Relative Clause': 'The house that Jack built is large.'",
+    "o": ["The house", "that Jack built", "is large", "Jack built"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "In which year was the Organization of African Unity (OAU) founded?",
+    "o": ["1960", "1963", "1975", "2002"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The imaginary line that divides the Earth into Northern and Southern hemispheres is:",
+    "o": ["Prime Meridian", "Equator", "Tropic of Cancer", "International Date Line"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the period of the function $f(x) = \sin(2x)$?",
+    "o": ["$\pi$", "$2\pi$", "$\frac{\pi}{2}$", "$4\pi$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a 'Stative Verb'?",
+    "o": ["Run", "Know", "Eat", "Jump"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The primary cause of the US entry into WWI was:",
+    "o": ["The sinking of Lusitania", "The Zimmerman Telegram", "Pearl Harbor", "Both A and B"],
+    "c": 3,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of rock is formed by high heat and pressure?",
+    "o": ["Igneous", "Sedimentary", "Metamorphic", "Sandstone"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the value of $\sum_{n=1}^4 n^2$.",
+    "o": ["10", "20", "30", "40"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the error: 'He don't know the answer.'",
+    "o": ["He", "don't", "know", "answer"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Independence movement in Ghana?",
+    "o": ["Jomo Kenyatta", "Kwame Nkrumah", "Julius Nyerere", "Patrice Lumumba"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The 'Greenhouse Effect' is primarily caused by which gas?",
+    "o": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Argon"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the slope of the line $2x + 3y = 6$?",
+    "o": ["2", "3", "$-2/3$", "$2/3$"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct preposition: 'He graduated ____ university in 2020.'",
+    "o": ["at", "from", "on", "in"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Which ancient civilization built the Pyramids of Giza?",
+    "o": ["Mesopotamian", "Roman", "Egyptian", "Greek"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The study of the Earth's physical structure and substance is:",
+    "o": ["Geography", "Geology", "Meteorology", "Astronomy"],
+    "c": 1,
+    "subject": "Geography"
+  },
+{
+    "q": "What is the derivative of $f(x) = \sin(x) + \cos(x)$?",
+    "o": ["$\cos(x) - \sin(x)$", "$\cos(x) + \sin(x)$", "$-\cos(x) + \sin(x)$", "$2\sin(x)$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of the following is a 'Complex Sentence'?",
+    "o": ["I like tea and coffee.", "Because it was raining, we stayed home.", "He ran fast.", "She sang, and he danced."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Truman Doctrine' was aimed at containing the spread of:",
+    "o": ["Capitalism", "Communism", "Fascism", "Colonialism"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of plate boundary is responsible for the formation of the Himalayas?",
+    "o": ["Divergent", "Transform", "Convergent (C-C)", "Convergent (O-C)"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Evaluate: $\int (4x^3 - 2x) dx$",
+    "o": ["$x^4 - x^2 + C$", "$12x^2 - 2 + C$", "$x^4 - 2x^2 + C$", "$4x^4 - x^2 + C$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct tag question: 'You haven't seen my keys, ____?'",
+    "o": ["haven't you", "have you", "did you", "don't you"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the 'October Revolution' in Russia?",
+    "o": ["Stalin", "Nicholas II", "Lenin", "Rasputin"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the angular distance of a place north or south of the Equator called?",
+    "o": ["Longitude", "Latitude", "Altitude", "Azimuth"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $f(x) = 2x + 3$, what is the inverse function $f^{-1}(x)$?",
+    "o": ["$\frac{x-3}{2}$", "$\frac{x+3}{2}$", "$3x - 2$", "$\frac{2}{x-3}$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Gerund Phrase': 'Playing football is my hobby.'",
+    "o": ["is my hobby", "Playing football", "football is", "my hobby"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Munich Agreement' of 1938 is an example of which policy?",
+    "o": ["Containment", "Appeasement", "Isolationism", "Détente"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which atmospheric layer reflects radio waves back to Earth?",
+    "o": ["Troposphere", "Stratosphere", "Ionosphere", "Exosphere"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\tan(45^\circ)$?",
+    "o": ["0", "$\frac{1}{2}$", "1", "$\sqrt{3}$"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which sentence uses the 'Present Perfect Continuous' tense?",
+    "o": ["I have seen him.", "I am seeing him.", "I have been seeing him.", "I had seen him."],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the Italian occupation of Ethiopia end?",
+    "o": ["1935", "1936", "1941", "1945"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the term for a river that flows into a larger river?",
+    "o": ["Distributary", "Delta", "Tributary", "Estuary"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve the system: $x + y = 5$ and $x - y = 1$.",
+    "o": ["(2, 3)", "(3, 2)", "(4, 1)", "(1, 4)"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What does the idiom 'Beat around the bush' mean?",
+    "o": ["Avoid the main topic", "Cut the grass", "Talk fast", "Sing loudly"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Apartheid' system was a legal racial segregation in which country?",
+    "o": ["Kenya", "South Africa", "Zimbabwe", "Angola"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of solar eclipse occurs when the moon is too far to cover the sun completely?",
+    "o": ["Total", "Partial", "Annular", "Lunar"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the limit of $\frac{x^2 - 4}{x - 2}$ as $x \to 2$?",
+    "o": ["0", "2", "4", "Undefined"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct spelling:",
+    "o": ["Neccessary", "Necessary", "Necasary", "Nessary"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first black President of South Africa?",
+    "o": ["Desmond Tutu", "Nelson Mandela", "Robert Mugabe", "Kofi Annan"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the largest producer of Cocoa in the world?",
+    "o": ["Ghana", "Brazil", "Ivory Coast", "Nigeria"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $A$ and $B$ are independent events, $P(A \cap B)$ is equal to:",
+    "o": ["$P(A) + P(B)$", "$P(A) \times P(B)$", "$P(A) - P(B)$", "$P(A) / P(B)$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which modal verb is used for 'Ability'?",
+    "o": ["Must", "Should", "Can", "May"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Holocaust' occurred during which war?",
+    "o": ["WWI", "WWII", "Vietnam War", "Gulf War"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The deflection of winds caused by the Earth's rotation is called:",
+    "o": ["Greenhouse effect", "Coriolis effect", "El Niño", "Monsoon"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the distance between points $(1, 2)$ and $(4, 6)$.",
+    "o": ["3", "4", "5", "7"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Complete the sentence: 'She __ her lunch before the bell rang.'",
+    "o": ["has finished", "finishes", "had finished", "finished"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who invented the printing press?",
+    "o": ["Isaac Newton", "Johannes Gutenberg", "Galileo", "Leonardo da Vinci"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which continent has no permanent human residents?",
+    "o": ["Asia", "Australia", "Antarctica", "Africa"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the derivative of $e^{3x}$?",
+    "o": ["$e^{3x}$", "$3e^{3x}$", "$\frac{1}{3}e^{3x}$", "$3xe^{3x-1}$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Passive' form: 'They built the bridge.'",
+    "o": ["The bridge was built by them.", "The bridge is built by them.", "The bridge had been built.", "They were building the bridge."],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The 'League of Nations' was established after which war?",
+    "o": ["Napoleonic Wars", "WWI", "WWII", "Civil War"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which cloud type is high, thin, and wispy (made of ice crystals)?",
+    "o": ["Cumulus", "Stratus", "Cirrus", "Nimbus"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "The sum of the roots of $x^2 - 5x + 6 = 0$ is:",
+    "o": ["-5", "5", "6", "-6"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct preposition: 'I am proud __ you.'",
+    "o": ["with", "for", "of", "on"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the 'Liberator' of several South American nations?",
+    "o": ["Christopher Columbus", "Simón Bolívar", "Napoleon", "Fidel Castro"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital city of Switzerland?",
+    "o": ["Zurich", "Geneva", "Bern", "Basel"],
+    "c": 2,
+    "subject": "Geography"
+  },
+{
+    "q": "What is the slope of the line $y = 5x - 3$?",
+    "o": ["5", "-3", "3", "0"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Condition Type 2':",
+    "o": ["If I have money, I will buy it.", "If I had money, I would buy it.", "If I had had money, I would have bought it.", "If I have money, I buy it."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Battle of Adwa' (1896) was fought between Ethiopia and:",
+    "o": ["Britain", "France", "Italy", "Egypt"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which layer of the Earth is the thinnest?",
+    "o": ["Crust", "Mantle", "Outer Core", "Inner Core"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the derivative of $f(x) = \ln(x^2)$?",
+    "o": ["$\frac{1}{x^2}$", "$\frac{2}{x}$", "$2x$", "$\frac{1}{x}$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is a synonym of 'Abundant'?",
+    "o": ["Scarce", "Plentiful", "Rare", "Small"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first President of the United States?",
+    "o": ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "John Adams"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of rock is formed from the cooling of lava?",
+    "o": ["Sedimentary", "Metamorphic", "Igneous", "Fossil"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve for $x$: $2^{x+1} = 16$",
+    "o": ["2", "3", "4", "5"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct preposition: 'He is good ___ playing guitar.'",
+    "o": ["in", "at", "on", "with"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The Industrial Revolution first began in:",
+    "o": ["France", "Germany", "Great Britain", "USA"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital city of Australia?",
+    "o": ["Sydney", "Melbourne", "Canberra", "Perth"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the limit of $\frac{\sin(x)}{x}$ as $x \to 0$?",
+    "o": ["0", "1", "$\infty$", "Undefined"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Passive Voice':",
+    "o": ["The boy kicked the ball.", "The ball was kicked by the boy.", "The boy is kicking the ball.", "The ball kicks well."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Cold War' primarily involved which two ideologies?",
+    "o": ["Capitalism and Communism", "Fascism and Nazism", "Monarchy and Democracy", "Socialism and Anarchism"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which instrument is used to measure humidity?",
+    "o": ["Barometer", "Anemometer", "Hygrometer", "Thermometer"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "The integral $\int e^x dx$ is equal to:",
+    "o": ["$e^x + C$", "$\frac{1}{x}e^x + C$", "$xe^x + C$", "$e^{x+1} + C$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a 'Stative Verb'?",
+    "o": ["Run", "Eat", "Believe", "Jump"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Nazi Party in Germany?",
+    "o": ["Mussolini", "Hitler", "Stalin", "Churchill"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the largest desert in the world?",
+    "o": ["Sahara", "Gobi", "Antarctic Desert", "Arctic Desert"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $f(x) = x^3 - 2x$, find $f'(1)$.",
+    "o": ["1", "2", "3", "0"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct spelling:",
+    "o": ["Occasion", "Ocassion", "Occassion", "Ocasion"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The 'League of Nations' was established after which war?",
+    "o": ["WWI", "WWII", "Napoleonic Wars", "Civil War"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which planet is known as the Red Planet?",
+    "o": ["Venus", "Mars", "Jupiter", "Saturn"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the sum of the interior angles of a pentagon?",
+    "o": ["180", "360", "540", "720"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Complete the idiom: 'Break a ____' (meaning good luck).",
+    "o": ["Leg", "Arm", "Hand", "Head"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Renaissance' period began in which country?",
+    "o": ["France", "England", "Italy", "Spain"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The Prime Meridian passes through:",
+    "o": ["Paris", "London (Greenwich)", "New York", "Tokyo"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\log_{10}(100)$?",
+    "o": ["1", "2", "10", "100"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Relative Pronoun':",
+    "o": ["He", "Which", "Fast", "Happily"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Berlin Conference' (1884) was about:",
+    "o": ["Ending WWI", "Dividing Africa", "Trade in Asia", "European Union"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which ocean is the largest?",
+    "o": ["Atlantic", "Indian", "Pacific", "Arctic"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the median of: 3, 5, 7, 9, 11",
+    "o": ["5", "7", "9", "6"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the plural of 'Criterion'?",
+    "o": ["Criterions", "Criteria", "Criterias", "Criteries"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who wrote the 'Communist Manifesto'?",
+    "o": ["Adam Smith", "Karl Marx", "John Locke", "Voltaire"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the main gas in the Earth's atmosphere?",
+    "o": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "In a right triangle, if $a=3$ and $b=4$, then $c=$?",
+    "o": ["5", "7", "25", "12"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which sentence is in the 'Future Perfect' tense?",
+    "o": ["I will go.", "I will have gone.", "I will be going.", "I am going."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Magna Carta' was signed in which country?",
+    "o": ["France", "Italy", "England", "Germany"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the study of weather called?",
+    "o": ["Geology", "Meteorology", "Ecology", "Biology"],
+    "c": 1,
+    "subject": "Geography"
+  },
+{
+    "q": "What is the limit of $(1 + 1/n)^n$ as $n \to \infty$?",
+    "o": ["0", "1", "$e$", "$\infty$"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of the following is a 'Subordinating Conjunction'?",
+    "o": ["And", "But", "Although", "Or"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Meiji Restoration' which led to rapid modernization took place in:",
+    "o": ["China", "Japan", "Korea", "Thailand"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of mass wasting is the slowest and most subtle?",
+    "o": ["Landslide", "Mudflow", "Soil Creep", "Rockfall"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $f(x) = |x-2|$, what is the derivative $f'(2)$?",
+    "o": ["1", "-1", "0", "Does not exist"],
+    "c": 3,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct reporting verb: He ___ to lend me the money.",
+    "o": ["denied", "refused", "suggested", "insisted"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Zimmermann Telegram' was a major factor for which country's entry into WWI?",
+    "o": ["USA", "Italy", "Russia", "Japan"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "What is the term for a crescent-shaped lake formed by a meandering river?",
+    "o": ["Lagoon", "Oxbow Lake", "Crater Lake", "Delta"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the value of $k$ if the line $y = kx + 5$ is perpendicular to $y = 2x - 1$.",
+    "o": ["2", "-2", "1/2", "-1/2"],
+    "c": 3,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Inversion' structure: 'Never ___ such a beautiful sunset.'",
+    "o": ["I have seen", "have I seen", "I saw", "did I saw"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Glorious Revolution' of 1688 took place in which country?",
+    "o": ["France", "England", "Spain", "Netherlands"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which soil horizon is also known as the 'Zone of Leaching'?",
+    "o": ["Horizon A", "Horizon B", "Horizon E", "Horizon C"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the integral of $\int \tan(x) dx$?",
+    "o": ["$\sec^2(x) + C$", "$\ln|\sec(x)| + C$", "$-\ln|\sin(x)| + C$", "$\cos(x) + C$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Select the correct conditional: 'If I ___ been taller, I would have joined the team.'",
+    "o": ["was", "were", "had", "would have"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the 'Reign of Terror' during the French Revolution?",
+    "o": ["Napoleon", "Louis XVI", "Robespierre", "Danton"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The 'Great Circle' refers to which of the following?",
+    "o": ["Prime Meridian", "Equator", "Tropic of Cancer", "Arctic Circle"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the sum to infinity of a geometric series with $a=1$ and $r=1/2$?",
+    "o": ["1", "2", "3", "$\infty$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which sentence uses the 'Subjunctive Mood'?",
+    "o": ["I am happy.", "If I were you, I would go.", "He is a doctor.", "She sang a song."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Opium Wars' were fought between China and which country?",
+    "o": ["France", "USA", "Britain", "Russia"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the most abundant element in the Earth's Crust?",
+    "o": ["Iron", "Oxygen", "Silicon", "Aluminum"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the derivative of $f(x) = \arctan(x)$.",
+    "o": ["$\frac{1}{1+x^2}$", "$\frac{1}{\sqrt{1-x^2}}$", "$\sec^2(x)$", "$\frac{-1}{1+x^2}$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correctly punctuated sentence:",
+    "o": ["However, he went home.", "However he went home.", "He went home; however, he was late.", "Both A and C"],
+    "c": 3,
+    "subject": "English"
+  },
+  {
+    "q": "The 1917 'Balfour Declaration' was related to the establishment of a home for:",
+    "o": ["Palestinians", "Jews", "Armenians", "Kurds"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which wind system is responsible for the seasonal rainfall in Ethiopia?",
+    "o": ["Westerlies", "Trade Winds", "Monsoon Winds", "Polar Easterlies"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $2x + 3y = 6$ and $4x + 6y = 12$, how many solutions exist?",
+    "o": ["One", "Zero", "Infinitely many", "Two"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the meaning of the phrasal verb 'To call off'?",
+    "o": ["To visit", "To cancel", "To delay", "To shout"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'New Deal' was a series of programs enacted by which US President?",
+    "o": ["Roosevelt", "Truman", "Eisenhower", "Wilson"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which landform is created by glacial erosion?",
+    "o": ["Delta", "U-shaped valley", "V-shaped valley", "Sand dune"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Evaluate: $\log_5(125) - \log_5(25)$",
+    "o": ["1", "5", "25", "3"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Noun Clause': 'I know what you did.'",
+    "o": ["I know", "what you did", "you did", "what you"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Treaty of Wuchale' led to conflict between Ethiopia and Italy because of:",
+    "o": ["Article 17", "Territorial borders", "Religious issues", "Tax payments"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the leading producer of geothermal energy?",
+    "o": ["USA", "Iceland", "Kenya", "Japan"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the period of $f(x) = \cos(3x)$?",
+    "o": ["$2\pi$", "$\pi$", "$2\pi/3$", "$3\pi$"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct article: 'He is ___ honest man.'",
+    "o": ["a", "an", "the", "no article"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Salt March' (1930) was led by:",
+    "o": ["Nehru", "Gandhi", "Jinnah", "Mandela"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the term for the total volume of water flowing in a river?",
+    "o": ["Velocity", "Discharge", "Gradient", "Load"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "The probability of an impossible event is:",
+    "o": ["1", "0", "0.5", "-1"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the antonym of 'Meticulous':",
+    "o": ["Careful", "Careless", "Detailed", "Clean"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Apartheid' system was officially ended in which year?",
+    "o": ["1990", "1994", "1989", "1996"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which projection is best for showing the whole world with minimal distortion of shape?",
+    "o": ["Mercator", "Robinson", "Conic", "Azimuthal"],
+    "c": 1,
+    "subject": "Geography"
+  },
+{
+    "q": "What is the area of the region bounded by $y = x^2$ and the line $y = 4$?",
+    "o": ["8/3", "16/3", "32/3", "64/3"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Subjunctive' form: 'It is essential that he ___ the meeting.'",
+    "o": ["attends", "attend", "attended", "will attend"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Versailles Treaty' was criticized for being too harsh on which country?",
+    "o": ["Italy", "Austria", "Germany", "Turkey"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of faulting occurs when the hanging wall moves down relative to the footwall?",
+    "o": ["Reverse fault", "Normal fault", "Thrust fault", "Strike-slip fault"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $z = 1 + i$, what is the polar form of $z$?",
+    "o": ["$\sqrt{2}(\cos 45^\circ + i \sin 45^\circ)$", "$2(\cos 90^\circ + i \sin 90^\circ)$", "$\sqrt{2}(\cos 30^\circ + i \sin 30^\circ)$", "$1(\cos 45^\circ + i \sin 45^\circ)$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a 'Non-finite' verb?",
+    "o": ["Goes", "Went", "To go", "Gone (as past participle)"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Cold War' policy of 'Détente' refers to:",
+    "o": ["Direct military conflict", "Relaxation of tensions", "Economic boycott", "Arms race escalation"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which atmospheric phenomenon is characterized by the reversal of normal temperature patterns with altitude?",
+    "o": ["Convection", "Lapse rate", "Temperature Inversion", "Adiabatic cooling"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the derivative of $f(x) = x^x$?",
+    "o": ["$x \cdot x^{x-1}$", "$x^x(1 + \ln x)$", "$x^x \ln x$", "$e^x$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct idiom: 'To pay an arm and a leg' means:",
+    "o": ["To be injured", "To be very expensive", "To work hard", "To be cheap"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the main leader of the 'Great Proletarian Cultural Revolution'?",
+    "o": ["Deng Xiaoping", "Mao Zedong", "Sun Yat-sen", "Chiang Kai-shek"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The 'Mohorovicic Discontinuity' (Moho) is the boundary between:",
+    "o": ["Crust and Mantle", "Mantle and Outer Core", "Inner and Outer Core", "Lithosphere and Asthenosphere"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve for $x$: $\ln(x) + \ln(x-3) = \ln(4)$",
+    "o": ["4", "-1", "4 and -1", "2"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Causative' form: 'I had my car ___ yesterday.'",
+    "o": ["repair", "repaired", "repairing", "to repair"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Tripartite Pact' of 1940 was signed by Germany, Italy, and:",
+    "o": ["Russia", "Japan", "Spain", "Turkey"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of pyramid shows the age and sex distribution of a population?",
+    "o": ["Biomass pyramid", "Demographic pyramid", "Energy pyramid", "Food pyramid"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the eccentricity of a circle?",
+    "o": ["0", "1", "Between 0 and 1", "Greater than 1"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which prefix means 'against'?",
+    "o": ["Pre-", "Anti-", "Mis-", "Post-"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Magna Carta' (1215) is significant because it:",
+    "o": ["Gave king absolute power", "Limited the power of the king", "Started the French Revolution", "Ended slavery"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which soil type is most likely to be found in tropical rainforests due to heavy leaching?",
+    "o": ["Chernozem", "Latosols", "Podzols", "Serozems"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If $\int_1^k 2x dx = 8$ and $k > 1$, what is the value of $k$?",
+    "o": ["2", "3", "4", "5"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct spelling:",
+    "o": ["Entrepreneur", "Enterpreneur", "Entreprenuer", "Entrepraneur"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Hundred Days' refers to the brief return to power of:",
+    "o": ["Louis XVI", "Napoleon Bonaparte", "Robespierre", "Charles X"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the name of the theory that explains the movement of continents?",
+    "o": ["Plate Tectonics", "Big Bang", "Evolution", "Relativity"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\sin(2\theta)$ if $\sin(\theta) = 3/5$ and $\cos(\theta) = 4/5$?",
+    "o": ["7/25", "12/25", "24/25", "1"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Relative Clause': 'The book which I bought is lost.'",
+    "o": ["The book", "which I bought", "is lost", "I bought"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Berlin Wall' was built primarily to:",
+    "o": ["Stop Western invasion", "Prevent East Germans from fleeing", "Symbolize peace", "Protect the city"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which climate type is characterized by 'dry summers and wet winters'?",
+    "o": ["Tropical", "Mediterranean", "Desert", "Tundra"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the equation of a circle with center $(0,0)$ and radius $5$.",
+    "o": ["$x+y=5$", "$x^2+y^2=5$", "$x^2+y^2=25$", "$x^2-y^2=25$"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a 'Gerund' used as in a sentence?",
+    "o": ["Verb", "Noun", "Adjective", "Adverb"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Meiji Restoration' in Japan started in which year?",
+    "o": ["1854", "1868", "1905", "1912"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "The 'Great Barrier Reef' is located off the coast of:",
+    "o": ["Brazil", "Australia", "USA", "India"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If the mean of $5$ numbers is $10$, what is their sum?",
+    "o": ["2", "15", "50", "100"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct reporting speech: He said, 'I have finished.'",
+    "o": ["He said he finished.", "He said he had finished.", "He said I finished.", "He said he has finished."],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Treaty of Nanjing' (1842) ended the first:",
+    "o": ["World War", "Opium War", "Civil War", "Cold War"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which river is often called the 'Mother of Rivers' in Ethiopia?",
+    "o": ["Awash", "Abay (Blue Nile)", "Omo", "Tekeze"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\log_x(x^5)$?",
+    "o": ["1", "5", "$x$", "0"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Antonym' of 'Arrogant':",
+    "o": ["Proud", "Humble", "Smart", "Rich"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the last Emperor of Russia?",
+    "o": ["Peter the Great", "Alexander II", "Nicholas II", "Ivan the Terrible"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which ocean current warms the coast of Western Europe?",
+    "o": ["Benguela Current", "Gulf Stream", "Canary Current", "California Current"],
+    "c": 1,
+    "subject": "Geography"
+  },
+{
+    "q": "What is the derivative of $f(x) = \sec(x)$?",
+    "o": ["$\sec^2(x)$", "$\sec(x)\tan(x)$", "$\tan^2(x)$", "$-\csc(x)\cot(x)$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Conditional Type 3':",
+    "o": ["If you study, you pass.", "If you studied, you would pass.", "If you had studied, you would have passed.", "If you study, you will pass."],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Industrial Revolution' began in which century?",
+    "o": ["17th", "18th", "19th", "20th"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which type of rainfall is most common in the Ethiopian Highlands?",
+    "o": ["Convectional", "Cyclonic", "Orographic", "Frontal"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve for $x$: $e^{2x} = 5$",
+    "o": ["$\ln(5)/2$", "$\ln(2.5)$", "$2\ln(5)$", "$\sqrt{\ln(5)}$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct phrase: 'I am used to ___ early.'",
+    "o": ["get up", "getting up", "got up", "gets up"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the primary leader of the 'Young Turk' Revolution in 1908?",
+    "o": ["Atatürk", "Enver Pasha", "Reza Shah", "Nasser"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which soil type is known for its high clay content and expands when wet?",
+    "o": ["Nitosols", "Vertisols", "Fluvisols", "Luvisols"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the limit of $\frac{1 - \cos(x)}{x}$ as $x \to 0$?",
+    "o": ["0", "1", "1/2", "Undefined"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Appositive' in: 'My friend, a talented artist, won the prize.'",
+    "o": ["My friend", "a talented artist", "won the prize", "artist"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Berlin Blockade' of 1948 was a major event in the:",
+    "o": ["WWI", "WWII", "Cold War", "Korean War"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the name of the process by which plants release water vapor?",
+    "o": ["Evaporation", "Condensation", "Transpiration", "Precipitation"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If the determinant of matrix $A$ is $5$, what is the determinant of $A^{-1}$?",
+    "o": ["5", "-5", "1/5", "0"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct preposition: 'The plane flew ___ the mountains.'",
+    "o": ["on", "over", "at", "in"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Scramble for Africa' reached its peak after which conference?",
+    "o": ["Berlin Conference", "London Conference", "Paris Conference", "Rome Conference"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which layer of the atmosphere is the coldest?",
+    "o": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of $\int_0^1 (3x^2 + 2x) dx$?",
+    "o": ["1", "2", "3", "5"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Gerund Phrase': 'Smoking cigarettes is harmful to health.'",
+    "o": ["Smoking cigarettes", "is harmful", "to health", "harmful"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the last Emperor of Ethiopia?",
+    "o": ["Menelik II", "Haile Selassie I", "Iyasu V", "Zewditu I"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which projection is most suitable for mapping the poles?",
+    "o": ["Cylindrical", "Conic", "Azimuthal", "Mercator"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the focus of the parabola $y^2 = 8x$.",
+    "o": ["(2, 0)", "(0, 2)", "(4, 0)", "(0, 4)"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a synonym for 'Ephemeral'?",
+    "o": ["Permanent", "Short-lived", "Ancient", "Large"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Zionist Movement' aimed for a homeland in:",
+    "o": ["Egypt", "Palestine", "Uganda", "Jordan"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which rock type contains the majority of Earth's fossil fuels?",
+    "o": ["Igneous", "Metamorphic", "Sedimentary", "Volcanic"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: $2\sin(x) = 1$ for $0 \le x < \pi$.",
+    "o": ["$\pi/6, 5\pi/6$", "$\pi/3, 2\pi/3$", "$\pi/4, 3\pi/4$", "$\pi/2$"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correctly spelled word:",
+    "o": ["Conscientious", "Conscienscious", "Conscientous", "Consciencious"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "In which year was the United Nations (UN) founded?",
+    "o": ["1919", "1944", "1945", "1948"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the scale of a map if 1cm represents 10km?",
+    "o": ["1:1,000", "1:10,000", "1:100,000", "1:1,000,000"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the derivative of $f(x) = \log_{10}(x)$?",
+    "o": ["$1/x$", "$1/(x \ln 10)$", "$\ln 10 / x$", "$10/x$"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the 'Adverb Clause': 'I will leave when I am ready.'",
+    "o": ["I will leave", "when I am ready", "I am ready", "will leave"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The 'Fashoda Incident' (1898) was a standoff between Britain and:",
+    "o": ["Germany", "Italy", "France", "Belgium"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which city is the administrative capital of South Africa?",
+    "o": ["Cape Town", "Johannesburg", "Pretoria", "Bloemfontein"],
+    "c": 2,
+    "subject": "Geography"
+  }]
