@@ -1,0 +1,1489 @@
+[
+  {
+    "q": "What is the capital city of France?",
+    "o": ["London", "Berlin", "Paris", "Madrid"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 25 * 4 / 2",
+    "o": ["25", "50", "100", "75"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct spelling:",
+    "o": ["Accomodate", "Accommodate", "Acomodate", "Accommodat"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did World War II end?",
+    "o": ["1918", "1939", "1945", "1950"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which planet is known as the Red Planet?",
+    "o": ["Venus", "Mars", "Jupiter", "Saturn"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 15% of 200?",
+    "o": ["20", "25", "30", "35"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the antonym of 'Victory'?",
+    "o": ["Success", "Defeat", "Win", "Triumph"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Soviet Union during WWII?",
+    "o": ["Lenin", "Stalin", "Gorbachev", "Putin"],
+    "c": 1,
+    "subject": "History"
+  },
+{
+    "q": "What is the largest continent by land area?",
+    "o": ["Africa", "Asia", "North America", "Europe"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Find the value of y: 3y - 9 = 12",
+    "o": ["5", "6", "7", "8"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is a synonym of 'Grateful'?",
+    "o": ["Angry", "Thankful", "Sad", "Greedy"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first female president of Ethiopia?",
+    "o": ["Zewditu", "Sahle-Work Zewde", "Birtukan Mideksa", "Taytu Betul"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which river is the longest in the world?",
+    "o": ["Amazon", "Nile", "Mississippi", "Yangtze"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 7 squared (7^2)?",
+    "o": ["14", "42", "49", "56"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the adjective in: 'The blue bird flies high.'",
+    "o": ["Bird", "Flies", "High", "Blue"],
+    "c": 3,
+    "subject": "English"
+  },
+  {
+    "q": "In which century did the Axumite Empire reach its peak?",
+    "o": ["1st Century", "4th Century", "10th Century", "15th Century"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Mount Everest is located in which mountain range?",
+    "o": ["Andes", "Alps", "Himalayas", "Rockies"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the sum of angles in a triangle?",
+    "o": ["90°", "180°", "270°", "360°"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the past tense of 'Go'?",
+    "o": ["Gone", "Goes", "Went", "Going"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the primary author of the Declaration of Independence?",
+    "o": ["George Washington", "Thomas Jefferson", "Abraham Lincoln", "John Adams"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country has the largest population in the world?",
+    "o": ["India", "China", "USA", "Russia"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 1000 divided by 25?",
+    "o": ["20", "30", "40", "50"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a plural noun?",
+    "o": ["Child", "Foot", "Mice", "Mouse"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The industrial revolution began in which country?",
+    "o": ["France", "Germany", "USA", "Great Britain"],
+    "c": 3,
+    "subject": "History"
+  },
+  {
+    "q": "Which desert is the largest hot desert in the world?",
+    "o": ["Gobi", "Kalahari", "Sahara", "Namib"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of Pi (π) to two decimal places?",
+    "o": ["3.12", "3.14", "3.16", "3.18"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the opposite of 'Ancient'?",
+    "o": ["Old", "Modern", "Historic", "Antique"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was known as the 'Sun King' of France?",
+    "o": ["Louis XIV", "Louis XVI", "Napoleon", "Charlemagne"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which ocean lies between Africa and Australia?",
+    "o": ["Atlantic", "Pacific", "Indian", "Southern"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: (8 + 2) * (5 - 3)",
+    "o": ["10", "15", "20", "25"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which sentence is correct?",
+    "o": ["He don't like apples.", "He doesn't likes apples.", "He doesn't like apples.", "He no like apples."],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Great Wall of China was built to protect against which group?",
+    "o": ["Romans", "Mongols", "Persians", "Greeks"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Japan?",
+    "o": ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 2 to the power of 5 (2^5)?",
+    "o": ["10", "16", "32", "64"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct preposition: 'He is interested __ music.'",
+    "o": ["on", "at", "with", "in"],
+    "c": 3,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the Titanic sink?",
+    "o": ["1905", "1912", "1918", "1922"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is also a continent?",
+    "o": ["Canada", "Australia", "Brazil", "India"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many centimeters are in a meter?",
+    "o": ["10", "100", "1000", "50"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a person who writes books called?",
+    "o": ["Artist", "Author", "Actor", "Architect"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first Emperor of Rome?",
+    "o": ["Julius Caesar", "Augustus", "Nero", "Constantine"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which imaginary line divides the Earth into North and South?",
+    "o": ["Prime Meridian", "Equator", "Tropic of Cancer", "Longitude"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "If a rectangle has a length of 5 and width of 4, what is its area?",
+    "o": ["9", "18", "20", "25"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is spelled correctly?",
+    "o": ["Receive", "Recieve", "Receve", "Riceive"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The pyramids are most famously associated with which civilization?",
+    "o": ["Mayans", "Aztecs", "Egyptians", "Incans"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the smallest country in the world?",
+    "o": ["Monaco", "Malta", "Vatican City", "San Marino"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the next prime number after 7?",
+    "o": ["8", "9", "10", "11"],
+    "c": 3,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What do you call a word that has the same meaning as another word?",
+    "o": ["Antonym", "Homonym", "Synonym", "Pronoun"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Which document ended the American Revolutionary War?",
+    "o": ["Treaty of Versailles", "Treaty of Paris", "Treaty of London", "Magna Carta"],
+    "c": 1,
+    "subject": "History"
+  },
+{
+    "q": "Which gas is most abundant in the Earth's atmosphere?",
+    "o": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve for x: 5x + 7 = 32",
+    "o": ["4", "5", "6", "7"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the superlative form of the adjective 'Good'?",
+    "o": ["Gooder", "Better", "Best", "Goodest"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the last Emperor of Ethiopia?",
+    "o": ["Menelik II", "Tewodros II", "Haile Selassie I", "Iyasu V"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is known as the 'Land of the Rising Sun'?",
+    "o": ["China", "Japan", "South Korea", "Thailand"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the perimeter of a square with a side of 6cm?",
+    "o": ["12cm", "18cm", "24cm", "36cm"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct article: 'I saw __ elephant at the zoo.'",
+    "o": ["a", "an", "the", "no article"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the French Revolution begin?",
+    "o": ["1776", "1789", "1804", "1815"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the largest lake in Africa?",
+    "o": ["Lake Tana", "Lake Tanganyika", "Lake Victoria", "Lake Malawi"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 20% of 500?",
+    "o": ["50", "100", "150", "200"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a synonym for 'Quick'?",
+    "o": ["Slow", "Rapid", "Lazy", "Heavy"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who discovered America in 1492?",
+    "o": ["Vasco da Gama", "Ferdinand Magellan", "Christopher Columbus", "James Cook"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Italy?",
+    "o": ["Venice", "Milan", "Naples", "Rome"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many degrees are in a right angle?",
+    "o": ["45°", "90°", "180°", "360°"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of the following is a pronoun?",
+    "o": ["Apple", "Run", "They", "Happy"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Which African country was never colonized?",
+    "o": ["Kenya", "Ethiopia", "Nigeria", "Ghana"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which planet is closest to the Sun?",
+    "o": ["Venus", "Earth", "Mars", "Mercury"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 12 multiplied by 12?",
+    "o": ["124", "134", "144", "154"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the plural of 'Child'?",
+    "o": ["Childs", "Childrens", "Children", "Childes"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first President of the United States?",
+    "o": ["Thomas Jefferson", "Abraham Lincoln", "George Washington", "John Adams"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the smallest continent?",
+    "o": ["Europe", "Antarctica", "South America", "Australia"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of 10 to the power of 3 (10^3)?",
+    "o": ["100", "30", "1000", "300"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Find the correctly spelled word:",
+    "o": ["Calendar", "Calender", "Calander", "Calandar"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The Magna Carta was signed in which year?",
+    "o": ["1066", "1215", "1492", "1776"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the largest by land area?",
+    "o": ["Canada", "China", "Russia", "USA"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If x=3, what is 4x + 2?",
+    "o": ["10", "12", "14", "16"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What part of speech is 'quickly'?",
+    "o": ["Noun", "Verb", "Adverb", "Adjective"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Nazi party in Germany?",
+    "o": ["Mussolini", "Stalin", "Hitler", "Churchill"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Egypt?",
+    "o": ["Alexandria", "Luxor", "Cairo", "Giza"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the cube root of 27?",
+    "o": ["3", "9", "6", "13.5"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is an antonym for 'Beautiful'?",
+    "o": ["Pretty", "Lovely", "Ugly", "Cute"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The apartheid system was used in which country?",
+    "o": ["USA", "South Africa", "India", "Australia"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the largest cold desert in the world?",
+    "o": ["Gobi", "Antarctica", "Sahara", "Arctic"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 1/2 + 1/4",
+    "o": ["1/6", "2/6", "3/4", "2/4"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct form: 'She __ to school every day.'",
+    "o": ["go", "goes", "going", "gone"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first man to step on the Moon?",
+    "o": ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "The Eiffel Tower is located in which city?",
+    "o": ["London", "Paris", "Berlin", "Rome"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the average of 10, 20, and 30?",
+    "o": ["10", "15", "20", "25"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the past participle of 'Eat'?",
+    "o": ["Ate", "Eating", "Eaten", "Eats"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Renaissance began in which country?",
+    "o": ["France", "England", "Italy", "Spain"],
+    "c": 2,
+    "subject": "History"
+  },
+{
+    "q": "Which is the largest planet in our solar system?",
+    "o": ["Earth", "Saturn", "Jupiter", "Neptune"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the square root of 81?",
+    "o": ["7", "8", "9", "10"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correctly spelled word:",
+    "o": ["Necessary", "Necesary", "Neccesary", "Necasary"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Civil Rights Movement in the USA?",
+    "o": ["Malcolm X", "Martin Luther King Jr.", "Nelson Mandela", "Rosa Parks"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital city of Kenya?",
+    "o": ["Mombasa", "Kisumu", "Nairobi", "Nakuru"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 1/2 of 1/2?",
+    "o": ["1", "1/4", "1/8", "0"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the opposite of 'Difficult'?",
+    "o": ["Hard", "Easy", "Complex", "Rough"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did Ethiopia join the League of Nations?",
+    "o": ["1920", "1923", "1935", "1945"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the Nile River delta located in?",
+    "o": ["Sudan", "Ethiopia", "Egypt", "Uganda"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 5 + 5 * 2",
+    "o": ["20", "15", "10", "25"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a plural form of 'Leaf'?",
+    "o": ["Leafs", "Leaves", "Leafes", "Leafive"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first person to sail around the world?",
+    "o": ["Columbus", "Magellan", "Vasco da Gama", "Cook"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the largest island in the world?",
+    "o": ["Iceland", "Madagascar", "Greenland", "Australia"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 150% of 100?",
+    "o": ["50", "100", "150", "200"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a verb?",
+    "o": ["Quickly", "Beautiful", "Run", "Happiness"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Berlin Wall fell in which year?",
+    "o": ["1987", "1989", "1991", "1993"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which state is the smallest by land area in the USA?",
+    "o": ["Delaware", "Rhode Island", "Vermont", "Hawaii"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many sides does a hexagon have?",
+    "o": ["5", "6", "7", "8"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the synonym of 'Ancient'?",
+    "o": ["New", "Modern", "Old", "Young"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who founded the Mongol Empire?",
+    "o": ["Kublai Khan", "Genghis Khan", "Attila", "Tamerlane"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which city is known as the 'City of Love'?",
+    "o": ["Rome", "Paris", "Venice", "New York"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 99 + 1?",
+    "o": ["90", "100", "110", "1000"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which article is used before 'Unique'?",
+    "o": ["a", "an", "the", "no article"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The Cold War was between the USA and which country?",
+    "o": ["Germany", "China", "Soviet Union", "Japan"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Canada?",
+    "o": ["Toronto", "Vancouver", "Ottawa", "Montreal"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If a triangle has two equal sides, it is called?",
+    "o": ["Equilateral", "Isosceles", "Scalene", "Right"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the past tense of 'Drink'?",
+    "o": ["Drank", "Drunk", "Drinks", "Drinking"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first woman to win a Nobel Prize?",
+    "o": ["Mother Teresa", "Marie Curie", "Jane Addams", "Malala"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which ocean is the smallest?",
+    "o": ["Indian", "Atlantic", "Arctic", "Pacific"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of 5! (5 factorial)?",
+    "o": ["20", "60", "120", "150"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the antonym of 'Generous':",
+    "o": ["Kind", "Stingy", "Friendly", "Giving"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Where were the first Olympic Games held?",
+    "o": ["Rome", "Athens", "Paris", "London"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country has the most natural lakes?",
+    "o": ["USA", "Russia", "Canada", "Brazil"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the boiling point of water in Celsius?",
+    "o": ["50", "100", "150", "200"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the conjunction: 'I like tea and coffee.'",
+    "o": ["I", "Like", "And", "Coffee"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the King of Macedonia who conquered the Persian Empire?",
+    "o": ["Alexander the Great", "Philip II", "Leonidas", "Xerxes"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the highest waterfall in the world?",
+    "o": ["Niagara Falls", "Victoria Falls", "Angel Falls", "Iguazu Falls"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many minutes are in 2 hours?",
+    "o": ["60", "100", "120", "150"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a suffix?",
+    "o": ["Pre-", "Un-", "-ly", "Re-"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "What year did the Titanic sink?",
+    "o": ["1910", "1912", "1914", "1916"],
+    "c": 1,
+    "subject": "History"
+  },
+{
+    "q": "Which is the largest sea in the world?",
+    "o": ["Red Sea", "Mediterranean Sea", "Philippine Sea", "Caspian Sea"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of 8 + 3 * 4?",
+    "o": ["44", "20", "24", "32"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the comparative form of 'Happy'?",
+    "o": ["Happier", "More happy", "Happiest", "Happyer"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the primary leader of the Indian Independence movement?",
+    "o": ["Jawaharlal Nehru", "Mahatma Gandhi", "Subhas Chandra Bose", "Sardar Patel"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the largest producer of coffee in the world?",
+    "o": ["Ethiopia", "Vietnam", "Brazil", "Colombia"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 1/4 as a decimal?",
+    "o": ["0.2", "0.25", "0.4", "0.5"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is a noun in: 'The teacher is kind.'?",
+    "o": ["Teacher", "Is", "Kind", "The"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the American Civil War end?",
+    "o": ["1860", "1863", "1865", "1870"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which mountain is known as K2?",
+    "o": ["Mount Everest", "Godwin-Austen", "Kangchenjunga", "Lhotse"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the area of a circle with radius 1? (Area = πr^2)",
+    "o": ["1", "π", "2π", "0.5π"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the plural of 'Person'?",
+    "o": ["Persons", "People", "Peoples", "Persones"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the 'Iron Lady' of British politics?",
+    "o": ["Queen Elizabeth", "Theresa May", "Margaret Thatcher", "Angela Merkel"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which city is the capital of Spain?",
+    "o": ["Barcelona", "Seville", "Valencia", "Madrid"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 100 - 45 / 5",
+    "o": ["11", "91", "85", "55"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the past tense of 'Sleep'?",
+    "o": ["Sleeped", "Slept", "Sleeping", "Sleeps"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Which empire was ruled by Genghis Khan?",
+    "o": ["Ottoman", "Mongol", "Roman", "Persian"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which US state is famous for Hollywood?",
+    "o": ["New York", "Florida", "California", "Texas"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 3 cubed (3^3)?",
+    "o": ["9", "27", "81", "12"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a preposition?",
+    "o": ["Under", "Fast", "Read", "Small"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The Russian Revolution occurred in which year?",
+    "o": ["1905", "1914", "1917", "1921"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Australia?",
+    "o": ["Sydney", "Melbourne", "Canberra", "Perth"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many millimeters are in 1 centimeter?",
+    "o": ["10", "100", "1000", "5"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the opposite of 'Strong'?",
+    "o": ["Big", "Weak", "Tough", "Hard"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first President of South Africa after Apartheid?",
+    "o": ["F.W. de Klerk", "Desmond Tutu", "Nelson Mandela", "Thabo Mbeki"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the largest bay in the world?",
+    "o": ["Bay of Bengal", "Hudson Bay", "Baffin Bay", "Bay of Biscay"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the square of 11?",
+    "o": ["111", "121", "131", "141"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the interjection: 'Wow! That was amazing.'",
+    "o": ["Wow", "That", "Was", "Amazing"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the United Nations form?",
+    "o": ["1918", "1940", "1945", "1950"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of South Korea?",
+    "o": ["Seoul", "Busan", "Pyongyang", "Tokyo"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 2/5 + 1/5",
+    "o": ["3/10", "3/5", "1/5", "2/5"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is an adverb?",
+    "o": ["Table", "Slowly", "Green", "Walk"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the famous Queen of Ancient Egypt?",
+    "o": ["Victoria", "Cleopatra", "Elizabeth", "Isabella"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country has the most volcanoes?",
+    "o": ["USA", "Japan", "Indonesia", "Iceland"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the next number in the sequence: 2, 4, 8, 16, ...?",
+    "o": ["20", "24", "30", "32"],
+    "c": 3,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a synonym for 'Silent'?",
+    "o": ["Loud", "Quiet", "Noisy", "Busy"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Which wall divided East and West Germany?",
+    "o": ["Great Wall", "Berlin Wall", "Hadrian's Wall", "Western Wall"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which river flows through London?",
+    "o": ["Seine", "Danube", "Thames", "Rhine"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 10% of 1000?",
+    "o": ["1", "10", "100", "500"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a compound word?",
+    "o": ["Sunlight", "Happy", "Running", "Teacher"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who wrote 'The Communist Manifesto' with Friedrich Engels?",
+    "o": ["Adam Smith", "Karl Marx", "Vladimir Lenin", "Leon Trotsky"],
+    "c": 1,
+    "subject": "History"
+  },
+{
+    "q": "Which is the largest country in Africa by land area?",
+    "o": ["Nigeria", "Ethiopia", "Algeria", "Egypt"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 12.5% written as a decimal?",
+    "o": ["0.125", "1.25", "12.5", "0.0125"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a synonym for 'Wealthy'?",
+    "o": ["Poor", "Rich", "Greedy", "Strong"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the United States declare independence?",
+    "o": ["1776", "1789", "1812", "1865"],
+    "c": 0,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the smallest in Africa?",
+    "o": ["Gambia", "Seychelles", "Djibouti", "Rwanda"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 15 + (10 / 2) - 3",
+    "o": ["7", "12", "17", "20"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the collective noun for a group of lions?",
+    "o": ["Pack", "Herd", "Pride", "Flock"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the Soviet Union during the end of WWII?",
+    "o": ["Lenin", "Stalin", "Khrushchev", "Gorbachev"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which sea lies between Europe and Africa?",
+    "o": ["Red Sea", "Mediterranean Sea", "Black Sea", "Caspian Sea"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many degrees are in a straight line?",
+    "o": ["90", "180", "270", "360"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the past tense of 'Fly'?",
+    "o": ["Flied", "Flown", "Flew", "Flying"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Wright brothers are famous for inventing what?",
+    "o": ["Telephone", "Automobile", "Airplane", "Light bulb"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital city of Russia?",
+    "o": ["Saint Petersburg", "Kiev", "Moscow", "Minsk"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 100 squared (100^2)?",
+    "o": ["1,000", "10,000", "100,000", "200"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a conjunction?",
+    "o": ["But", "Fast", "Very", "With"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "In which country did the Boxer Rebellion take place?",
+    "o": ["Japan", "India", "China", "Vietnam"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which planet is known for its prominent rings?",
+    "o": ["Jupiter", "Saturn", "Uranus", "Neptune"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the square root of 225?",
+    "o": ["12", "15", "20", "25"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the antonym of 'Victory'?",
+    "o": ["Success", "Loss", "Defeat", "Win"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Magna Carta was signed in which country?",
+    "o": ["France", "Germany", "England", "Italy"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which river flows through Cairo?",
+    "o": ["Amazon", "Congo", "Nile", "Niger"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "If a triangle has three equal sides, what is it called?",
+    "o": ["Isosceles", "Scalene", "Equilateral", "Right-angled"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the comparative form of 'Bad'?",
+    "o": ["Badder", "Worse", "Worst", "More bad"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the primary leader of the American Civil Rights Movement?",
+    "o": ["Malcolm X", "Martin Luther King Jr.", "Abraham Lincoln", "Rosa Parks"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the most populous city in the world?",
+    "o": ["New York", "Shanghai", "Tokyo", "Delhi"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 7 * 8?",
+    "o": ["48", "54", "56", "64"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is an adjective: 'The loud music played.'?",
+    "o": ["The", "Loud", "Music", "Played"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "The Battle of Waterloo was the final defeat of which leader?",
+    "o": ["Hitler", "Alexander the Great", "Napoleon Bonaparte", "Julius Caesar"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Germany?",
+    "o": ["Munich", "Frankfurt", "Berlin", "Hamburg"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many sides does a pentagon have?",
+    "o": ["4", "5", "6", "8"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which is a plural noun?",
+    "o": ["Child", "Foot", "Teeth", "Tooth"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "In what year did the Soviet Union collapse?",
+    "o": ["1989", "1991", "1995", "2000"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which desert is located in China and Mongolia?",
+    "o": ["Sahara", "Gobi", "Kalahari", "Atacama"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 5 to the power of 3 (5^3)?",
+    "o": ["15", "25", "75", "125"],
+    "c": 3,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a synonym for 'Begin'?",
+    "o": ["Stop", "Start", "End", "Pause"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first female Prime Minister of the UK?",
+    "o": ["Theresa May", "Queen Victoria", "Margaret Thatcher", "Angela Merkel"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the world's largest exporter of oil?",
+    "o": ["USA", "Russia", "Saudi Arabia", "Iraq"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the circumference of a circle formula?",
+    "o": ["πr^2", "2πr", "πd^2", "bh/2"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the verb: 'He carefully painted the wall.'",
+    "o": ["He", "Carefully", "Painted", "Wall"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Samurai were warriors in which country?",
+    "o": ["China", "Korea", "Japan", "Thailand"],
+    "c": 2,
+    "subject": "History"
+  },
+{
+    "q": "Which is the most populous country in Africa?",
+    "o": ["Ethiopia", "Egypt", "Nigeria", "South Africa"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the square of 15?",
+    "o": ["125", "225", "250", "625"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is an antonym for 'Humble'?",
+    "o": ["Kind", "Proud", "Modest", "Quiet"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the leader of the French forces during the Hundred Years' War?",
+    "o": ["Napoleon", "Joan of Arc", "Louis XIV", "Charlemagne"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Canada?",
+    "o": ["Toronto", "Vancouver", "Ottawa", "Quebec City"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 2^4 (2 to the power of 4)",
+    "o": ["8", "12", "16", "32"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Choose the correct spelling:",
+    "o": ["Occasion", "Ocassion", "Occassion", "Ocasion"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Which empire was centered in modern-day Turkey?",
+    "o": ["Roman Empire", "Ottoman Empire", "Byzantine Empire", "Persian Empire"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which ocean contains the Great Barrier Reef?",
+    "o": ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is 1/3 of 90?",
+    "o": ["20", "30", "40", "45"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the pronoun in: 'We should leave now.'",
+    "o": ["We", "Should", "Leave", "Now"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "The Russian Revolution of 1917 led to the rise of which party?",
+    "o": ["Nazis", "Bolsheviks", "Federalists", "Whigs"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which river is the longest in South America?",
+    "o": ["Nile", "Mississippi", "Amazon", "Yangtze"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "A triangle with all sides equal is called?",
+    "o": ["Scalene", "Isosceles", "Equilateral", "Right"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the past tense of 'Catch'?",
+    "o": ["Catched", "Caught", "Caughted", "Catching"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the 'Desert Fox' during World War II?",
+    "o": ["Winston Churchill", "Erwin Rommel", "George Patton", "Bernard Montgomery"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is the largest in the world by area?",
+    "o": ["China", "Canada", "USA", "Russia"],
+    "c": 3,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the value of 50% of 80?",
+    "o": ["30", "40", "50", "60"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is a verb in: 'The baby sleeps.'?",
+    "o": ["The", "Baby", "Sleeps", "Quietly"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "The Suez Canal connects the Mediterranean Sea to which sea?",
+    "o": ["Black Sea", "Caspian Sea", "Red Sea", "Dead Sea"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the highest peak in Africa?",
+    "o": ["Mount Kenya", "Mount Kilimanjaro", "Mount Ras Dashen", "Atlas Mountains"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "How many millimeters are in 5 centimeters?",
+    "o": ["0.5", "5", "50", "500"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is a synonym for 'Huge'?",
+    "o": ["Tiny", "Gigantic", "Small", "Thin"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the main leader of the American Revolution?",
+    "o": ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "Benjamin Franklin"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which country is home to the city of Timbuktu?",
+    "o": ["Mali", "Niger", "Chad", "Sudan"],
+    "c": 0,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 10 * 10 / 2 + 5",
+    "o": ["55", "100", "50", "15"],
+    "c": 0,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Identify the adjective in: 'That is a beautiful house.'",
+    "o": ["That", "Is", "Beautiful", "House"],
+    "c": 2,
+    "subject": "English"
+  },
+  {
+    "q": "In which year did the United Nations form?",
+    "o": ["1918", "1939", "1945", "1960"],
+    "c": 2,
+    "subject": "History"
+  },
+  {
+    "q": "Which desert is the largest in the world?",
+    "o": ["Sahara", "Gobi", "Antarctic Desert", "Arctic Desert"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the square root of 64?",
+    "o": ["6", "7", "8", "9"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which of these is a plural noun?",
+    "o": ["Sheep", "Child", "Person", "Man"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who wrote the 'I Have a Dream' speech?",
+    "o": ["Nelson Mandela", "Martin Luther King Jr.", "Malcolm X", "John F. Kennedy"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "What is the capital of Italy?",
+    "o": ["Milan", "Venice", "Rome", "Florence"],
+    "c": 2,
+    "subject": "Geography"
+  },
+  {
+    "q": "Solve: 4 + 6 * 2",
+    "o": ["20", "16", "12", "14"],
+    "c": 1,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "Which word is a preposition?",
+    "o": ["Under", "Running", "Happy", "Soon"],
+    "c": 0,
+    "subject": "English"
+  },
+  {
+    "q": "Who was the first Emperor of Rome?",
+    "o": ["Julius Caesar", "Augustus", "Nero", "Caligula"],
+    "c": 1,
+    "subject": "History"
+  },
+  {
+    "q": "Which is the smallest country in the world?",
+    "o": ["Monaco", "Vatican City", "Malta", "San Marino"],
+    "c": 1,
+    "subject": "Geography"
+  },
+  {
+    "q": "What is the area of a square with side length 4?",
+    "o": ["8", "12", "16", "20"],
+    "c": 2,
+    "subject": "Mathematics"
+  },
+  {
+    "q": "What is the opposite of 'Ancient'?",
+    "o": ["Old", "Modern", "Historic", "Classic"],
+    "c": 1,
+    "subject": "English"
+  },
+  {
+    "q": "Which war was fought between the North and South in the USA?",
+    "o": ["Revolutionary War", "Civil War", "World War I", "Vietnam War"],
+    "c": 1,
+    "subject": "History"
+  },
