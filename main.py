@@ -74,10 +74,10 @@ async def cmd_start2(message: types.Message):
     chat_id = message.chat.id
     if active_loops.get(chat_id): return
     active_loops[chat_id] = True
-    await message.answer("🎯 **የኩዊዝ ውድድር ተጀመረ!**\n\nመልካም ዕድል ለሁላችሁም! 🍀", parse_mode="Markdown")
+    await message.answer("🎯 **የኩዊዝ ውድድር በደመቀ ሁኔታ ተጀመረ!**\n\nመልካም ዕድል ለሁላችሁም! 🍀", parse_mode="Markdown")
     asyncio.create_task(quiz_timer(chat_id, None))
 
-# ስህተቱን የሚፈታው አዲሱ የትምህርት አይነት መጀመሪያ
+# ስህተቱን የሚፈታው አዲሱ የትምህርት አይነት መጀመሪያ (Logs ላይ ለታየው ችግር መፍትሄ)
 @dp.message(lambda message: message.text and any(subj in message.text.lower() for subj in ["geography_srm", "history_srm", "english_srm", "maths_srm"]))
 async def cmd_subject_srm(message: types.Message):
     if message.from_user.id not in ADMIN_IDS: return await punish_user(message)
@@ -150,7 +150,7 @@ async def on_poll_answer(poll_answer: types.PollAnswer):
     user_name = poll_answer.user.full_name
     chat_id = data["chat_id"]
 
-    # --- የታገደ ሰው እንዳይሳተፍ ---
+    # --- ህግ፦ የታገደ ሰው ምርጫው እንዳይቆጠር ማረጋገጫ ---
     try:
         member = await bot.get_chat_member(chat_id, user_id)
         if member.status in ["restricted", "kicked", "left"] and not member.can_send_messages:
@@ -163,12 +163,13 @@ async def on_poll_answer(poll_answer: types.PollAnswer):
         points = 8 if is_first else 4
         save_score(user_id, user_name, points)
         if is_first:
-            await bot.send_message(chat_id, f"🚀 **ፈጣኑ መላሽ!** ✨🎆\n👏 {user_name} ቀድመህ በመመለስህ **8 ነጥብ** አግኝተሃል! 🔥")
+            await bot.send_message(chat_id, f"🚀 **ፈጣኑ መላሽ!** ✨\n👏 {user_name} ቀድመህ በመመለስህ **8 ነጥብ** አግኝተሃል! 🔥")
     else:
         save_score(user_id, user_name, 1.5)
 
 async def main():
     keep_alive()
+    # Conflict ስህተቱን ለመከላከል የቆዩ Updates ያጠፋል
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
