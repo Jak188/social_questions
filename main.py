@@ -4,7 +4,6 @@ import logging
 import random
 import sqlite3
 import os
-import re
 from datetime import timedelta, datetime
 from flask import Flask
 from threading import Thread
@@ -52,7 +51,7 @@ def save_score(user_id, name, points):
         cursor.execute("INSERT INTO scores (user_id, name, points) VALUES (?, ?, ?)", (user_id, name, max(0, points)))
     conn.commit()
 
-# --- የቅጣት ተግባር (17 ደቂቃ Mute + 3 ነጥብ ቅጣት) ---
+# --- የቅጣት ተግባር ---
 async def punish_user(message: types.Message):
     user_id = message.from_user.id
     user_name = message.from_user.full_name
@@ -101,19 +100,7 @@ async def cmd_subject_srm(message: types.Message):
 async def cmd_stop2(message: types.Message):
     if message.from_user.id not in ADMIN_IDS: return await punish_user(message)
     active_loops[message.chat.id] = False
-    
-    cursor.execute("SELECT name, points FROM scores ORDER BY points DESC LIMIT 10")
-    winners = cursor.fetchall()
-    
-    if winners:
-        text = "🛑 **ውድድሩ ተጠናቋል! የደረጃ ሰንጠረዥ፦**\n\n"
-        for i, row in enumerate(winners, 1):
-            icon = "🥇" if i==1 else "🥈" if i==2 else "🥉" if i==3 else "🏅"
-            prize = "🏆🏆🏆 (3 የወርቅ ዋንጫ)" if i==1 else "🏆🏆 (2 የብር ዋንጫ)" if i==2 else "🏆 (1 የነሃስ ሜዳሊያ)" if i==3 else ""
-            text += f"{icon} {i}. {row[0]} — {row[1]} ነጥብ {prize}\n"
-        await message.answer(text, parse_mode="Markdown")
-    else:
-        await message.answer("🛑 ውድድሩ ቆሟል።")
+    await message.answer("🛑 ውድድሩ ቆሟል::")
 
 @dp.message(Command("rank2"))
 async def cmd_rank2(message: types.Message):
@@ -123,12 +110,6 @@ async def cmd_rank2(message: types.Message):
     text = "🏆 **የደረጃ ሰንጠረዥ** 🏆\n\n"
     for i, row in enumerate(rows, 1): text += f"{i}. {row[0]} — {row[1]} ነጥብ\n"
     await message.answer(text)
-
-@dp.message(Command("clear_rank2"))
-async def cmd_clear2(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS: return await punish_user(message)
-    cursor.execute("DELETE FROM scores"); conn.commit()
-    await message.answer("🧹 ውጤት በሙሉ ተሰርዟል!")
 
 @dp.message(Command("un_mute2"))
 async def cmd_unmute2(message: types.Message):
@@ -159,18 +140,17 @@ async def quiz_timer(chat_id, subj_filter):
             )
             poll_map[sent_poll.poll.id] = {"correct": q['c'], "chat_id": chat_id, "winners": []}
         except: pass
-        await asyncio.sleep(240) # በየ 4 ደቂቃ
+        await asyncio.sleep(240)
 
 @dp.poll_answer()
 async def on_poll_answer(poll_answer: types.PollAnswer):
     data = poll_map.get(poll_answer.poll_id)
     if not data: return
-    
     user_id = poll_answer.user.id
     user_name = poll_answer.user.full_name
     chat_id = data["chat_id"]
 
-    # --- ህግ 1፡ የታገደ ሰው ምርጫው እንዳይቆጠር ---
+    # --- የታገደ ሰው እንዳይሳተፍ ---
     try:
         member = await bot.get_chat_member(chat_id, user_id)
         if member.status in ["restricted", "kicked", "left"] and not member.can_send_messages:
