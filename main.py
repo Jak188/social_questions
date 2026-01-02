@@ -52,7 +52,7 @@ def save_score(user_id, name, points):
         cursor.execute("INSERT INTO scores (user_id, name, points) VALUES (?, ?, ?)", (user_id, name, max(0, points)))
     conn.commit()
 
-# --- የቅጣት ተግባር ---
+# --- የቅጣት ተግባር (17 ደቂቃ Mute + 3 ነጥብ ቅጣት) ---
 async def punish_user(message: types.Message):
     user_id = message.from_user.id
     user_name = message.from_user.full_name
@@ -75,10 +75,10 @@ async def cmd_start2(message: types.Message):
     chat_id = message.chat.id
     if active_loops.get(chat_id): return
     active_loops[chat_id] = True
-    await message.answer("🎯 **የኩዊዝ ውድድር በደመቀ ሁኔታ ተጀመረ!**\n\nመልካም ዕድል ለሁላችሁም! 🍀", parse_mode="Markdown")
+    await message.answer("🎯 **የኩዊዝ ውድድር ተጀመረ!**\n\nመልካም ዕድል ለሁላችሁም! 🍀", parse_mode="Markdown")
     asyncio.create_task(quiz_timer(chat_id, None))
 
-# የተስተካከለው የሳብጀክት መጀመሪያ (Logs ላይ የታየውን ስህተት የሚፈታ)
+# ስህተቱን የሚፈታው አዲሱ የትምህርት አይነት መጀመሪያ
 @dp.message(lambda message: message.text and any(subj in message.text.lower() for subj in ["geography_srm", "history_srm", "english_srm", "maths_srm"]))
 async def cmd_subject_srm(message: types.Message):
     if message.from_user.id not in ADMIN_IDS: return await punish_user(message)
@@ -111,7 +111,6 @@ async def cmd_stop2(message: types.Message):
             icon = "🥇" if i==1 else "🥈" if i==2 else "🥉" if i==3 else "🏅"
             prize = "🏆🏆🏆 (3 የወርቅ ዋንጫ)" if i==1 else "🏆🏆 (2 የብር ዋንጫ)" if i==2 else "🏆 (1 የነሃስ ሜዳሊያ)" if i==3 else ""
             text += f"{icon} {i}. {row[0]} — {row[1]} ነጥብ {prize}\n"
-        text += "\nቀጣይ ከ1-10 ስማችሁ እንዲነሳ በትጋት ተሳተፉ!"
         await message.answer(text, parse_mode="Markdown")
     else:
         await message.answer("🛑 ውድድሩ ቆሟል።")
@@ -160,7 +159,7 @@ async def quiz_timer(chat_id, subj_filter):
             )
             poll_map[sent_poll.poll.id] = {"correct": q['c'], "chat_id": chat_id, "winners": []}
         except: pass
-        await asyncio.sleep(240)
+        await asyncio.sleep(240) # በየ 4 ደቂቃ
 
 @dp.poll_answer()
 async def on_poll_answer(poll_answer: types.PollAnswer):
@@ -171,7 +170,7 @@ async def on_poll_answer(poll_answer: types.PollAnswer):
     user_name = poll_answer.user.full_name
     chat_id = data["chat_id"]
 
-    # --- የታገደ ሰው ምርጫ ውድቅ የማድረግ ህግ ---
+    # --- ህግ 1፡ የታገደ ሰው ምርጫው እንዳይቆጠር ---
     try:
         member = await bot.get_chat_member(chat_id, user_id)
         if member.status in ["restricted", "kicked", "left"] and not member.can_send_messages:
