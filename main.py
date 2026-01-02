@@ -18,7 +18,7 @@ def run(): server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
 def keep_alive(): Thread(target=run).start()
 
 # 1. ቦቱን እና አድሚኖችን መለየት
-API_TOKEN = '8256328585:AAEZXXZrN608V2l4Hh_iK4ATPbACZFe-gC8'
+API_TOKEN = '8256328585:AAFRcSR0pxfHIyVrJQGpUIrbOOQ7gIcY0cE' # አዲሱ ቶከን
 ADMIN_IDS = [7231324244, 8394878208] 
 
 logging.basicConfig(level=logging.INFO)
@@ -51,7 +51,7 @@ def save_score(user_id, name, points):
         cursor.execute("INSERT INTO scores (user_id, name, points) VALUES (?, ?, ?)", (user_id, name, max(0, points)))
     conn.commit()
 
-# --- የቅጣት ተግባር ---
+# --- የቅጣት ተግባር (17 ደቂቃ Mute + 3 ነጥብ ቅጣት) ---
 async def punish_user(message: types.Message):
     user_id = message.from_user.id
     user_name = message.from_user.full_name
@@ -77,7 +77,7 @@ async def cmd_start2(message: types.Message):
     await message.answer("🎯 **የኩዊዝ ውድድር በደመቀ ሁኔታ ተጀመረ!**\n\nመልካም ዕድል ለሁላችሁም! 🍀", parse_mode="Markdown")
     asyncio.create_task(quiz_timer(chat_id, None))
 
-# ስህተቱን የሚፈታው አዲሱ የትምህርት አይነት መጀመሪያ (Logs ላይ ለታየው ችግር መፍትሄ)
+# የትምህርት አይነት መጀመሪያ (Logs ላይ ለታየው "Update is not handled" ስህተት መፍትሄ)
 @dp.message(lambda message: message.text and any(subj in message.text.lower() for subj in ["geography_srm", "history_srm", "english_srm", "maths_srm"]))
 async def cmd_subject_srm(message: types.Message):
     if message.from_user.id not in ADMIN_IDS: return await punish_user(message)
@@ -100,7 +100,19 @@ async def cmd_subject_srm(message: types.Message):
 async def cmd_stop2(message: types.Message):
     if message.from_user.id not in ADMIN_IDS: return await punish_user(message)
     active_loops[message.chat.id] = False
-    await message.answer("🛑 ውድድሩ ቆሟል::")
+    
+    cursor.execute("SELECT name, points FROM scores ORDER BY points DESC LIMIT 10")
+    winners = cursor.fetchall()
+    
+    if winners:
+        text = "🛑 **ውድድሩ ተጠናቋል! የደረጃ ሰንጠረዥ፦**\n\n"
+        for i, row in enumerate(winners, 1):
+            icon = "🥇" if i==1 else "🥈" if i==2 else "🥉" if i==3 else "🏅"
+            prize = "🏆🏆🏆" if i==1 else "🏆🏆" if i==2 else "🏆" if i==3 else ""
+            text += f"{icon} {i}. {row[0]} — {row[1]} ነጥብ {prize}\n"
+        await message.answer(text, parse_mode="Markdown")
+    else:
+        await message.answer("🛑 ውድድሩ ቆሟል።")
 
 @dp.message(Command("rank2"))
 async def cmd_rank2(message: types.Message):
@@ -140,7 +152,7 @@ async def quiz_timer(chat_id, subj_filter):
             )
             poll_map[sent_poll.poll.id] = {"correct": q['c'], "chat_id": chat_id, "winners": []}
         except: pass
-        await asyncio.sleep(240)
+        await asyncio.sleep(240) # በየ 4 ደቂቃ
 
 @dp.poll_answer()
 async def on_poll_answer(poll_answer: types.PollAnswer):
@@ -154,7 +166,7 @@ async def on_poll_answer(poll_answer: types.PollAnswer):
     try:
         member = await bot.get_chat_member(chat_id, user_id)
         if member.status in ["restricted", "kicked", "left"] and not member.can_send_messages:
-            return 
+            return
     except: pass
 
     if poll_answer.option_ids[0] == data["correct"]:
@@ -163,7 +175,7 @@ async def on_poll_answer(poll_answer: types.PollAnswer):
         points = 8 if is_first else 4
         save_score(user_id, user_name, points)
         if is_first:
-            await bot.send_message(chat_id, f"🚀 **ፈጣኑ መላሽ!** ✨\n👏 {user_name} ቀድመህ በመመለስህ **8 ነጥብ** አግኝተሃል! 🔥")
+            await bot.send_message(chat_id, f"🚀 **ፈጣኑ መላሽ!** ✨🎆\n👏 {user_name} ቀድመህ በመመለስህ **8 ነጥብ** አግኝተሃል! 🔥")
     else:
         save_score(user_id, user_name, 1.5)
 
