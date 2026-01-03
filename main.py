@@ -1,128 +1,108 @@
 import asyncio
 import json
-import logging
 import random
-import sqlite3
 import os
-from datetime import timedelta, datetime
-from flask import Flask
-from threading import Thread
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command
+from aiogram.utils import executor
+from datetime import datetime, timedelta
 
-# --- Flask Server ---
-app = Flask('')
-@app.route('/')
-def home(): return "Bot is running!"
+# --- CONFIGURATION ---
+API_TOKEN = os.getenv("BOT_TOKEN")
+ADMIN_IDS = [123456789]  # የራስህን ID እዚህ ተካ
+QUESTIONS_FILE = "questions.json"
 
-def run():
-    port = int(os.environ.get('PORT', 8080))
-    app.run(host='0.0.0.0', port=port)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
-
-# --- ቦት ዝግጅት ---
-API_TOKEN = '8256328585:AAFRcSR0pxfHIyVrJQGpUIrbOOQ7gIcY0cE'
-ADMIN_IDS = [7231324244, 8394878208] 
-
-logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher()
+dp = Dispatcher(bot)
 
-conn = sqlite3.connect('quiz_results.db', check_same_thread=False)
-cursor = conn.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS scores (user_id INTEGER PRIMARY KEY, name TEXT, points REAL DEFAULT 0)')
-conn.commit()
+# የውሂብ ማከማቻ
+group_data = {}  # {group_id: {"scores": {}, "active": False, "muted": {}}}
+questions_list = []
 
-def load_questions():
-    try:
-        with open('questions.json', 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception as e:
-        return []
+# ፋይሉን ማንበብ
+try:
+    with open(QUESTIONS_FILE, 'r', encoding='utf-8') as f:
+        questions_list = json.load(f)
+except Exception as e:
+    print(f"Error loading JSON: {e}")
 
-active_loops = {}
-poll_map = {}
+def get_rank_text(scores):
+    if not scores: return "ምንም ተሳታፊ የለም።"
+    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    text = "🏆 **የደረጃ ሰንጠረዥ** 🏆\n\n"
+    for i, (user_id, score) in enumerate(sorted_scores[:10], 1):
+        text += f"{i}. User {user_id}: {score} ነጥብ\n"
+    return text
 
-def save_score(user_id, name, points):
-    cursor.execute("SELECT points FROM scores WHERE user_id = ?", (user_id,))
-    row = cursor.fetchone()
-    if row:
-        new_score = max(0, row[0] + points)
-        cursor.execute("UPDATE scores SET points = ?, name = ? WHERE user_id = ?", (new_score, name, user_id))
-    else:
-        cursor.execute("INSERT INTO scores (user_id, name, points) VALUES (?, ?, ?)", (user_id, name, max(0, points)))
-    conn.commit()
-
-# --- Handlers ---
-
-@dp.message(Command("start2"))
-async def cmd_start2(message: types.Message):
+@dp.message_handler(commands=['start2'])
+async def start_quiz(message: types.Message):
     if message.from_user.id not in ADMIN_IDS: return
-    chat_id = message.chat.id
-    active_loops[chat_id] = True
-    await message.answer("🎯 አጠቃላይ ጥያቄዎች ተጀመሩ!")
-    asyncio.create_task(quiz_timer(chat_id, None))
-
-@dp.message(lambda message: message.text and "_srm" in message.text.lower())
-async def cmd_subject_srm(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS: return
-    text = message.text.lower()
-    # ሰብጀክቱን በትክክል መለየት
-    subj = ""
-    if "geography" in text: subj = "Geography"
-    elif "history" in text: subj = "History"
-    elif "english" in text: subj = "English"
-    elif "maths" in text: subj = "Maths"
+    gid = message.chat.id
+    if gid not in group_data: group_data[gid] = {"scores": {}, "active": True, "muted": {}}
+    group_data[gid]["active"] = True
+    await message.answer("🚀 **ውድድሩ በደመቀ ሁኔታ ተጀምሯል!** በየ 4 ደቂቃው ጥያቄ ይቀርባል።")
     
-    chat_id = message.chat.id
-    active_loops[chat_id] = True
-    await message.answer(f"📚 የ **{subj}** ውድድር ተጀመረ!")
-    asyncio.create_task(quiz_timer(chat_id, subj))
-
-@dp.message(Command("stop2"))
-async def cmd_stop2(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS: return
-    active_loops[message.chat.id] = False
-    await message.answer("🛑 ውድድሩ ቆሟል::")
-
-async def quiz_timer(chat_id, subj_filter):
-    while active_loops.get(chat_id):
-        all_q = load_questions()
-        # እዚህ ጋር ነው ሰብጀክቱን የሚለየው
-        if subj_filter:
-            questions = [q for q in all_q if q.get('subject') == subj_filter]
-        else:
-            questions = all_q
-            
-        if not questions:
-            await bot.send_message(chat_id, f"⚠️ ለ {subj_filter} የተዘጋጀ ጥያቄ አልተገኘም::")
-            break
-            
-        q = random.choice(questions)
-        sent_poll = await bot.send_poll(
-            chat_id=chat_id,
-            question=f"📚 {q.get('subject', 'General')}\n\n{q['q']}",
-            options=q['o'], type='quiz', correct_option_id=q['c'],
-            is_anonymous=False
+    while group_data[gid]["active"]:
+        q = random.choice(questions_list)
+        poll = await bot.send_poll(
+            gid, q['q'], q['o'], type='quiz', correct_option_id=q['c'], is_anonymous=False
         )
-        poll_map[sent_poll.poll.id] = {"correct": q['c'], "chat_id": chat_id, "winners": []}
-        await asyncio.sleep(240)
+        
+        # ለ 4 ደቂቃ መጠበቅ
+        await asyncio.sleep(240) 
+        
+        # ማብራሪያ መላክ
+        if 'exp' in q:
+            await bot.send_message(gid, f"💡 **ማብራሪያ፦**\n{q['exp']}")
+        
+        await bot.stop_poll(gid, poll.message_id)
 
-@dp.poll_answer()
-async def on_poll_answer(poll_answer: types.PollAnswer):
-    data = poll_map.get(poll_answer.poll_id)
-    if not data: return
-    if poll_answer.option_ids[0] == data["correct"]:
-        is_first = len(data["winners"]) == 0
-        data["winners"].append(poll_answer.user.id)
-        save_score(poll_answer.user.id, poll_answer.user.full_name, 8 if is_first else 4)
+@dp.poll_answer_handler()
+async def handle_poll_answer(quiz_answer: types.PollAnswer):
+    gid = quiz_answer.user_id # ለቀላልነት
+    # እዚህ ጋር ነጥብ የመቁጠር logic ይገባል (እንደየ ፍጥነቱ)
 
-async def main():
-    keep_alive()
-    await dp.start_polling(bot)
+@dp.message_handler(commands=['stop2'])
+async def stop_quiz(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS: return
+    gid = message.chat.id
+    group_data[gid]["active"] = False
+    
+    scores = group_data[gid]["scores"]
+    rank_text = get_rank_text(scores)
+    
+    final_msg = f"🏁 **ውድድሩ ተጠናቋል!**\n\n{rank_text}\n"
+    final_msg += "\n🥇 3 የወርቅ ዋንጫ\n🥈 2 የብር ዋንጫ\n🥉 1 የነሀስ ሽልማት እና 🎆"
+    
+    await message.answer(final_msg)
+    await bot.send_dice(gid, emoji="🎰") # ለሊቨርፑል/ሪችት ማሳያ
 
-if __name__ == "__main__":
-    asyncio.run(main())
+@dp.message_handler(commands=['clear_rank2'])
+async def clear_rank(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS: return
+    group_data[message.chat.id]["scores"] = {}
+    await message.answer("🧹 የነጥብ ሰሌዳው ወደ መጀመሪያ ተመልሷል።")
+
+@dp.message_handler(commands=['hoo'])
+async def show_muted(message: types.Message):
+    gid = message.chat.id
+    muted_users = group_data.get(gid, {}).get("muted", {})
+    if not muted_users:
+        await message.answer("የታገደ ሰው የለም።")
+    else:
+        text = "🚫 **የታገዱ ተሳታፊዎች፦**\n"
+        for uid, time in muted_users.items():
+            text += f"- User {uid} (እስከ {time})\n"
+        await message.answer(text)
+
+# --- የማገጃ ስርአት (Admin Commands Protection) ---
+@dp.message_handler(lambda m: any(m.text.startswith(c) for c in ['/', 'History_srm']))
+async def protect_admin_commands(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:
+        gid = message.chat.id
+        until = datetime.now() + timedelta(minutes=17)
+        group_data[gid]["muted"][message.from_user.id] = until
+        await bot.restrict_chat_member(gid, message.from_user.id, until_date=until)
+        await message.reply("⚠️ **ማስጠንቀቂያ!** የአድሚን ትዕዛዝ ስለነካህ ለ 17 ደቂቃ ታግደሃል።")
+
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)
