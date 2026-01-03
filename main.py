@@ -1,108 +1,157 @@
+import logging
 import asyncio
+import sqlite3
 import json
 import random
-import os
+from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
-from datetime import datetime, timedelta
 
 # --- CONFIGURATION ---
-API_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_IDS = [123456789]  # የራስህን ID እዚህ ተካ
-QUESTIONS_FILE = "questions.json"
+API_TOKEN = '8256328585:AAFRcSR0pxfHIyVrJQGpUIrbOOQ7gIcY0cE' # Render Environment Variable ላይ ካስገባህ os.getenv('BOT_TOKEN') ተጠቀም
+ADMIN_IDS = [12345678]  # ያንተን የቴሌግራም ID እዚህ ይተኩ
+QUIZ_INTERVAL = 240  # 4 ደቂቃ
+DATABASE_NAME = "quiz_bot.db"
 
+logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
-# የውሂብ ማከማቻ
-group_data = {}  # {group_id: {"scores": {}, "active": False, "muted": {}}}
-questions_list = []
+# --- DATABASE SETUP ---
+def init_db():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users 
+                 (user_id INTEGER PRIMARY KEY, username TEXT, score REAL DEFAULT 0, muted_until TIMESTAMP)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS quiz_state 
+                 (chat_id INTEGER PRIMARY KEY, is_active INTEGER, subject TEXT)''')
+    conn.commit()
+    conn.close()
 
-# ፋይሉን ማንበብ
-try:
-    with open(QUESTIONS_FILE, 'r', encoding='utf-8') as f:
-        questions_list = json.load(f)
-except Exception as e:
-    print(f"Error loading JSON: {e}")
+init_db()
 
-def get_rank_text(scores):
-    if not scores: return "ምንም ተሳታፊ የለም።"
-    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-    text = "🏆 **የደረጃ ሰንጠረዥ** 🏆\n\n"
-    for i, (user_id, score) in enumerate(sorted_scores[:10], 1):
-        text += f"{i}. User {user_id}: {score} ነጥብ\n"
-    return text
+# --- HELPER FUNCTIONS ---
+def get_score(user_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    score = conn.execute("SELECT score FROM users WHERE user_id = ?", (user_id,)).fetchone()
+    conn.close()
+    return score[0] if score else 0
 
-@dp.message_handler(commands=['start2'])
-async def start_quiz(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS: return
-    gid = message.chat.id
-    if gid not in group_data: group_data[gid] = {"scores": {}, "active": True, "muted": {}}
-    group_data[gid]["active"] = True
-    await message.answer("🚀 **ውድድሩ በደመቀ ሁኔታ ተጀምሯል!** በየ 4 ደቂቃው ጥያቄ ይቀርባል።")
+def update_score(user_id, username, points):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute("INSERT OR IGNORE INTO users (user_id, username, score) VALUES (?, ?, 0)", (user_id, username))
+    c.execute("UPDATE users SET score = score + ?, username = ? WHERE user_id = ?", (points, username, user_id))
+    conn.commit()
+    conn.close()
+
+active_quizzes = {} # {chat_id: task}
+
+# --- MIDDLEWARE FOR MUTED USERS ---
+@dp.message_handler(lambda msg: True, content_types=types.ContentTypes.ANY)
+async def check_mute(message: types.Message):
+    conn = sqlite3.connect(DATABASE_NAME)
+    user = conn.execute("SELECT muted_until FROM users WHERE user_id = ?", (message.from_id,)).fetchone()
+    conn.close()
     
-    while group_data[gid]["active"]:
-        q = random.choice(questions_list)
+    if user and user[0]:
+        until = datetime.fromisoformat(user[0])
+        if datetime.now() < until:
+            try: await message.delete() 
+            except: pass
+            return
+    
+    # ትዕዛዞችን ለማስተናገድ ወደ ቀጣዩ እንዲያልፍ ይፈቅዳል
+    await dp.process_update(types.Update(message=message))
+
+# --- QUIZ LOGIC ---
+async def run_quiz(chat_id, subject):
+    with open('questions.json', 'r', encoding='utf-8') as f:
+        all_questions = json.load(f)
+    
+    questions = [q for q in all_questions if q.get('subject') == subject]
+    if not questions:
+        await bot.send_message(chat_id, "ለዚህ ትምህርት ጥያቄ አልተገኘም።")
+        return
+
+    while chat_id in active_quizzes:
+        q = random.choice(questions)
         poll = await bot.send_poll(
-            gid, q['q'], q['o'], type='quiz', correct_option_id=q['c'], is_anonymous=False
+            chat_id, q['q'], q['o'], 
+            type='quiz', correct_option_id=q['c'], is_anonymous=False
         )
         
         # ለ 4 ደቂቃ መጠበቅ
-        await asyncio.sleep(240) 
+        await asyncio.sleep(QUIZ_INTERVAL)
         
         # ማብራሪያ መላክ
-        if 'exp' in q:
-            await bot.send_message(gid, f"💡 **ማብራሪያ፦**\n{q['exp']}")
-        
-        await bot.stop_poll(gid, poll.message_id)
+        await bot.send_message(chat_id, f"💡 **ማብራሪያ፦**\n{q['exp']}", parse_mode="Markdown")
 
 @dp.poll_answer_handler()
 async def handle_poll_answer(quiz_answer: types.PollAnswer):
-    gid = quiz_answer.user_id # ለቀላልነት
-    # እዚህ ጋር ነጥብ የመቁጠር logic ይገባል (እንደየ ፍጥነቱ)
+    # እዚህ ጋር ነጥብ አሰጣጥ (8, 4, 1.5) በሎጂክ ይጨመራል
+    # ማሳሰቢያ፡ aiogram poll_answer ሰዓቱን ስለማይሰጥ ቀለል ባለ መንገድ ነጥብ ይያዛል
+    update_score(quiz_answer.user.id, quiz_answer.user.full_name, 8) 
+    await bot.send_message(quiz_answer.user.id, "🎉 ትክክል! 🚀 (ርችት)")
+
+# --- COMMANDS ---
+@dp.message_handler(commands=['start2'])
+async def start_quiz(message: types.Message):
+    if message.from_id not in ADMIN_IDS: return
+    arg = message.get_args()
+    if not arg:
+        await message.reply("እባክህ የትምህርት አይነት ጥቀስ። ለምሳሌ: `History_srm`")
+        return
+    
+    chat_id = message.chat.id
+    if chat_id in active_quizzes: return
+    
+    task = asyncio.create_task(run_quiz(chat_id, arg.replace("_srm", "")))
+    active_quizzes[chat_id] = task
+    await message.answer(f"🌟 **{arg} ውድድር ተጀምሯል!** 🌟\nበየ 4 ደቂቃው ጥያቄ ይቀርባል።")
 
 @dp.message_handler(commands=['stop2'])
 async def stop_quiz(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS: return
-    gid = message.chat.id
-    group_data[gid]["active"] = False
-    
-    scores = group_data[gid]["scores"]
-    rank_text = get_rank_text(scores)
-    
-    final_msg = f"🏁 **ውድድሩ ተጠናቋል!**\n\n{rank_text}\n"
-    final_msg += "\n🥇 3 የወርቅ ዋንጫ\n🥈 2 የብር ዋንጫ\n🥉 1 የነሀስ ሽልማት እና 🎆"
-    
-    await message.answer(final_msg)
-    await bot.send_dice(gid, emoji="🎰") # ለሊቨርፑል/ሪችት ማሳያ
+    if message.from_id not in ADMIN_IDS: return
+    chat_id = message.chat.id
+    if chat_id in active_quizzes:
+        active_quizzes[chat_id].cancel()
+        del active_quizzes[chat_id]
+        
+        # ውጤት ማሳያ (Rank 1-10)
+        conn = sqlite3.connect(DATABASE_NAME)
+        top = conn.execute("SELECT username, score FROM users ORDER BY score DESC LIMIT 10").fetchall()
+        conn.close()
+        
+        res = "🏆 **የውድድሩ ውጤት** 🏆\n\n"
+        for i, (name, score) in enumerate(top, 1):
+            icon = "🥇" if i==1 else "🥈" if i==2 else "🥉" if i==3 else "🔹"
+            res += f"{icon} {i}. {name} - {score} ነጥብ\n"
+        
+        res += "\n✨ እንኳን ደስ አላችሁ! ✨"
+        await message.answer(res)
 
 @dp.message_handler(commands=['clear_rank2'])
 async def clear_rank(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS: return
-    group_data[message.chat.id]["scores"] = {}
-    await message.answer("🧹 የነጥብ ሰሌዳው ወደ መጀመሪያ ተመልሷል።")
+    if message.from_id not in ADMIN_IDS: return
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.execute("UPDATE users SET score = 0")
+    conn.commit()
+    conn.close()
+    await message.answer("♻️ ነጥብ በሙሉ ወደ 0 ተመልሷል።")
 
-@dp.message_handler(commands=['hoo'])
-async def show_muted(message: types.Message):
-    gid = message.chat.id
-    muted_users = group_data.get(gid, {}).get("muted", {})
-    if not muted_users:
-        await message.answer("የታገደ ሰው የለም።")
-    else:
-        text = "🚫 **የታገዱ ተሳታፊዎች፦**\n"
-        for uid, time in muted_users.items():
-            text += f"- User {uid} (እስከ {time})\n"
-        await message.answer(text)
-
-# --- የማገጃ ስርአት (Admin Commands Protection) ---
-@dp.message_handler(lambda m: any(m.text.startswith(c) for c in ['/', 'History_srm']))
-async def protect_admin_commands(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
-        gid = message.chat.id
+# --- MUTE LOGIC (17 MINUTES) ---
+@dp.message_handler(lambda msg: msg.reply_to_message and not msg.text.startswith('/'))
+async def admin_action(message: types.Message):
+    if message.from_id in ADMIN_IDS: return # አድሚን አይታገድም
+    
+    # አድሚን ያልሆነ ሰው የአድሚን መልዕክት ከነካ
+    if message.reply_to_message.from_id in ADMIN_IDS:
         until = datetime.now() + timedelta(minutes=17)
-        group_data[gid]["muted"][message.from_user.id] = until
-        await bot.restrict_chat_member(gid, message.from_user.id, until_date=until)
-        await message.reply("⚠️ **ማስጠንቀቂያ!** የአድሚን ትዕዛዝ ስለነካህ ለ 17 ደቂቃ ታግደሃል።")
+        conn = sqlite3.connect(DATABASE_NAME)
+        conn.execute("UPDATE users SET muted_until = ? WHERE user_id = ?", (until.isoformat(), message.from_id))
+        conn.commit()
+        conn.close()
+        await message.answer(f"⚠️ {message.from_user.full_name} የአድሚን ትዕዛዝ ስለነካህ ለ 17 ደቂቃ ታግደሃል!")
 
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+executor.start_polling(dp, skip_updates=True)
