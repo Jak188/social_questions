@@ -18,7 +18,7 @@ def keep_alive(): Thread(target=run).start()
 
 # --- CONFIGURATION ---
 # ቶከኑን ከ Render Environment Variable ያነባል (ለደህንነትና ለስህተት መፍትሄ)
-TOKEN = os.getenv("BOT_TOKEN", "8256328585:AAFRcSR0pxfHIyVrJQGpUIrbOOQ7gIcY0cE")
+TOKEN = os.getenv("BOT_TOKEN", "8256328585:AAGkPPO98FP4O3LgTAc5-nki_PUkrYpowoY")
 ADMIN_IDS = [7231324244, 8394878208]
 
 # --- DATABASE SETUP ---
