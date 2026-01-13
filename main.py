@@ -60,6 +60,10 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_name = ans.user.first_name
 
     async with aiosqlite.connect('quiz_bot.db') as db:
+        async with db.execute("SELECT muted_until FROM users WHERE user_id = ?", (user_id,)) as cursor:
+            row = await cursor.fetchone()
+            if row and row[0] and datetime.now() < datetime.fromisoformat(row[0]): return
+
         async with db.execute("SELECT correct_option, first_done, chat_id FROM active_polls WHERE poll_id = ?", (ans.poll_id,)) as cursor:
             poll_data = await cursor.fetchone()
     
@@ -72,7 +76,6 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             async with aiosqlite.connect('quiz_bot.db') as db:
                 await db.execute("UPDATE active_polls SET first_done = 1 WHERE poll_id = ?", (ans.poll_id,))
                 await db.commit()
-            # Rule 3: የቀዳሚ አሸናፊ ማስታወቂያ
             await context.bot.send_message(chat_id, f"🏆 እንኳን ደስ አለዎት {user_name}! ቀድመው በትክክል በመመለስዎ 8 ነጥብ አግኝተዋል።")
         else:
             points = 4
@@ -84,22 +87,41 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await db.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (points, user_id))
         await db.commit()
 
-# --- ADMIN COMMANDS ---
-async def start2_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    chat_id = update.effective_chat.id
+# --- COMMANDS ---
+async def start_private(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if update.effective_chat.type == "private":
+        if user.id in ADMIN_IDS:
+            await update.message.reply_text("ሰላም አድሚን! ስራዎን መቀጠል ይችላሉ።")
+            return
+        async with aiosqlite.connect('quiz_bot.db') as db:
+            await db.execute("INSERT OR IGNORE INTO users (user_id, username) VALUES (?, ?)", (user.id, user.first_name))
+            await db.commit()
+        for admin in ADMIN_IDS:
+            await context.bot.send_message(admin, f"👤 አዲስ ምዝገባ:\nስም: {user.first_name}\nID: `{user.id}`\nለማጽደቅ: `/approve {user.id}`")
+        await update.message.reply_text("የምዝገባ ጥያቄዎ ለአድሚን ተልኳል፤ ሲፈቀድልዎ ጥያቄዎች ይደርሱዎታል።")
 
-    if user_id not in ADMIN_IDS:
-        # Rule 14: ቅጣት (ክብር ባለው አገላለጽ)
+async def approve(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS: return
+    try:
+        target_id = int(context.args[0])
+        async with aiosqlite.connect('quiz_bot.db') as db:
+            await db.execute("UPDATE users SET status = 'approved' WHERE user_id = ?", (target_id,))
+            await db.commit()
+        context.job_queue.run_repeating(send_quiz, 240, 5, chat_id=target_id, name=str(target_id))
+        await update.message.reply_text(f"✅ ተጠቃሚ {target_id} ጸድቀዋል፤ ጥያቄዎች መላክ ተጀምሯል።")
+    except: await update.message.reply_text("ID በትክክል ያስገቡ።")
+
+async def start2_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS:
         until = (datetime.now() + timedelta(minutes=17)).isoformat()
         async with aiosqlite.connect('quiz_bot.db') as db:
-            await db.execute("UPDATE users SET points = points - 3.17, muted_until = ? WHERE user_id = ?", (until, user_id))
+            await db.execute("UPDATE users SET points = points - 3.17, muted_until = ? WHERE user_id = ?", (until, update.effective_user.id))
             await db.commit()
         await update.message.reply_text(f"⚠️ {update.effective_user.first_name} የአድሚን ትዕዛዝ በመንካትዎ 3.17 ነጥብ ተቀንሶብዎታል፤ ለ 17 ደቂቃም ታግደዋል።")
         return
-
-    context.job_queue.run_repeating(send_quiz, 240, 5, chat_id, name=str(chat_id))
-    await update.message.reply_text("📣 ውድድሩ በይፋ ተጀምሯል! በየ 4 ደቂቃው ጥያቄዎች ይቀርባሉ። መልካም ዕድል!")
+    context.job_queue.run_repeating(send_quiz, 240, 5, chat_id=update.effective_chat.id, name=str(update.effective_chat.id))
+    await update.message.reply_text("🔔 ውድድሩ በይፋ ተጀምሯል! የመጀመሪያው ጥያቄ አሁን ይቀርባል። መልካም ዕድል!")
 
 async def stop2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
@@ -113,24 +135,13 @@ async def stop2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(res)
 
 async def rank2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Rule 2: ደረጃ ለማየት ብቻ (ውድድሩ አይቆምም)
     async with aiosqlite.connect('quiz_bot.db') as db:
         async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 10") as cursor:
             rows = await cursor.fetchall()
     res = "📊 ወቅታዊ የደረጃ ሰንጠረዥ፦\n" + "\n".join([f"{i+1}. {r[0]}: {r[1]} ነጥብ" for i, r in enumerate(rows)])
     await update.message.reply_text(res)
 
-async def un_mute2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Rule 19: እገዳ ማንሳት
-    if update.effective_user.id not in ADMIN_IDS or not update.message.reply_to_message: return
-    target = update.message.reply_to_message.from_user
-    async with aiosqlite.connect('quiz_bot.db') as db:
-        await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (target.id,))
-        await db.commit()
-    await update.message.reply_text(f"✅ {target.first_name} ተለቅቀዋል፤ ማስጠንቀቂያ ተሰጥቷቸዋል።")
-
 async def mute2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Rule 21: ማገድ
     if update.effective_user.id not in ADMIN_IDS or not update.message.reply_to_message: return
     target = update.message.reply_to_message.from_user
     until = (datetime.now() + timedelta(minutes=17)).isoformat()
@@ -139,15 +150,33 @@ async def mute2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await db.commit()
     await update.message.reply_text(f"🚫 {target.first_name} ለ 17 ደቂቃ ታግደዋል።")
 
+async def un_mute2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS or not update.message.reply_to_message: return
+    target = update.message.reply_to_message.from_user
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (target.id,))
+        await db.commit()
+    await update.message.reply_text(f"✅ {target.first_name} ተለቀዋል፤ ማስጠንቀቂያ ተሰጥቷቸዋል።")
+
+async def clear_rank2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS: return
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        await db.execute("UPDATE users SET points = 0")
+        await db.commit()
+    await update.message.reply_text("🧹 ሁሉም ነጥቦች ተሰርዘዋል።")
+
 def main():
     asyncio.get_event_loop().run_until_complete(init_db())
     app_bot = Application.builder().token(TOKEN).build()
     
+    app_bot.add_handler(CommandHandler("start", start_private))
     app_bot.add_handler(CommandHandler("start2", start2_group))
+    app_bot.add_handler(CommandHandler("approve", approve))
     app_bot.add_handler(CommandHandler("stop2", stop2_cmd))
     app_bot.add_handler(CommandHandler("rank2", rank2_cmd))
-    app_bot.add_handler(CommandHandler("un_mute2", un_mute2_cmd))
     app_bot.add_handler(CommandHandler("mute2", mute2_cmd))
+    app_bot.add_handler(CommandHandler("un_mute2", un_mute2_cmd))
+    app_bot.add_handler(CommandHandler("clear_rank2", clear_rank2))
     app_bot.add_handler(CommandHandler(["History_srm2", "Geography_srm2", "Mathematics_srm2", "English_srm"], start2_group))
     
     app_bot.add_handler(PollAnswerHandler(receive_answer))
