@@ -16,7 +16,7 @@ def home(): return "Bot is Online!"
 def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run).start()
 
-TOKEN = os.getenv("BOT_TOKEN", "8256328585:AAFRcSR0pxfHIyVrJQGpUIrbOOQ7gIcY0cE")
+TOKEN = os.getenv("BOT_TOKEN", "8256328585:AAHTvHxxChdIohofHdDcrOeTN1iEbWcx9QI")
 ADMIN_IDS = [7231324244, 8394878208]
 
 async def init_db():
