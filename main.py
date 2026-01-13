@@ -1,15 +1,15 @@
 import os
-import logging
+import json
 import asyncio
 import random
 import aiosqlite
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask
 from threading import Thread
 from telegram import Update, Poll
 from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes
 
-# --- Render እንዳይዘጋ (Flask Server) ---
+# --- Flask Server ---
 app = Flask('')
 @app.route('/')
 def home(): return "Bot is Online!"
@@ -17,99 +17,132 @@ def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run).start()
 
 # --- CONFIGURATION ---
-# ቶከኑን ከ Render Environment Variable ያነባል
-TOKEN = os.getenv("BOT_TOKEN", "8256328585:AAHTvHxxChdIohofHdDcrOeTN1iEbWcx9QI")
+TOKEN = os.getenv("BOT_TOKEN", "8256328585:AAFRcSR0pxfHIyVrJQGpUIrbOOQ7gIcY0cE")
 ADMIN_IDS = [7231324244, 8394878208]
 
 # --- DATABASE SETUP ---
 async def init_db():
     async with aiosqlite.connect('quiz_bot.db') as db:
         await db.execute('''CREATE TABLE IF NOT EXISTS users 
-                            (user_id INTEGER PRIMARY KEY, username TEXT, points REAL DEFAULT 0)''')
+                            (user_id INTEGER PRIMARY KEY, username TEXT, points REAL DEFAULT 0, muted_until TEXT)''')
         await db.execute('''CREATE TABLE IF NOT EXISTS active_polls 
-                            (poll_id TEXT PRIMARY KEY, correct_option INTEGER, chat_id INTEGER, first_winner TEXT, explanation TEXT)''')
+                            (poll_id TEXT PRIMARY KEY, correct_option INTEGER, chat_id INTEGER, explanation TEXT)''')
         await db.commit()
 
-async def update_user_points(user_id, points, username):
+# --- JSON LOAD ---
+def load_questions():
+    try:
+        with open('questions.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"JSON Error: {e}")
+        return {}
+
+# --- HELPERS ---
+async def is_muted(user_id):
     async with aiosqlite.connect('quiz_bot.db') as db:
-        await db.execute("INSERT OR IGNORE INTO users (user_id, username) VALUES (?, ?)", (user_id, username))
-        await db.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (points, user_id))
-        await db.commit()
+        async with db.execute("SELECT muted_until FROM users WHERE user_id = ?", (user_id,)) as cursor:
+            row = await cursor.fetchone()
+            if row and row[0]:
+                until = datetime.fromisoformat(row[0])
+                if datetime.now() < until: return True
+    return False
 
 # --- QUIZ LOGIC ---
-async def start_quiz(context: ContextTypes.DEFAULT_TYPE):
-    job = context.job
-    questions = [
-        {"q": "[Maths] (10 x 10) + 50 ስንት ነው?", "o": ["100", "150", "200"], "c": 1, "e": "10x10=100 ነው። 100+50 ደግሞ 150 ይሆናል።"},
-        {"q": "[Biology] የሰው ልጅ ስንት ኩላሊት አለው?", "o": ["1", "2", "3"], "c": 1, "e": "ጤነኛ ሰው 2 ኩላሊቶች አሉት።"},
-        {"q": "[History] አድዋ የት ሀገር ይገኛል?", "o": ["ኢትዮጵያ", "ሱዳን", "ኬንያ"], "c": 0, "e": "አድዋ በኢትዮጵያ ትግራይ ክልል ይገኛል።"}
-    ]
-    q = random.choice(questions)
+async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
+    subject = context.job.data['subject']
+    chat_id = context.job.chat_id
+    questions = load_questions()
     
+    if subject not in questions or not questions[subject]:
+        await context.bot.send_message(chat_id, f"⚠️ የ {subject} ጥያቄዎች በፋይሉ ውስጥ አልተገኙም!")
+        return
+
+    q = random.choice(questions[subject])
     message = await context.bot.send_poll(
-        job.chat_id, q['q'], q['o'], 
-        is_anonymous=False, type=Poll.QUIZ, correct_option_id=q['c'],
-        explanation=q['e'] 
+        chat_id, q['q'], q['o'], is_anonymous=False, 
+        type=Poll.QUIZ, correct_option_id=q['c'], explanation=q['e']
     )
-    
     async with aiosqlite.connect('quiz_bot.db') as db:
-        await db.execute("INSERT INTO active_polls VALUES (?, ?, ?, NULL, ?)", (message.poll.id, q['c'], job.chat_id, q['e']))
+        await db.execute("INSERT INTO active_polls VALUES (?, ?, ?, ?)", (message.poll.id, q['c'], chat_id, q['e']))
         await db.commit()
 
-async def receive_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    answer = update.poll_answer
-    user_id = answer.user_id
-    user_name = update.effective_user.first_name if update.effective_user else "ተሳታፊ"
-    
+async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    ans = update.poll_answer
+    if await is_muted(ans.user_id): return
+
     async with aiosqlite.connect('quiz_bot.db') as db:
-        async with db.execute("SELECT correct_option, first_winner, chat_id, explanation FROM active_polls WHERE poll_id = ?", (answer.poll_id,)) as cursor:
+        async with db.execute("SELECT correct_option, chat_id FROM active_polls WHERE poll_id = ?", (ans.poll_id,)) as cursor:
             poll_data = await cursor.fetchone()
     
-    if not poll_data: return
-    correct_idx, first_winner, chat_id, explanation = poll_data
+    if poll_data and ans.option_ids[0] == poll_data[0]:
+        user_name = update.effective_user.first_name if update.effective_user else "ተሳታፊ"
+        async with aiosqlite.connect('quiz_bot.db') as db:
+            await db.execute("INSERT OR IGNORE INTO users (user_id, username) VALUES (?, ?)", (ans.user_id, user_name))
+            await db.execute("UPDATE users SET points = points + 8 WHERE user_id = ?", (ans.user_id,))
+            await db.commit()
 
-    if answer.option_ids[0] == correct_idx:
-        if first_winner is None:
-            await update_user_points(user_id, 8, user_name)
-            async with aiosqlite.connect('quiz_bot.db') as db:
-                await db.execute("UPDATE active_polls SET first_winner = ? WHERE poll_id = ?", (user_name, answer.poll_id))
-                await db.commit()
-            await context.bot.send_message(chat_id, f"🥇 {user_name} ቀድሞ በመመለስ 8 ነጥብ አገኘ!\n💡 ማብራሪያ፡ {explanation}")
-        else:
-            await update_user_points(user_id, 4, user_name)
-    else:
-        await update_user_points(user_id, 1.5, user_name)
-
-# --- COMMANDS ---
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# --- ADMIN COMMANDS ---
+async def start_quiz_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
-    chat_id = update.effective_chat.id
-    # በየ 4 ደቂቃው ጥያቄ እንዲልክ ያዛል
-    context.job_queue.run_repeating(start_quiz, interval=240, first=1, chat_id=chat_id, name=str(chat_id))
-    await update.message.reply_text("🚀 ውድድሩ ተጀመረ! (በየ 4 ደቂቃው ጥያቄ ይላካል)")
+    cmd = update.message.text.split('_')[0][1:]
+    context.job_queue.run_repeating(send_quiz, interval=240, first=1, chat_id=update.effective_chat.id, data={'subject': cmd}, name=str(update.effective_chat.id))
+    await update.message.reply_text(f"🚀 የ {cmd} ውድድር ተጀመረ!")
 
-async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def stop2(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
-    chat_id = update.effective_chat.id
-    jobs = context.job_queue.get_jobs_by_name(str(chat_id))
+    jobs = context.job_queue.get_jobs_by_name(str(update.effective_chat.id))
     for job in jobs: job.schedule_removal()
     await update.message.reply_text("🏁 ውድድሩ ቆሟል።")
 
+async def mute_user_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS or not update.message.reply_to_message: return
+    until = (datetime.now() + timedelta(minutes=17)).isoformat()
+    target = update.message.reply_to_message.from_user
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        await db.execute("INSERT OR IGNORE INTO users (user_id, username) VALUES (?, ?)", (target.id, target.first_name))
+        await db.execute("UPDATE users SET muted_until = ? WHERE user_id = ?", (until, target.id))
+        await db.commit()
+    await update.message.reply_text(f"🚫 {target.first_name} ለ 17 ደቂቃ ታግዷል።")
+
+async def un_mute_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS or not update.message.reply_to_message: return
+    target = update.message.reply_to_message.from_user
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (target.id,))
+        await db.commit()
+    await update.message.reply_text(f"✅ {target.first_name} እገዳው ተነስቷል።")
+
+async def rank2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 10") as cursor:
+            rows = await cursor.fetchall()
+    text = "🏆 **ደረጃ (Rank):**\n"
+    for i, r in enumerate(rows): text += f"{i+1}. {r[0]}: {r[1]} ነጥብ\n"
+    await update.message.reply_text(text)
+
+async def clear_rank(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id not in ADMIN_IDS: return
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        await db.execute("UPDATE users SET points = 0")
+        await db.commit()
+    await update.message.reply_text("🧹 ነጥብ በሙሉ ተሰርዟል።")
+
 # --- MAIN ---
 def main():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(init_db())
+    asyncio.get_event_loop().run_until_complete(init_db())
+    application = Application.builder().token(TOKEN).build()
     
-    # እዚህ ጋር .job_queue(True) መጨመሩን እርግጠኛ ሁን
-    application = Application.builder().token(TOKEN).job_queue(True).build()
+    application.add_handler(CommandHandler(["History_srm", "Geography_srm", "Mathematics_srm", "English_srm"], start_quiz_cmd))
+    application.add_handler(CommandHandler("stop2", stop2))
+    application.add_handler(CommandHandler("rank2", rank2))
+    application.add_handler(CommandHandler("clear_rank", clear_rank))
+    application.add_handler(CommandHandler("un_mute", un_mute_cmd))
+    # ማሳሰቢያ፡ Mute ለማድረግ በቀጥታ Mute የሚል ኮማንድ የለህም፣ ነገር ግን /un_mute ጋር ተመሳሳይ በሆነ መንገድ /mute የሚል ብትጨምር ይሻላል
     
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("stop", stop))
-    application.add_handler(PollAnswerHandler(receive_poll_answer))
+    application.add_handler(PollAnswerHandler(receive_answer))
     
     keep_alive()
-    print("Bot is starting...")
     application.run_polling()
 
 if __name__ == '__main__':
