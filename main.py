@@ -9,7 +9,7 @@ from threading import Thread
 from telegram import Update, Poll
 from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes
 
-# --- 1. Flask Server (Uptime) ---
+# --- 1. Flask Server (Render ላይ ቦቱ እንዳይጠፋ) ---
 app = Flask('')
 @app.route('/')
 def home(): return "Bot is Online!"
@@ -33,13 +33,14 @@ async def init_db():
 # --- 4. Helpers ---
 def load_questions(subject=None):
     try:
+        if not os.path.exists('questions.json'): return []
         with open('questions.json', 'r', encoding='utf-8') as f:
             all_q = json.load(f)
             if subject:
                 return [q for q in all_q if q.get('subject', '').lower() == subject.lower()]
             return all_q
     except Exception as e:
-        print(f"File Error: {e}")
+        print(f"JSON Error: {e}")
         return []
 
 async def get_user_data(user_id):
@@ -50,20 +51,25 @@ async def get_user_data(user_id):
 # --- 5. Quiz Logic ---
 async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
     job = context.job
-    questions = load_questions(job.data.get('subject'))
-    if not questions: return
+    chat_id = job.chat_id
+    subject = job.data.get('subject')
+    questions = load_questions(subject)
     
+    if not questions:
+        await context.bot.send_message(chat_id, f"❌ ለ '{subject if subject else 'ጠቅላላ'}' የሚሆኑ ጥያቄዎች አልተገኙም!")
+        return
+
     q = random.choice(questions)
     try:
         msg = await context.bot.send_poll(
-            job.chat_id, f"[{q.get('subject', 'ጠቅላላ')}] {q['q']}", q['o'], 
-            is_anonymous=False, type=Poll.QUIZ, correct_option_id=q['c'], explanation=q.get('exp', '')
+            chat_id, f"[{q.get('subject', 'ጠቅላላ')}] {q['q']}", q['o'], 
+            is_anonymous=False, type=Poll.QUIZ, correct_option_id=int(q['c']), explanation=q.get('exp', '')
         )
         async with aiosqlite.connect('quiz_bot.db') as db:
-            await db.execute("INSERT INTO active_polls VALUES (?, ?, ?, 0)", (msg.poll.id, q['c'], job.chat_id))
+            await db.execute("INSERT INTO active_polls VALUES (?, ?, ?, 0)", (msg.poll.id, int(q['c']), chat_id))
             await db.commit()
     except Exception as e:
-        print(f"Poll Send Error: {e}")
+        print(f"Poll Error: {e}")
 
 async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ans = update.poll_answer
@@ -79,25 +85,22 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if not poll_data: return
     correct_idx, first_done, chat_id = poll_data
-    
-    points = 0
-    if ans.option_ids[0] == correct_idx:
-        if first_done == 0:
-            points = 8
-            async with aiosqlite.connect('quiz_bot.db') as db:
-                await db.execute("UPDATE active_polls SET first_done = 1 WHERE poll_id = ?", (ans.poll_id,))
-                await db.commit()
-            await context.bot.send_message(chat_id, f"🏆 እንኳን ደስ አለዎት {ans.user.first_name}! ቀድመው በመመለስዎ 8 ነጥብ አግኝተዋል።")
-        else: points = 4
-    else: points = 1.5
+    points = 8 if (ans.option_ids[0] == correct_idx and first_done == 0) else (4 if ans.option_ids[0] == correct_idx else 1.5)
+
+    if points == 8:
+        async with aiosqlite.connect('quiz_bot.db') as db:
+            await db.execute("UPDATE active_polls SET first_done = 1 WHERE poll_id = ?", (ans.poll_id,))
+            await db.commit()
+        await context.bot.send_message(chat_id, f"🏆 እንኳን ደስ አለዎት {ans.user.first_name}! ቀድመው በመመለስዎ 8 ነጥብ አግኝተዋል።")
 
     async with aiosqlite.connect('quiz_bot.db') as db:
         await db.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (points, user_id))
         await db.commit()
 
-# --- 6. Command Handlers ---
+# --- 6. Commands ---
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
+    chat_id = update.effective_chat.id
     chat_type = update.effective_chat.type
     user_data = await get_user_data(user.id)
 
@@ -108,11 +111,11 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.commit()
             await update.message.reply_text(f"👋 ሰላም {user.first_name}!\nየምዝገባ ጥያቄዎ **በሂደት ላይ** ነው። እባክዎ የአድሚኑን **ማረጋገጫ** እስኪያገኙ ድረስ በትዕግስት ይጠብቁ።")
             for admin in ADMIN_IDS:
-                try: await context.bot.send_message(admin, f"👤 **አዲስ ምዝገባ**\nስም: {user.first_name}\nID: `{user.id}`\nለማጽደቅ: `/approve {user.id}`")
+                try: await context.bot.send_message(admin, f"👤 **አዲስ ምዝገባ**\nስም: {user.first_name}\nID: `{user.id}`\nማጽደቅ: `/approve {user.id}`")
                 except: pass
             return
         elif user_data[2] == 1:
-            await update.message.reply_text("🚫 ውድ ተጠቃሚ... ባልታወቀ ምክንያት ለጊዜው መጠቀም አይችሉም። እባክዎ @penguiner ን ያነጋግሩ።")
+            await update.message.reply_text("🚫 ውድ ተጠቃሚ... ለጊዜው መጠቀም አይችሉም። @penguiner ን ያነጋግሩ።")
             return
         elif user_data[3] == 'pending':
             await update.message.reply_text("⏳ የምዝገባ ጥያቄዎ ገና **በሂደት ላይ** ነው። እባክዎ የአድሚኑን **ማረጋገጫ** ይጠብቁ።")
@@ -131,11 +134,11 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     subject = cmd.split('_')[0] if "_" in cmd else None
     if subject == "start2": subject = None
 
-    jobs = context.job_queue.get_jobs_by_name(str(update.effective_chat.id))
+    jobs = context.job_queue.get_jobs_by_name(str(chat_id))
     for j in jobs: j.schedule_removal()
     
-    context.job_queue.run_repeating(send_quiz, 240, 5, update.effective_chat.id, data={'subject': subject}, name=str(update.effective_chat.id))
-    await update.message.reply_text(f"🔔 የ{subject if subject else 'ሁሉም'} ትምህርቶች ውድድር ተጀምሯል!")
+    context.job_queue.run_repeating(send_quiz, interval=240, first=5, chat_id=chat_id, data={'subject': subject}, name=str(chat_id))
+    await update.message.reply_text(f"🚀 የ{subject if subject else 'ሁሉም'} ውድድር ተጀምሯል! የመጀመሪያው ጥያቄ ከ5 ሰከንድ በኋላ ይላካል።")
 
 async def approve_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
@@ -147,24 +150,23 @@ async def approve_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try: await context.bot.send_message(tid, "🎉 እንኳን ደስ አለዎት! የምዝገባ ጥያቄዎ **ተቀባይነት አግኝቷል**። አሁን በውድድሩ መሳተፍ ይችላሉ!")
         except: pass
         await update.message.reply_text(f"✅ ተጠቃሚ {tid} **ተቀባይነት አግኝተዋል።**")
-    except: await update.message.reply_text("ID በትክክል ያስገቡ።")
+    except: await update.message.reply_text("ID ያስገቡ።")
+
+async def rank2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async with aiosqlite.connect('quiz_bot.db') as db:
+        async with db.execute("SELECT username, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 10") as cursor:
+            rows = await cursor.fetchall()
+    res = "📊 ወቅታዊ የደረጃ ሰንጠረዥ፦\n" + "\n".join([f"{i+1}. {r[0]}: {r[1]} ነጥብ" for i, r in enumerate(rows)]) if rows else "📊 እስካሁን ነጥብ የለም።"
+    await update.message.reply_text(res)
 
 async def stop2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
     jobs = context.job_queue.get_jobs_by_name(str(update.effective_chat.id))
     if jobs:
         for j in jobs: j.schedule_removal()
-        await update.message.reply_text("🏁 ውድድሩ ተቋርጧል።")
+        await update.message.reply_text("🏁 ውድድሩ ተቋርጧል። የመጨረሻው ውጤት፦")
         await rank2_cmd(update, context)
-    else:
-        await update.message.reply_text("❌ የሚቆም ንቁ ውድድር የለም።")
-
-async def rank2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    async with aiosqlite.connect('quiz_bot.db') as db:
-        async with db.execute("SELECT username, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 10") as cursor:
-            rows = await cursor.fetchall()
-    res = "📊 የደረጃ ሰንጠረዥ፦\n" + "\n".join([f"{i+1}. {r[0]}: {r[1]} ነጥብ" for i, r in enumerate(rows)]) if rows else "📊 እስካሁን ነጥብ የለም።"
-    await update.message.reply_text(res)
+    else: await update.message.reply_text("❌ የሚቆም ውድድር የለም።")
 
 async def hoo2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
@@ -187,7 +189,7 @@ async def block_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         async with aiosqlite.connect('quiz_bot.db') as db:
             await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (tid,))
             await db.commit()
-        try: await context.bot.send_message(tid, "🚫 ለጊዜው መጠቀም አይችሉም። @penguiner ን ያነጋግሩ።")
+        try: await context.bot.send_message(tid, "🚫 ባልታወቀ ምክንያት ለጊዜው መጠቀም አይችሉም። @penguiner ን ያነጋግሩ።")
         except: pass
         await update.message.reply_text(f"🚫 ተጠቃሚ {tid} ታግደዋል።")
     except: await update.message.reply_text("ID ያስገቡ።")
@@ -199,7 +201,7 @@ async def unblock_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         async with aiosqlite.connect('quiz_bot.db') as db:
             await db.execute("UPDATE users SET is_blocked = 0 WHERE user_id = ?", (tid,))
             await db.commit()
-        try: await context.bot.send_message(tid, "🎉 እገዳዎ ተነስቷል። አሁን መጠቀም ይችላሉ።")
+        try: await context.bot.send_message(tid, "🎉 እገዳዎ ተነስቷል! አሁን መሳተፍ ይችላሉ።")
         except: pass
         await update.message.reply_text(f"✅ ተጠቃሚ {tid} እገዳ ተነስቷል።")
     except: await update.message.reply_text("ID ያስገቡ።")
@@ -209,7 +211,7 @@ async def clear_rank2(update: Update, context: ContextTypes.DEFAULT_TYPE):
     async with aiosqlite.connect('quiz_bot.db') as db:
         await db.execute("UPDATE users SET points = 0")
         await db.commit()
-    await update.message.reply_text("🧹 ነጥቦች ተሰርዘዋል።")
+    await update.message.reply_text("🧹 ሁሉም ነጥቦች ተሰርዘዋል።")
 
 # --- 7. Main Function ---
 def main():
@@ -227,7 +229,10 @@ def main():
     app_bot.add_handler(CommandHandler("clear_rank2", clear_rank2))
     
     app_bot.add_handler(PollAnswerHandler(receive_answer))
+    
     keep_alive()
+    print("Bot is running...")
     app_bot.run_polling()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()
