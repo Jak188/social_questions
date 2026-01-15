@@ -9,7 +9,7 @@ from threading import Thread
 from telegram import Update, Poll
 from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes
 
-# --- 1. Flask Server ---
+# --- 1. Flask Server (Render ላይ ቦቱ እንዳይጠፋ) ---
 app = Flask('')
 @app.route('/')
 def home(): return "Bot is Online!"
@@ -106,7 +106,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.execute("INSERT INTO users (user_id, username, status, last_active) VALUES (?, ?, 'pending', ?)", 
                                  (user.id, user.first_name, datetime.now().isoformat()))
                 await db.commit()
-            await update.message.reply_text("👋 የምዝገባ ጥያቄዎ በሂደት ላይ ነው። እባክዎ ማረጋገጫ ይጠብቁ።")
+            await update.message.reply_text("👋 ሰላም! የምዝገባ ጥያቄዎ በሂደት ላይ ነው። እባክዎ ማረጋገጫ ይጠብቁ።")
             for admin in ADMIN_IDS:
                 await context.bot.send_message(admin, f"🔔 አዲስ ተመዝጋቢ: {user.first_name} ({user.id})\nለማጽደቅ: `/approve {user.id}`")
             return
@@ -205,7 +205,7 @@ async def block_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         async with aiosqlite.connect('quiz_bot.db') as db:
             await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (tid,))
             await db.commit()
-        await context.bot.send_message(tid, "🚫 በቋሚነት ታግደዋል።")
+        await context.bot.send_message(tid, "🚫 በቋሚነት ታግደዋል። ለዝርዝር መረጃ @penguiner ን ያነጋግሩ።")
         await update.message.reply_text(f"🚫 {tid} ታግዷል።")
     except: pass
 
@@ -216,7 +216,7 @@ async def unblock_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         async with aiosqlite.connect('quiz_bot.db') as db:
             await db.execute("UPDATE users SET is_blocked = 0 WHERE user_id = ?", (tid,))
             await db.commit()
-        await context.bot.send_message(tid, "✅ እገዳዎ ተነስቷል።")
+        await context.bot.send_message(tid, "✅ እገዳዎ ተነስቷል። አሁን መሳተፍ ይችላሉ።")
         await update.message.reply_text(f"✅ {tid} እገዳ ተነስቷል።")
     except: pass
 
@@ -247,12 +247,12 @@ def main():
     app_bot.add_handler(CommandHandler("oppt", oppt_cmd))
     app_bot.add_handler(CommandHandler("opptt", opptt_cmd))
     app_bot.add_handler(CommandHandler("kop", kop_cmd))
-    app_bot.add_handler(CommandHandler("hog", hog_cmd))
+    app_bot.add_handler(CommandHandler("hog", hog_count_cmd if 'hog_count_cmd' in locals() else hog_cmd))
     app_bot.add_handler(CommandHandler("rank2", rank2_cmd))
     app_bot.add_handler(CommandHandler("block", block_cmd))
     app_bot.add_handler(CommandHandler("unblock", unblock_cmd))
     app_bot.add_handler(CommandHandler("clear_rank2", clear_rank2))
-    app_bot.add_handler(CommandHandler("stop2", lambda u,c: [j.schedule_removal() for j in c.job_queue.get_jobs_by_name(str(u.effective_chat.id))] or u.message.reply_text("🏁 ቆሟል።")))
+    app_bot.add_handler(CommandHandler("stop2", lambda u,c: [j.schedule_removal() for j in c.job_queue.get_jobs_by_name(str(u.effective_chat.id))] or u.message.reply_text("🏁 ውድድሩ ቆሟል።")))
     
     app_bot.add_handler(PollAnswerHandler(receive_answer))
     
