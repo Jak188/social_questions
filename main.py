@@ -9,7 +9,7 @@ from threading import Thread
 from telegram import Update, Poll
 from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes, MessageHandler, filters
 
-# --- 1. Flask Server (Keep Alive) ---
+# --- 1. Flask Server (Render ላይ ቦቱ እንዳይዘጋ) ---
 app = Flask('')
 @app.route('/')
 def home(): return "Bot is Online!"
@@ -97,7 +97,7 @@ async def quiz_control(update: Update, context: ContextTypes.DEFAULT_TYPE):
     subject = sub_map.get(cmd)
     
     chat_id = update.effective_chat.id
-    # Job ማጽዳት (TypeError የፈጠረውን ክፍል ያስተካክላል)
+    # Job ማጽዳት
     current_jobs = context.job_queue.get_jobs_by_name(str(chat_id))
     for job in current_jobs:
         job.schedule_removal()
@@ -152,17 +152,28 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # --- 7. Main ---
 def main():
-    asyncio.get_event_loop().run_until_complete(init_db())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(init_db())
+
     app_bot = Application.builder().token(TOKEN).build()
     
-    app_bot.add_handler(CommandHandler(["start", "rank2", "info2"], handle_start))
-    app_bot.add_handler(CommandHandler(["start2", "history_srm2", "geography_srm2", "mathematics_srm2", "english_srm2"], quiz_control))
+    # እዚህ ጋር ትዕዛዞቹን ለየብቻ በመጻፍ TypeError እንዳይመጣ ተደርጓል
+    app_bot.add_handler(CommandHandler("start", handle_start))
+    app_bot.add_handler(CommandHandler("rank2", handle_start))
+    app_bot.add_handler(CommandHandler("info2", handle_start))
+    app_bot.add_handler(CommandHandler("start2", quiz_control))
+    app_bot.add_handler(CommandHandler("history_srm2", quiz_control))
+    app_bot.add_handler(CommandHandler("geography_srm2", quiz_control))
+    app_bot.add_handler(CommandHandler("mathematics_srm2", quiz_control))
+    app_bot.add_handler(CommandHandler("english_srm2", quiz_control))
     app_bot.add_handler(CommandHandler("approve", approve_cmd))
     app_bot.add_handler(CommandHandler("stop2", stop2_cmd))
     
     app_bot.add_handler(PollAnswerHandler(receive_answer))
     
     keep_alive()
+    # Conflict ስህተቱን ለመፍታት drop_pending_updates የግድ ነው
     app_bot.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
