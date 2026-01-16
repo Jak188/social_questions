@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from flask import Flask
 from threading import Thread
 from telegram import Update, Poll
-from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes, MessageHandler, ChatMemberHandler, filters
 
 # --- Flask Server (Uptime) ---
 app = Flask('')
@@ -64,6 +64,7 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not p_data: return
         
         is_correct = (ans.option_ids[0] == p_data[0])
+        # 28. ነጥብ አሰጣጥ (8, 4, 1.5)
         points = 8 if (is_correct and p_data[1] == 0) else (4 if is_correct else 1.5)
         
         if is_correct and p_data[1] == 0:
@@ -71,21 +72,21 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_message(p_data[2], f"🏆 {ans.user.first_name} ቀድሞ በመመለስ 8 ነጥብ አግኝቷል!")
         
         await db.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (points, ans.user.id))
-        await db.execute("INSERT INTO logs VALUES (?, ?, ?, ?)", (ans.user.id, ans.user.first_name, "✅" if is_correct else "❌", datetime.now().strftime("%H:%M:%S")))
+        await db.execute("INSERT INTO logs (user_id, name, action, timestamp) VALUES (?, ?, ?, ?)", (ans.user.id, ans.user.first_name, "✅" if is_correct else "❌", datetime.now().strftime("%H:%M:%S")))
         await db.commit()
 
-# --- Core Handlers ---
+# --- Core Logic ---
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     chat = update.effective_chat
     u_data = await get_user(user.id)
 
-    # Global Block/Stop check (21)
-    if (GLOBAL_STOP or (u_data and u_data[4] == 1)) and user.id not in ADMIN_IDS:
+    # 21. Global Stop (oppt)
+    if GLOBAL_STOP and user.id not in ADMIN_IDS:
         await update.message.reply_text(f"ከአድሚን በመጣ ትእዛዝ መሰረት ለታወቀ ጊዜ ተቆጥቧል ለበለተ መረጃ {ADMIN_USERNAME} ን ያናግሩ")
         return
 
-    # Registration (1, 5, 6)
+    # 1, 5, 6. Registration
     if not u_data:
         async with aiosqlite.connect('quiz_bot.db') as db:
             await db.execute("INSERT INTO users (user_id, username, status) VALUES (?, ?, 'pending')", (user.id, user.first_name))
@@ -98,7 +99,11 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"ውድ ተማሪ {user.first_name} አድሚኑ ለጊዜው ቢዚ ነው ጥያቄዎ ተቀባይነት ሲያገኝ የምናሳውቅዎ ይሆናል እናመሰግናለን")
         return
 
-    # Security Rules (4, 29, 30)
+    if u_data[4] == 1:
+        await update.message.reply_text(f"ከአድሚን በመጣ ትእዛዝ መሰረት ለጊዜው ታግደዋል ለበለተ መረጃ {ADMIN_USERNAME} ን ያናግሩ")
+        return
+
+    # 4, 30. Group Rule & Mute
     cmd = update.message.text.split('@')[0].lower()
     if chat.type != "private" and user.id not in ADMIN_IDS:
         mute_to = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
@@ -108,17 +113,16 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"የህግ ጥሰት.. {user.first_name} የአድሚን ትእዛዝ በመንካትህ 3.17 ነጥብ ተቀንሶብሃል ለ17 ደቂቃ ታግደሃል")
         return
 
-    if chat.type == "private" and cmd not in ["/start2", "/stop2", "/history_srm2", "/geography_srm2", "/mathematics_srm2", "/english_srm2", "/rank2"] and user.id not in ADMIN_IDS:
+    # 29. Private security
+    if chat.type == "private" and cmd not in ["/start2", "/stop2", "/history_srm2", "/geography_srm2", "/mathematics_srm2", "/english_srm2", "/rank2", "/keep"] and user.id not in ADMIN_IDS:
         async with aiosqlite.connect('quiz_bot.db') as db:
             await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (user.id,))
             await db.commit()
         await update.message.reply_text(f"የህግ ጥሰት.. ለብቻህ በግል የተከለከለ ትእዛዝ በመጠቀክህ በቋሚነት ታግደሃል {ADMIN_USERNAME} ን ያናግሩ")
         return
 
-    # Quiz Starter Logic (10-14, 25, 31)
+    # 10-14, 31. Start Quiz
     sub = {"/history_srm2":"history", "/geography_srm2":"geography", "/mathematics_srm2":"mathematics", "/english_srm2":"english"}.get(cmd)
-    
-    # Notify Admin for Start
     n = datetime.now()
     inf = f"📢 ውድድር ተጀምሯል!\nበ: {user.first_name} (ID: {user.id})\nቦታ: {chat.title if chat.title else 'Private'}\nሰዓት: {n.strftime('%H:%M')} | ቀን: {n.strftime('%Y-%m-%d')}"
     for adm in ADMIN_IDS: await context.bot.send_message(adm, inf)
@@ -128,7 +132,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.job_queue.run_repeating(send_quiz, interval=240, first=1, chat_id=chat.id, data={'subject': sub, 'starter': user.first_name}, name=str(chat.id))
     await update.message.reply_text(f"🚀 የ{sub if sub else 'Random'} ውድድር ተጀመረ!")
 
-# --- Admin Controls ---
+# --- Admin Functions ---
 async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
     txt = update.message.text.split()
@@ -141,6 +145,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.execute("UPDATE users SET status = 'approved' WHERE user_id = ?", (target,))
             await db.commit()
             await context.bot.send_message(target, "✅ እንኳን ደስ አለዎት! ምዝገባዎ ተቀባይነት አግኝቷል መሳተፍ ይችላሉ።")
+            await update.message.reply_text(f"ተጠቃሚ {target} ጸድቋል")
         
         elif cmd == "anapprove" and target:
             await db.execute("DELETE FROM users WHERE user_id = ?", (target,))
@@ -159,7 +164,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("እገዳው ተነስቷል")
 
         elif cmd == "unmute" and update.message.reply_to_message:
-            await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (target,))
+            await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (update.message.reply_to_message.from_user.id,))
             await db.commit()
             await update.message.reply_text("🔊 ማስጠንቀቂያ እገዳው ተነስቷል በስነ ስርአት ይሳተፉ")
 
@@ -184,9 +189,13 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             async with db.execute("SELECT user_id, username FROM users") as c:
                 for r in await c.fetchall(): await context.bot.send_message(update.effective_chat.id, f"👤 {r[1]}\nID: `{r[0]}`")
         
+        elif cmd == "keep":
+            jobs = context.job_queue.jobs()
+            for j in jobs: await context.bot.send_message(update.effective_chat.id, f"🟢 ACTIVE\nID: {j.name}\nበ: {j.data.get('starter')}")
+
         elif cmd == "rank2":
             u = await get_user(update.effective_user.id)
-            await update.message.reply_text(f"📊 የእርስዎ ነጥብ: {u[2]}")
+            await update.message.reply_text(f"📊 የእርስዎ ነጥብ: {u[2] if u else 0}")
 
         elif cmd == "clear_rank2":
             await db.execute("UPDATE users SET points = 0")
@@ -196,19 +205,19 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif cmd == "log":
             async with db.execute("SELECT name, action, timestamp FROM logs ORDER BY timestamp DESC LIMIT 20") as c:
                 rows = await c.fetchall()
-                await update.message.reply_text("📜 Log:\n" + "\n".join([f"{r[3]} | {r[1]} {r[2]}" for r in rows]))
+                await update.message.reply_text("📜 Log:\n" + "\n".join([f"{r[2]} | {r[0]} {r[1]}" for r in rows]))
 
 async def status_notif(update: Update, context: ContextTypes.DEFAULT_TYPE):
     m = update.my_chat_member
     u = update.effective_user
-    txt = f"{'✅ ቦቱ አብርቷል' if m.new_chat_member.status == 'member' else '❌ ቦቱ አጥፍቷል'}...\nበ: {u.first_name} ({u.id})"
+    txt = f"{'✅ ቦቱ አብርቷል' if m.new_chat_member.status == 'member' else '❌ ቦቱ አጥፍቷል'}...\nበ: {u.first_name}"
     for adm in ADMIN_IDS: await context.bot.send_message(adm, txt)
 
 def main():
     asyncio.run(init_db())
     app_bot = Application.builder().token(TOKEN).build()
     app_bot.add_handler(CommandHandler(["start2", "history_srm2", "geography_srm2", "mathematics_srm2", "english_srm2"], start_handler))
-    app_bot.add_handler(CommandHandler(["approve", "anapprove", "block", "close", "unblock", "unmute", "stop2", "oppt", "opptt", "pin", "rank2", "clear_rank2", "log"], admin_ctrl))
+    app_bot.add_handler(CommandHandler(["approve", "anapprove", "block", "close", "unblock", "unmute", "stop2", "oppt", "opptt", "pin", "keep", "rank2", "clear_rank2", "log"], admin_ctrl))
     app_bot.add_handler(PollAnswerHandler(receive_answer))
     app_bot.add_handler(ChatMemberHandler(status_notif, ChatMemberHandler.MY_CHAT_MEMBER))
     keep_alive()
