@@ -9,7 +9,7 @@ from threading import Thread
 from telegram import Update, Poll
 from telegram.ext import Application, CommandHandler, PollAnswerHandler, ContextTypes, MessageHandler, filters
 
-# --- 1. Flask Server ---
+# --- 1. Flask Server (Render እንዳይዘጋው) ---
 app = Flask('')
 @app.route('/')
 def home(): return "Bot is Online!"
@@ -80,6 +80,7 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not poll_data: return
 
     is_correct = (ans.option_ids[0] == poll_data[0])
+    # Rule 28: የነጥብ አሰጣጥ (8, 4, 1.5)
     points = 8 if (is_correct and poll_data[1] == 0) else (4 if is_correct else -1.5)
 
     async with aiosqlite.connect('quiz_bot.db') as db:
@@ -89,18 +90,14 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.execute("UPDATE active_polls SET first_done = 1 WHERE poll_id = ?", (ans.poll_id,))
         await db.commit()
 
-# --- 6. Commands & Protection ---
+# --- 6. Command Logic ---
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     chat_type = update.effective_chat.type
     u_data = await get_user_data(user.id)
 
-    # Rule 2, 3, 5, 29: Private Chat Protection
+    # Rule 5: ምዝገባ
     if chat_type == "private":
-        if user.id in ADMIN_IDS:
-            await update.message.reply_text("✅ አድሚን ቦቱ ዝግጁ ነው።")
-            return
-        
         if not u_data:
             async with aiosqlite.connect('quiz_bot.db') as db:
                 await db.execute("INSERT INTO users (user_id, username, status) VALUES (?, ?, 'pending')", (user.id, user.first_name))
@@ -110,16 +107,16 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_message(admin, f"🔔 አዲስ ተመዝጋቢ: {user.first_name} ({user.id})\nማጽደቅ: `/approve {user.id}`")
             return
         
-        # Rule 29: Illegal command in private
-        valid_cmds = ['/start', '/rank2', '/info2']
-        if update.message.text.split()[0] not in valid_cmds:
+        # Rule 29: የግል ቻት ጥበቃ
+        valid_cmds = ['/start', '/rank2', '/info2', '/keep']
+        if update.message.text.split()[0] not in valid_cmds and user.id not in ADMIN_IDS:
             async with aiosqlite.connect('quiz_bot.db') as db:
                 await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (user.id,))
                 await db.commit()
             await update.message.reply_text(f"⚠️ የህግ ጥሰት! ያለ ፈቃድ ትዕዛዝ በመጠቀሞ ታግደዋል። {ADMIN_USER} ን ያነጋግሩ።")
             return
 
-    # Rule 4 & 30: Group Protection
+    # Rule 4 & 30: የግሩፕ ጥበቃ (ቅጣት)
     if chat_type != "private" and user.id not in ADMIN_IDS:
         mute_time = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
         async with aiosqlite.connect('quiz_bot.db') as db:
@@ -128,7 +125,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"⚠️ {user.first_name} ያለ አድሚን ትዕዛዝ በመንካትዎ 3.17 ነጥብ ተቀንሶ ለ17 ደቂቃ ታግደዋል።", reply_to_message_id=update.message.message_id)
         return
 
-    # Rule 10-14, 27: Quiz Start
+    # Rule 10-14 & 27: ውድድር ማስጀመሪያ
     cmd = update.message.text.split('@')[0][1:].lower()
     subs = {'history_srm2':'history', 'geography_srm2':'geography', 'mathematics_srm2':'mathematics', 'english_srm2':'english', 'start2':None}
     if cmd in subs or cmd == "start2":
@@ -136,84 +133,36 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         jobs = context.job_queue.get_jobs_by_name(str(update.effective_chat.id))
         for j in jobs: j.schedule_removal()
         context.job_queue.run_repeating(send_quiz, interval=240, first=5, chat_id=update.effective_chat.id, data={'subject': subject}, name=str(update.effective_chat.id))
-        await update.message.reply_text(f"🚀 የ{subject if subject else 'ጠቅላላ'} ውድድር ተጀመረ! (በየ 4 ደቂቃ)")
-        for admin in ADMIN_IDS: await context.bot.send_message(admin, f"📢 ቦቱ በ {update.effective_chat.title} በ {user.first_name} አማካኝነት ተነስቷል።")
+        await update.message.reply_text(f"🚀 የ{subject if subject else 'ጠቅላላ'} ውድድር ተጀመረ!")
 
-# --- Admin Specific Commands ---
-async def admin_actions(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# --- 7. Admin Actions ---
+async def admin_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
     cmd = update.message.text.split()[0][1:].lower()
-    
     try:
-        if cmd == "approve": # Rule 24
-            tid = int(context.args[0])
-            async with aiosqlite.connect('quiz_bot.db') as db:
+        tid = int(context.args[0])
+        async with aiosqlite.connect('quiz_bot.db') as db:
+            if cmd == "approve": # Rule 24
                 await db.execute("UPDATE users SET status = 'approved' WHERE user_id = ?", (tid,))
-                await db.commit()
-            await context.bot.send_message(tid, "🎉 እንኳን ደስ አለዎት! ምዝገባዎ ጸድቋል።")
-            await update.message.reply_text(f"✅ {tid} ጸድቋል።")
-        
-        elif cmd == "anapprove": # Rule 6
-            tid = int(context.args[0])
-            await context.bot.send_message(tid, "❌ ጥያቄዎ ተቀባይነት አላገኘም። እባክዎ እንደገና ይሞክሩ።")
-            await update.message.reply_text(f"⚠️ {tid} ውድቅ ተደርጓል።")
-
-        elif cmd == "block": # Rule 19
-            tid = int(context.args[0])
-            async with aiosqlite.connect('quiz_bot.db') as db:
+                await context.bot.send_message(tid, "🎉 ምዝገባዎ ጸድቋል! አሁን መሳተፍ ይችላሉ።")
+            elif cmd == "block": # Rule 19
                 await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (tid,))
-                await db.commit()
-            await context.bot.send_message(tid, f"🚫 ከአድሚን በመጣ ትዕዛዝ ታግደዋል። ለበለጠ መረጃ {ADMIN_USER} ን ያነጋግሩ።")
-            await update.message.reply_text(f"🚫 {tid} ታግዷል።")
-
-        elif cmd == "unmute": # Rule 30
-            tid = int(context.args[0])
-            async with aiosqlite.connect('quiz_bot.db') as db:
+                await context.bot.send_message(tid, f"🚫 ታግደዋል። {ADMIN_USER} ን ያነጋግሩ።")
+            elif cmd == "unmute": # Rule 30
                 await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (tid,))
-                await db.commit()
-            await update.message.reply_text(f"✅ ለተጠቃሚ {tid} እገዳው ተነስቷል።")
+            await db.commit()
+            await update.message.reply_text(f"✅ ትዕዛዙ ተፈጽሟል ለ {tid}")
+    except: pass
 
-        elif cmd == "appt": # Rule 21
-            global global_pause
-            global_pause = True
-            await update.message.reply_text(f"⏸ ቦቱ ከአድሚን በመጣ ትዕዛዝ ለጊዜው ቆሟል። {ADMIN_USER}")
-
-        elif cmd == "apptt": # Rule 22
-            global_pause = False
-            await update.message.reply_text("▶️ ቦቱ በድጋሚ ስራ ጀምሯል።")
-
-        elif cmd == "log": # Rule 24
-            async with aiosqlite.connect('quiz_bot.db') as db:
-                async with db.execute("SELECT username, correct_count, wrong_count, points FROM users") as c:
-                    rows = await c.fetchall()
-            res = "📜 የውድድር መዝገብ (Log):\n" + "\n".join([f"👤 {r[0]} | ✅ {r[1]} | ❌ {r[2]} | 💰 {r[3]}" for r in rows])
-            await update.message.reply_text(res)
-
-    except: await update.message.reply_text("❌ እባክዎ ID በትክክል ያስገቡ።")
-
-async def stop2_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id not in ADMIN_IDS: return
-    jobs = context.job_queue.get_jobs_by_name(str(update.effective_chat.id))
-    for j in jobs: j.schedule_removal()
-    
-    async with aiosqlite.connect('quiz_bot.db') as db:
-        limit = 15 if update.effective_chat.type != "private" else 1
-        async with db.execute(f"SELECT username, points FROM users ORDER BY points DESC LIMIT {limit}") as c:
-            rows = await c.fetchall()
-    res = "🏁 ውድድሩ ቆሟል!\n\n🏆 ውጤት:\n" + "\n".join([f"{i+1}. {r[0]}: {r[1]}" for i, r in enumerate(rows)])
-    await update.message.reply_text(res)
-    for admin in ADMIN_IDS: await context.bot.send_message(admin, f"🛑 ቦቱ በ {update.effective_chat.title} በ {update.effective_user.first_name} አማካኝነት ቆሟል።")
-
-# --- 7. Main Function ---
+# --- 8. Main Function ---
 def main():
     asyncio.get_event_loop().run_until_complete(init_db())
     app_bot = Application.builder().token(TOKEN).build()
     
-    # Registering handlers based on rules
-    app_bot.add_handler(CommandHandler(["start", "history_srm2", "geography_srm2", "mathematics_srm2", "english_srm2", "start2", "info2", "rank2", "keep"], start_handler))
-    app_bot.add_handler(CommandHandler(["approve", "anapprove", "block", "unblock", "unmute", "appt", "apptt", "log", "close", "clear_rank2"], admin_actions))
-    app_bot.add_handler(CommandHandler("stop2", stop2_cmd))
-    app_bot.add_handler(MessageHandler(filters.COMMAND & ~filters.ChatType.PRIVATE, start_handler)) # Protection
+    # Handlers
+    app_bot.add_handler(CommandHandler(["start", "history_srm2", "geography_srm2", "mathematics_srm2", "english_srm2", "start2", "keep"], start_handler))
+    app_bot.add_handler(CommandHandler(["approve", "block", "unmute", "close"], admin_cmd))
+    app_bot.add_handler(CommandHandler("stop2", lambda u,c: [j.schedule_removal() for j in c.job_queue.get_jobs_by_name(str(u.effective_chat.id))] or u.message.reply_text("🛑 ቆሟል።")))
     app_bot.add_handler(PollAnswerHandler(receive_answer))
     
     keep_alive()
