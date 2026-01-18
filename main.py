@@ -13,7 +13,7 @@ def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run).start()
 
 # --- Configuration ---
-TOKEN = "YOUR_BOT_TOKEN_HERE" # <--- የእርስዎን ቶክን እዚህ ይተኩ
+TOKEN = "8195013346:AAG0oJjZREWEhFVoaZGF4kxSwut1YKSw6lY" # <--- የእርስዎን ቶክን እዚህ ይተኩ
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False 
