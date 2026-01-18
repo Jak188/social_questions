@@ -13,7 +13,7 @@ def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run).start()
 
 # --- Configuration ---
-TOKEN = "8195013346:AAG0oJjZREWEhFVoaZGF4kxSwut1YKSw6lY" 
+TOKEN = "YOUR_BOT_TOKEN_HERE" 
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False 
@@ -110,39 +110,36 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.execute("INSERT INTO users (user_id, username, status, reg_at) VALUES (?, ?, 'pending', ?)", (user.id, user.first_name, reg_time))
             await db.commit()
             await update.message.reply_text(f"ውድ ተማሪ {user.first_name} የምዝገባ ጥያቄዎ በሂደት ላይ ነው...")
-            for adm in ADMIN_IDS: await context.bot.send_message(adm, f"👤 አዲስ ተመዝጋቢ: {user.first_name}\nID: {user.id}")
+            for adm in ADMIN_IDS: await context.bot.send_message(adm, f"👤 አዲስ ተመዝጋቢ:\nስም: {user.first_name}\nID: {user.id}")
             return
 
         if u_data[3] == 'pending':
-            await update.message.reply_text(f"ውድ ተማሪ {user.first_name} አድሚኑ እስኪቀበልዎ በትእግስት ይጠብቁ።")
+            await update.message.reply_text(f"ውድ ተማሪ {user.first_name} ጥያቄዎ ተቀባይነት ሲያገኝ እናሳውቃለን።")
             return
 
         if u_data[4] == 1:
-            await update.message.reply_text(f"ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME}")
+            await update.message.reply_text(f"ታግደዋል! ለበለጠ መረጃ {ADMIN_USERNAME} ን ያናግሩ")
             return
 
-        # Rules for non-admins
         if user.id not in ADMIN_IDS:
             allowed = ["/start2", "/history_srm2", "/geography_srm2", "/mathematics_srm2", "/english_srm2", "/rank2", "/stop2", "/keep"]
             if chat.type == "private" and cmd not in allowed:
                 await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (user.id,))
                 await db.commit()
-                await update.message.reply_text(f"የህግ ጥሰት በመፈጸምዎ ታግደዋል።")
+                await update.message.reply_text("የህግ ጥሰት በመፈፀምዎ ታግደዋል።")
                 return
 
-        # Start Competition
         if cmd in ["/start2", "/history_srm2", "/geography_srm2", "/mathematics_srm2", "/english_srm2"]:
             sub = {"/history_srm2":"history", "/geography_srm2":"geography", "/mathematics_srm2":"mathematics", "/english_srm2":"english"}.get(cmd)
             n = datetime.now()
             await db.execute("INSERT OR REPLACE INTO active_paths VALUES (?, ?, ?, ?)", (chat.id, chat.title if chat.title else "Private", user.first_name, n.strftime("%Y-%m-%d %H:%M")))
             await db.commit()
-            
             jobs = context.job_queue.get_jobs_by_name(str(chat.id))
             for j in jobs: j.schedule_removal()
             context.job_queue.run_repeating(send_quiz, interval=180, first=1, chat_id=chat.id, data={'subject': sub}, name=str(chat.id))
-            await update.message.reply_text("ዉድ ተማሪዎች ውድድር ተጀምሯል! መልካም ዕድል!")
+            await update.message.reply_text("ውድድር ተጀምሯል! መልካም እድል ለሁላችሁም።")
 
-# --- Admin Controls (የተስተካከለው) ---
+# --- Admin Controls (With New Commands) ---
 async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
     txt = update.message.text.split()
@@ -151,99 +148,81 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     target_id = None
     if update.message.reply_to_message:
         match = re.search(r"ID: (\d+)", update.message.reply_to_message.text)
-        target_id = int(match.group(1)) if match else update.message.reply_to_message.from_user.id
+        if match: target_id = int(match.group(1))
+        else: target_id = update.message.reply_to_message.from_user.id
     elif len(txt) > 1:
         try: target_id = int(txt[1])
         except: pass
 
     async with aiosqlite.connect('quiz_bot.db') as db:
-        # 1. /log
-        if cmd == "log":
-            async with db.execute("SELECT name, action, timestamp, date FROM logs ORDER BY date DESC, timestamp DESC LIMIT 25") as c:
-                rows = await c.fetchall()
-                if not rows: await update.message.reply_text("Log ባዶ ነው።"); return
-                res = "📜 የውድድር መዝገብ:\n" + "\n".join([f"{r[3]} {r[2]} | {r[0]} {r[1]}" for r in rows])
-                await update.message.reply_text(res)
-
-        # 2. /clear_log
-        elif cmd == "clear_log":
-            await db.execute("DELETE FROM logs"); await db.commit()
-            await update.message.reply_text("✅ Logs ተሰርዘዋል።")
-
-        # 3. /pin
-        elif cmd == "pin":
-            async with db.execute("SELECT user_id, username FROM users") as c:
-                rows = await c.fetchall()
-                res = f"📍 ጠቅላላ ተመዝጋቢዎች ({len(rows)}):\n" + "\n".join([f"ID: {r[0]} | {r[1]}" for r in rows])
-                await update.message.reply_text(res)
-
-        # 4. /gof
-        elif cmd == "gof":
-            await update.message.reply_text("🚀 ቦቱ በሙሉ አቅሙ እየሰራ ነው።")
-
-        # 5. /rank2
-        elif cmd == "rank2":
-            async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 15") as c:
-                rows = await c.fetchall()
-                res = "📊 የደረጃ ሰንጠረዥ:\n" + "\n".join([f"{i+1}. {r[0]} - {r[1]} pts" for i, r in enumerate(rows)])
-                await update.message.reply_text(res)
-
-        # 6. /clear_rank2
-        elif cmd == "clear_rank2":
-            await db.execute("UPDATE users SET points = 0"); await db.commit()
-            await update.message.reply_text("✅ የሁሉም ነጥብ 0 ሆኗል።")
-
-        # 7. /hmute
-        elif cmd == "hmute":
-            async with db.execute("SELECT user_id, username, is_blocked, muted_until FROM users WHERE is_blocked=1 OR muted_until IS NOT NULL") as c:
-                rows = await c.fetchall()
-                if not rows: await update.message.reply_text("የታገደ የለም።"); return
-                res = "🚫 የታገዱ:\n" + "\n".join([f"ID: {r[0]} | @{r[1]} | {'Blocked' if r[2]==1 else 'Muted'}" for r in rows])
-                await update.message.reply_text(res)
-
-        # --- ነባር የአድሚን ትዕዛዞች ---
-        elif cmd == "approve" and target_id:
+        if cmd == "approve" and target_id:
             await db.execute("UPDATE users SET status = 'approved' WHERE user_id = ?", (target_id,))
             await db.commit()
-            await update.message.reply_text(f"✅ ተጠቃሚ {target_id} ጸድቋል።")
+            await update.message.reply_text(f"ተጠቃሚ {target_id} ጸድቋል።")
 
-        elif (cmd == "mute" or cmd == "mute2") and target_id:
-            mute_to = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
-            await db.execute("UPDATE users SET muted_until = ? WHERE user_id = ?", (mute_to, target_id))
-            await db.commit()
-            await update.message.reply_text(f"ተጠቃሚ {target_id} ለ17 ደቂቃ ታግዷል።")
+        elif cmd == "log":
+            async with db.execute("SELECT name, action, timestamp FROM logs ORDER BY timestamp DESC LIMIT 20") as c:
+                rows = await c.fetchall()
+                res = "📜 የተሳታፊዎች እንቅስቃሴ (Log):\n\n"
+                for r in rows: res += f"[{r[2]}] {r[0]}: {r[1]}\n"
+                await update.message.reply_text(res if len(rows) > 0 else "ምንም ሎግ የለም።")
 
-        elif (cmd == "unmute" or cmd == "unmute2") and target_id:
-            await db.execute("UPDATE users SET muted_until = NULL WHERE user_id = ?", (target_id,))
+        elif cmd == "clear_log":
+            await db.execute("DELETE FROM logs")
             await db.commit()
-            await update.message.reply_text("እገዳው ተነስቷል።")
+            await update.message.reply_text("✅ የቦቱ እንቅስቃሴ መዝገብ (Log) ጸድቷል።")
 
-        elif (cmd == "block" or cmd == "close") and target_id:
-            await db.execute("UPDATE users SET is_blocked = 1 WHERE user_id = ?", (target_id,))
+        elif cmd == "pin":
+            async with db.execute("SELECT COUNT(*) FROM users") as c1: users_count = (await c1.fetchone())[0]
+            async with db.execute("SELECT COUNT(*) FROM active_paths") as c2: groups_count = (await c2.fetchone())[0]
+            res = f"📍 የቦቱ መረጃ (Status):\n\n👥 ጠቅላላ ተመዝጋቢዎች: {users_count}\n🏢 ጠቅላላ ግሩፖች: {groups_count}"
+            await update.message.reply_text(res)
+
+        elif cmd == "gof":
+            async with db.execute("SELECT username, reg_at FROM users WHERE status = 'pending'") as c:
+                rows = await c.fetchall()
+                res = "⏳ የምዝገባ ጥያቄ ላይ ያሉ:\n\n"
+                for r in rows: res += f"👤 {r[0]} - የጠየቀበት: {r[1]}\n"
+                await update.message.reply_text(res if len(rows) > 0 else "ምንም በመጠባበቅ ላይ ያለ የለም።")
+
+        elif cmd == "rank2":
+            async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 15") as c:
+                res = "📊 የደረጃ ሰንጠረዥ (Top 15):\n\n"
+                for i, r in enumerate(await c.fetchall(), 1): res += f"{i}. {r[0]} - {r[1]} ነጥብ\n"
+                await update.message.reply_text(res)
+
+        elif cmd == "clear_rank2":
+            await db.execute("UPDATE users SET points = 0")
             await db.commit()
-            await update.message.reply_text(f"ID {target_id} ታግዷል።")
+            await update.message.reply_text("🔄 ሁሉም ነጥቦች ወደ 0 ተመልሰዋል (Rank Cleared)።")
+
+        elif cmd == "hmute":
+            async with db.execute("SELECT COUNT(*) FROM users WHERE is_blocked = 1") as c1: blocked = (await c1.fetchone())[0]
+            async with db.execute("SELECT COUNT(*) FROM users WHERE muted_until IS NOT NULL") as c2: muted = (await c2.fetchone())[0]
+            res = f"🔇 የቅጣት መረጃ:\n\n🚫 የታገዱ (Block): {blocked}\n🤐 የታገዱ (Mute): {muted}"
+            await update.message.reply_text(res)
 
         elif cmd == "oppt":
             global GLOBAL_STOP
             GLOBAL_STOP = True
-            await broadcast_message(context, "ቦቱ ለጊዜው ቆሟል።")
-            await update.message.reply_text("ለሁሉም ቆሟል።")
+            await broadcast_message(context, "ከአድሚን በመጣ ትእዛዝ መሰረት ቦቱ ቆሟል።")
+            await update.message.reply_text("ቦቱ ቆሟል።")
 
         elif cmd == "opptt":
             GLOBAL_STOP = False
-            await broadcast_message(context, "ቦቱ ተከፍቷል።")
-            await update.message.reply_text("ለሁሉም ተከፍቷል።")
+            await broadcast_message(context, "ቦቱ አሁን ወደ ስራ ተመልሷል።")
+            await update.message.reply_text("ቦቱ ተከፍቷል።")
 
         elif cmd == "stop2":
             cid = str(update.effective_chat.id)
             for j in context.job_queue.get_jobs_by_name(cid): j.schedule_removal()
-            await update.message.reply_text("🏁 ውድድሩ በዚህ ግሩፕ ቆሟል።")
+            await update.message.reply_text("🏁 ውድድሩ በዚህ ግሩፕ ተጠናቋል።")
 
 # --- Startup ---
 async def status_notif(update: Update, context: ContextTypes.DEFAULT_TYPE):
     m = update.my_chat_member
     status = "✅ ቦቱ አብርቷል" if m.new_chat_member.status == 'member' else "❌ ቦቱ አጥፍቷል"
-    for adm in ADMIN_IDS: await context.bot.send_message(adm, f"{status} በ {update.effective_user.first_name}")
+    for adm in ADMIN_IDS: await context.bot.send_message(adm, f"{status}\nበ፡ {update.effective_user.first_name}")
 
 def main():
     loop = asyncio.new_event_loop()
@@ -251,7 +230,7 @@ def main():
     loop.run_until_complete(init_db())
     app_bot = Application.builder().token(TOKEN).build()
     app_bot.add_handler(CommandHandler(["start2", "history_srm2", "geography_srm2", "mathematics_srm2", "english_srm2"], start_handler))
-    app_bot.add_handler(CommandHandler(["approve", "anapprove", "block", "close", "unblock", "unmute2", "unmute", "stop2", "oppt", "opptt", "log", "clear_log", "hmute", "info", "keep2", "rank2", "clear_rank2", "pin", "gof", "mute"], admin_ctrl))
+    app_bot.add_handler(CommandHandler(["approve", "log", "clear_log", "pin", "gof", "rank2", "clear_rank2", "hmute", "oppt", "opptt", "stop2"], admin_ctrl))
     app_bot.add_handler(PollAnswerHandler(receive_answer))
     app_bot.add_handler(ChatMemberHandler(status_notif, ChatMemberHandler.MY_CHAT_MEMBER))
     keep_alive()
