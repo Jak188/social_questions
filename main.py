@@ -36,6 +36,7 @@ async def init_db():
         CREATE TABLE IF NOT EXISTS users(
             user_id INTEGER PRIMARY KEY,
             username TEXT,
+            name TEXT,
             points REAL DEFAULT 0,
             status TEXT DEFAULT 'pending',
             is_blocked INTEGER DEFAULT 0,
@@ -122,9 +123,9 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     async with aiosqlite.connect('quiz_bot.db') as db:
         async with db.execute("SELECT * FROM users WHERE user_id=?",(ans.user.id,)) as c:
             u = await c.fetchone()
-        if not u or u[3]!="approved" or u[4]==1:
+        if not u or u[4]!="approved" or u[5]==1: # Column index changed due to added 'name' column
             return
-        if u[5] and datetime.now(timezone.utc) < datetime.fromisoformat(u[5]):
+        if u[6] and datetime.now(timezone.utc) < datetime.fromisoformat(u[6]):
             return
 
         async with db.execute(
@@ -143,9 +144,10 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "UPDATE active_polls SET first_winner=? WHERE poll_id=?",
                 (ans.user.id, ans.poll_id)
             )
+            user_info = f"@{ans.user.username}" if ans.user.username else ans.user.first_name
             await context.bot.send_message(
                 p[2],
-                f"🏆 <b>{ans.user.first_name}</b> ቀድሞ መልሶ 8 ነጥብ አግኝቷል!",
+                f"🏆 <b>{user_info}</b> ቀድሞ መልሶ 8 ነጥብ አግኝቷል!",
                 parse_mode="HTML"
             )
 
@@ -182,11 +184,11 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         async with db.execute("SELECT * FROM users WHERE user_id=?",(user.id,)) as c:
             u = await c.fetchone()
 
-        # 1,5 Registration flow
         if not u:
+            username = f"@{user.username}" if user.username else "NoUsername"
             await db.execute(
-                "INSERT INTO users(user_id,username,reg_at) VALUES(?,?,?)",
-                (user.id, user.first_name,
+                "INSERT INTO users(user_id,username,name,reg_at) VALUES(?,?,?,?)",
+                (user.id, username, user.first_name,
                  datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             )
             await db.commit()
@@ -197,11 +199,12 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             for a in ADMIN_IDS:
                 await context.bot.send_message(
-                    a, f"👤 New registration\nName:{user.first_name}\nID:{user.id}"
+                    a, f"👤 New registration\nName: {user.first_name}\nUser: {username}\nID: <code>{user.id}</code>",
+                    parse_mode="HTML"
                 )
             return
 
-        if u[3]=="pending":
+        if u[4]=="pending":
             await update.message.reply_text(
                 f"⏳ ውድ ተማሪ {user.first_name}\n"
                 "አድሚኑ ለጊዜው busy ነው። "
@@ -209,13 +212,12 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             return
 
-        if u[4]==1:
+        if u[5]==1:
             await update.message.reply_text(
                 f"🚫 ከአድሚን ትእዛዝ መሠረት ታግደዋል። {ADMIN_USERNAME}"
             )
             return
 
-        # 29,35 Private security
         allowed_priv = [
             "/start2","/history_srm2","/geography_srm2",
             "/mathematics_srm2","/english_srm2","/rank2","/stop2"
@@ -232,7 +234,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
             return
 
-        # 30 Group security
         if chat.type!="private" and cmd.startswith("/") and cmd not in ["/start2","/stop2"] and user.id not in ADMIN_IDS:
             mute_to = (datetime.now(timezone.utc)+timedelta(minutes=17)).isoformat()
             await db.execute(
@@ -250,7 +251,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
             return
 
-        # 10–14 Start competition
         if cmd in ["/start2","/history_srm2","/geography_srm2","/mathematics_srm2","/english_srm2"]:
             sub = {
                 "/history_srm2":"history",
@@ -264,9 +264,10 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "📢 ውድድር ጀመረ!\n"
                 "8 ነጥብ (ቀድሞ) | 4 ነጥብ | 1.5 ነጥብ"
             )
+            user_info = f"{user.first_name} (@{user.username})" if user.username else user.first_name
             await db.execute(
                 "INSERT OR REPLACE INTO active_paths VALUES(?,?,?,?)",
-                (chat.id, chat.title or "Private", user.first_name,
+                (chat.id, chat.title or "Private", user_info,
                  n.strftime("%Y-%m-%d %H:%M"))
             )
             await db.commit()
@@ -280,7 +281,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for a in ADMIN_IDS:
                 await context.bot.send_message(
                     a,
-                    f"🚀 Competition started\nBy:{user.first_name} ({user.id})\n"
+                    f"🚀 Competition started\nBy:{user_info} ({user.id})\n"
                     f"Where:{chat.title or 'Private'}\n"
                     f"When:{n}"
                 )
@@ -294,8 +295,14 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cmd = txt[0][1:].lower()
     target_id = None
 
+    # SMART ID DETECTION (Fixes the ChatGPT bug)
     if update.message.reply_to_message:
-        target_id = update.message.reply_to_message.from_user.id
+        msg_text = update.message.reply_to_message.text or ""
+        match = re.search(r"ID:\s*(\d+)", msg_text)
+        if match:
+            target_id = int(match.group(1))
+        else:
+            target_id = update.message.reply_to_message.from_user.id
     elif len(txt)>1:
         try: target_id = int(txt[1])
         except: pass
@@ -310,7 +317,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     target_id,"✅ ምዝገባዎ ተቀባይነት አግኝቷል"
                 )
             except: pass
-            await update.message.reply_text("Approved")
+            await update.message.reply_text(f"Approved ID: {target_id}")
 
         elif cmd=="anapprove" and target_id:
             await db.execute("DELETE FROM users WHERE user_id=?",(target_id,))
@@ -343,24 +350,20 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         elif cmd=="rank2":
             async with db.execute(
-                "SELECT username,points FROM users ORDER BY points DESC LIMIT 15"
+                "SELECT username, name, points FROM users ORDER BY points DESC LIMIT 15"
             ) as c:
-                res="📊 Rank\n"
+                res="📊 <b>Rank</b>\n"
                 for i,r in enumerate(await c.fetchall(),1):
-                    res+=f"{i}. {r[0]} - {r[1]} pts\n"
-            await update.message.reply_text(res)
-
-        elif cmd=="clear_rank2":
-            await db.execute("UPDATE users SET points=0")
-            await db.commit()
-            await update.message.reply_text("Rank cleared")
+                    name_display = r[0] if r[0] != "NoUsername" else r[1]
+                    res+=f"{i}. {name_display} - {r[2]} pts\n"
+            await update.message.reply_text(res, parse_mode="HTML")
 
         elif cmd=="pin":
-            async with db.execute("SELECT user_id,username FROM users") as c:
-                res="👥 Registered\n"
+            async with db.execute("SELECT user_id, username, name FROM users") as c:
+                res="👥 <b>Registered</b>\n"
                 for r in await c.fetchall():
-                    res+=f"ID:{r[0]} | {r[1]}\n"
-            await update.message.reply_text(res)
+                    res+=f"ID: <code>{r[0]}</code> | {r[1]} ({r[2]})\n"
+            await update.message.reply_text(res, parse_mode="HTML")
 
         elif cmd=="keep" or cmd=="keep2":
             async with db.execute("SELECT * FROM active_paths") as c:
