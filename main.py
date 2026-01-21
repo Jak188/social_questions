@@ -1,4 +1,4 @@
-# ===================== IMPORTS =====================
+# ===================== UPDATED CODE (NO DELETIONS) =====================
 import os, json, asyncio, random, re
 import aiosqlite
 from datetime import datetime, timedelta, timezone
@@ -66,6 +66,7 @@ async def broadcast_message(context, text):
             users = await c.fetchall()
         async with db.execute("SELECT chat_id FROM active_paths") as c:
             groups = await c.fetchall()
+    # 1. Botu be /oppt sikom ena be /opptt sinesa yemilkew text lehulum medres alebet
     ids = {u[0] for u in users} | {g[0] for g in groups}
     for cid in ids:
         try:
@@ -110,12 +111,14 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         is_correct = (ans.option_ids[0]==p[0])
         points = 8 if (is_correct and p[1]==0) else (4 if is_correct else 1.5)
 
+        # 9. Kedmo yemelesewun be group wust lehulum yemiasawuk
         if is_correct and p[1]==0:
             await db.execute("UPDATE active_polls SET first_winner=? WHERE poll_id=?", (ans.user.id, ans.poll_id))
             await context.bot.send_message(p[2], f"🏆 <b>{ans.user.first_name}</b> ቀድሞ መልሶ 8 ነጥብ አግኝቷል!", parse_mode="HTML")
 
         await db.execute("UPDATE users SET points=points+? WHERE user_id=?", (points, ans.user.id))
         now = datetime.now()
+        # 2. Be group wustim yetemezegebem yaltemezegebem yetsatefewun endiyiz
         await db.execute("INSERT INTO logs VALUES(?,?,?,?,?)", (ans.user.id, ans.user.first_name, "✓" if is_correct else "✗", now.strftime("%H:%M:%S"), now.strftime("%Y-%m-%d")))
         await db.commit()
 
@@ -134,7 +137,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         async with db.execute("SELECT * FROM users WHERE user_id=?",(user.id,)) as c:
             u = await c.fetchone()
 
-        # Registration Flow
         if not u:
             await db.execute("INSERT INTO users(user_id,username,reg_at) VALUES(?,?,?)", (user.id, user.first_name, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             await db.commit()
@@ -147,10 +149,10 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         if u[4]==1:
-            await update.message.reply_text(f"🚫 ከአድሚን ትእዛዝ መሠረት ታግደዋል። {ADMIN_USERNAME}")
+            # 4. tetekami block sidereg yemilkew text
+            await update.message.reply_text(f"🚫 ውድ ተማሪ {user.first_name} በአድሚን ትእዛዝ መሠረት ለጊዜው እንዳይጠቀሙ ታግደዋል መፍትሄ ለማግኘት {ADMIN_USERNAME} ን yanegageru")
             return
 
-        # Private Security
         allowed_priv = ["/start2","/history_srm2","/geography_srm2","/mathematics_srm2","/english_srm2","/rank2","/stop2"]
         if chat.type=="private" and cmd.startswith("/") and cmd not in allowed_priv and user.id not in ADMIN_IDS:
             await db.execute("UPDATE users SET is_blocked=1 WHERE user_id=?",(user.id,))
@@ -159,7 +161,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for a in ADMIN_IDS: await context.bot.send_message(a, f"🚫 Blocked (Illegal cmd in private)\nName: {user.first_name}\nID:{user.id}")
             return
 
-        # Group Security
         if chat.type!="private" and cmd.startswith("/") and cmd not in ["/start2","/stop2"] and user.id not in ADMIN_IDS:
             mute_to = (datetime.now(timezone.utc)+timedelta(minutes=17)).isoformat()
             await db.execute("UPDATE users SET points=points-3.17, muted_until=? WHERE user_id=?", (mute_to,user.id))
@@ -168,7 +169,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for a in ADMIN_IDS: await context.bot.send_message(a, f"⚠️ User muted in group\nName: {user.first_name}\nID:{user.id}\n/unmute2 reply")
             return
 
-        # Competition Logic
         if cmd in allowed_priv or cmd=="/start2":
             if cmd == "/stop2":
                 for j in context.job_queue.get_jobs_by_name(str(chat.id)): j.schedule_removal()
@@ -218,11 +218,29 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif cmd=="block" and target_id:
             await db.execute("UPDATE users SET is_blocked=1 WHERE user_id=?",(target_id,))
             await db.commit()
+            try:
+                chat_info = await context.bot.get_chat(target_id)
+                if chat_info.type in ["group", "supergroup"]:
+                    # 6. group block sidereg
+                    await context.bot.send_message(target_id, f"⚠️ ውድ የዚህ group አባላት በሙሉ ይህ group የ privacy ጥሰት ስላደረሰ ለጊዜው ቦቱ እዚህ group ላይ እንዳይሰራ ታግዷል\nOWNER OF THIS BOT {ADMIN_USERNAME}")
+                else:
+                    # 4. tetekami block sidereg
+                    await context.bot.send_message(target_id, f"🚫 ውድ ተማሪ በአድሚን ትእዛዝ መሠረት ለጊዜው እንዳይጠቀሙ ታግደዋል መፍትሄ ለማግኘት {ADMIN_USERNAME} ን yanegageru")
+            except: pass
             await update.message.reply_text("Blocked")
 
         elif cmd=="unblock" and target_id:
             await db.execute("UPDATE users SET is_blocked=0 WHERE user_id=?",(target_id,))
             await db.commit()
+            try:
+                chat_info = await context.bot.get_chat(target_id)
+                if chat_info.type in ["group", "supergroup"]:
+                    # 7. grupu unblock sidereg
+                    await context.bot.send_message(target_id, "✅ ይህ group የነበረበት ችግር ስለተፈታ አሁን መጠቀም ትችላላሁ")
+                else:
+                    # 5. tetekamiw /unblock sidereg
+                    await context.bot.send_message(target_id, f"✅ ውድ ተማሪ (የነበረብዎ) ችግር ስለተፈታ አሁን መጠቀም ይችላሉ\n{ADMIN_USERNAME}")
+            except: pass
             await update.message.reply_text("Unblocked")
 
         elif cmd in ["unmute","unmute2"] and target_id:
@@ -238,33 +256,12 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 for i,r in enumerate(await c.fetchall(),1): res+=f"{i}. {r[0]} - {r[1]} pts\n"
             await update.message.reply_text(res)
 
-        elif cmd=="clear_rank2":
-            await db.execute("UPDATE users SET points=0")
-            await db.commit()
-            await update.message.reply_text("Rank cleared")
-
-        elif cmd=="pin":
-            async with db.execute("SELECT user_id,username FROM users") as c:
-                res="👥 Registered Users\n"
-                for r in await c.fetchall(): res+=f"ID:{r[0]} | {r[1]}\n"
-            await update.message.reply_text(res)
-
-        elif cmd=="keep" or cmd=="keep2":
-            async with db.execute("SELECT * FROM active_paths") as c:
-                res="🔍 Active Competitions\n"
-                for r in await c.fetchall(): res+=f"ID:{r[0]} | {r[1]} | By:{r[2]} | {r[3]}\n"
-            await update.message.reply_text(res)
-
         elif cmd=="log":
-            async with db.execute("SELECT name,action,date,timestamp FROM logs ORDER BY rowid DESC LIMIT 30") as c:
-                res="📜 Logs (Max 30)\n"
+            # 2. minimum 230 endiasay
+            async with db.execute("SELECT name,action,date,timestamp FROM logs ORDER BY rowid DESC LIMIT 230") as c:
+                res="📜 Logs (Top 230)\n"
                 for r in await c.fetchall(): res+=f"{r[0]} {r[1]} {r[2]} {r[3]}\n"
             await update.message.reply_text(res)
-
-        elif cmd=="clear_log":
-            await db.execute("DELETE FROM logs")
-            await db.commit()
-            await update.message.reply_text("Logs cleared")
 
         elif cmd=="oppt":
             global GLOBAL_STOP
@@ -276,11 +273,31 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await broadcast_message(context, "✅ ቦቱ ተመልሷል")
 
         elif cmd=="close" and target_id:
+            # 3. /close sibal [botun eyetetekemubet slalhone adminu askumual lemejemer /start2 yibelu]
             for j in context.job_queue.get_jobs_by_name(str(target_id)): j.schedule_removal()
             await db.execute("DELETE FROM active_paths WHERE chat_id=?",(target_id,))
             await db.commit()
+            try: await context.bot.send_message(target_id, "⚠️ ቦቱን እየተጠቀሙበት ስላልሆነ አድሚኑ አስቁሟል ለመጀመር /start2 ይበሉ")
+            except: pass
             await update.message.reply_text(f"Closed for ID:{target_id}")
 
+        # --- Remaining admin commands stay exactly same ---
+        elif cmd=="clear_rank2":
+            await db.execute("UPDATE users SET points=0"); await db.commit()
+            await update.message.reply_text("Rank cleared")
+        elif cmd=="pin":
+            async with db.execute("SELECT user_id,username FROM users") as c:
+                res="👥 Registered Users\n"
+                for r in await c.fetchall(): res+=f"ID:{r[0]} | {r[1]}\n"
+            await update.message.reply_text(res)
+        elif cmd=="keep" or cmd=="keep2":
+            async with db.execute("SELECT * FROM active_paths") as c:
+                res="🔍 Active Competitions\n"
+                for r in await c.fetchall(): res+=f"ID:{r[0]} | {r[1]} | By:{r[2]} | {r[3]}\n"
+            await update.message.reply_text(res)
+        elif cmd=="clear_log":
+            await db.execute("DELETE FROM logs"); await db.commit()
+            await update.message.reply_text("Logs cleared")
         elif cmd=="hmute":
             async with db.execute("SELECT user_id, username, is_blocked, muted_until FROM users WHERE is_blocked=1 OR muted_until IS NOT NULL") as c:
                 res="🚫 Blocked/Muted List\n"
@@ -288,13 +305,11 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     status = "Blocked" if r[2]==1 else "Muted"
                     res+=f"ID:{r[0]} | {r[1]} | {status}\n"
             await update.message.reply_text(res)
-
         elif cmd=="gof":
             async with db.execute("SELECT user_id, username, reg_at FROM users WHERE status='pending'") as c:
                 res="📥 Pending Registration\n"
                 for r in await c.fetchall(): res+=f"ID:{r[0]} | {r[1]} | {r[2]}\n"
             await update.message.reply_text(res)
-
         elif cmd=="info" and target_id:
             async with db.execute("SELECT * FROM users WHERE user_id=?",(target_id,)) as c:
                 r = await c.fetchone()
@@ -321,5 +336,5 @@ def main():
     keep_alive()
     app_bot.run_polling()
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
