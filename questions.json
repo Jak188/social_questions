@@ -6403,5 +6403,539 @@
     "o": ["A textbook written in 2020", "An eyewitness account or original document from the time of the event", "A fictional movie about history", "A summary found on Wikipedia"],
     "c": 1,
     "exp": "Primary sources (letters, diaries, artifacts) provide direct evidence from the past."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following statements is NOT CORRECT about the concept of geography?",
+    "o": [
+      "Geography is a spatial science.",
+      "Geography study both physical and human things and phenomena.",
+      "Geography is a science of argument and reason of cause and effect.",
+      "Geography emphasize on mere names of places."
+    ],
+    "c": 3,
+    "exp": "Modern geography goes beyond just naming places; it focuses on spatial analysis and the relationship between humans and the environment."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following geospheres of the earth represents the solid part of the planet?",
+    "o": ["Lithosphere", "Hydrosphere", "Troposphere", "Biosphere"],
+    "c": 0,
+    "exp": "The Lithosphere is the solid, outer part of the Earth, including the crust and the upper mantle."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which approaches of geography is used to study the spatial variations of one element on the earth’s surface?",
+    "o": ["Regional Approach", "Top-Down Approach", "Systematic Approach", "Down-Top Approach"],
+    "c": 2,
+    "exp": "The Systematic approach studies a specific geographic element (like climate or agriculture) across the entire world or a region."
+  },
+  {
+    "subject": "Geography",
+    "q": "The basis of the philosophy of environmental determinism is",
+    "o": [
+      "Human beings are the master of nature and controlled the environment.",
+      "The natural environment is an influencing factor on humans’ mode of living.",
+      "Two-way relationships exist between humans and the environment.",
+      "People can influence the environment to enhance their way of life."
+    ],
+    "c": 1,
+    "exp": "Environmental determinism is the belief that the physical environment, especially climate and terrain, determines human culture and social development."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is TRUE about transport networks?",
+    "o": [
+      "Different vehicles have different hill climbing capacities.",
+      "Roads are affected by relief much more than Railways.",
+      "Roads require much smaller gradients than Railways.",
+      "The maximum gradient for railways is 25 %."
+    ],
+    "c": 0,
+    "exp": "Transport networks are influenced by topography, and different modes of transport (trucks vs. cars) have varying abilities to handle steep slopes."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is a satellite-based navigation system used to capture latitude, longitude and altitude?",
+    "o": ["Global positioning system", "Computer physical system", "Remote Sensing", "GIS"],
+    "c": 0,
+    "exp": "GPS (Global Positioning System) uses satellite signals to provide precise location data including coordinates and elevation."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following statements is characteristics of desert and semi-desert climate?",
+    "o": [
+      "A well-defined rainy season of three to eight months",
+      "Unreliable and insufficient precipitation",
+      "Low fluctuations in temperature within a day",
+      "Annual rainfall ranging between 500 and 1,500 mm"
+    ],
+    "c": 1,
+    "exp": "Deserts are characterized by very low, irregular, and unpredictable rainfall."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is NOT CORRECT about the characteristics of research?",
+    "o": [
+      "Research activities focuses on the solution of problems.",
+      "Research is employed to test hypothesis.",
+      "Research outcomes add to the existing knowledge.",
+      "Research is the dissemination of existing knowledge"
+    ],
+    "c": 3,
+    "exp": "Research is about discovering new knowledge or verifying existing theories, not just spreading (disseminating) what is already known."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one is NOT a mechanism of selecting samples in simple random sampling?",
+    "o": ["Lottery Method", "Quota method", "coin flipping method", "random number method"],
+    "c": 1,
+    "exp": "Quota sampling is a non-probability sampling technique, whereas the others are probability-based (random) methods."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is NOT the characteristics of action research?",
+    "o": [
+      "The findings are applied immediately",
+      "It is fixed and adaptable",
+      "It is specific in nature",
+      "It provides immediate feedback"
+    ],
+    "c": 1,
+    "exp": "Action research is flexible and cyclic, not 'fixed'. It evolves as the researcher learns from the process."
+  },
+  {
+    "subject": "Geography",
+    "q": "----is an educated guess that shows the direction where the solution to the problem lies.",
+    "o": ["Literature", "Hypothesis", "Theory", "Methodology"],
+    "c": 1,
+    "exp": "A hypothesis is a tentative, testable explanation or prediction in a scientific investigation."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is WRONG about acceptable hypothesis?",
+    "o": [
+      "A hypothesis must have explanatory power",
+      "A hypothesis must be capable of being measured and testable",
+      "A hypothesis must be stated as simply and concisely as possible",
+      "A hypothesis must state the expected difference between variables"
+    ],
+    "c": 3,
+    "exp": "An acceptable hypothesis usually states an expected *relationship* (not necessarily a difference) between variables."
+  },
+  {
+    "subject": "Geography",
+    "q": "In which of the following probability sampling technique each unit of the population has an equal chance of being selected?",
+    "o": [
+      "Simple random sampling",
+      "Systematic random sampling",
+      "Stratified random sampling",
+      "Cluster sampling"
+    ],
+    "c": 0,
+    "exp": "Simple random sampling is the most basic probability sampling where every member has a strictly equal chance of selection."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following non-probability sampling technique involves choosing the nearest individuals as a sample until the required sample size has been obtained?",
+    "o": ["Purposive sampling", "Quota sampling", "Convenience sampling", "Snow ball sampling"],
+    "c": 2,
+    "exp": "Convenience sampling (also called accidental sampling) relies on data collection from people who are most accessible or nearby."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is advantages of observation data collection instrument?",
+    "o": [
+      "The data may reflect observer’s bias",
+      "Interaction between the observer and a subject",
+      "It is time consuming",
+      "It is costly to collect data"
+    ],
+    "c": 1,
+    "exp": "One key advantage of observation is the direct interaction or recording of behavior as it occurs in a real-life setting."
+  },
+  {
+    "subject": "Geography",
+    "q": "Topographic maps that portray different features at the same time are called",
+    "o": ["References maps", "Thematic maps", "special-purpose maps", "Charts"],
+    "c": 0,
+    "exp": "Topographic maps are general-purpose reference maps that show various natural and man-made features simultaneously."
+  },
+  {
+    "subject": "Geography",
+    "q": "---- are qualitative maps that use pictures and letters to show the spatial distribution of geographic element.",
+    "o": ["Chorochromatic maps", "Choropleth maps", "Choroschematic maps", "Isopleth maps"],
+    "c": 2,
+    "exp": "Choroschematic maps use symbols, pictures, or letters to represent different qualitative features on a map."
+  },
+  {
+    "subject": "Geography",
+    "q": "Maps that show equal rainfall distribution are known as",
+    "o": ["Isohyet", "Isoneph", "Isotherm", "Isobar"],
+    "c": 0,
+    "exp": "Isohyets are lines on a map connecting points that receive the same amount of rainfall."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following is NOT properties of a globe?",
+    "o": [
+      "All meridians converge at the poles",
+      "All meridians and parallels on a globe intersect at right angles",
+      "All parallels are parallel to the equator and to each other",
+      "Parallels increase in length as they approach the poles"
+    ],
+    "c": 3,
+    "exp": "On a globe, parallels (lines of latitude) actually decrease in length as they move toward the poles."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following maps are used to show the distribution of average values?",
+    "o": ["Isoplethic maps", "Flow maps", "Choroplethic maps", "Chorochromatic maps"],
+    "c": 2,
+    "exp": "Choropleth maps use shading or coloring to show average values (like population density) within predefined areas."
+  },
+  {
+    "subject": "Geography",
+    "q": "On the given map, closer contour lines show",
+    "o": ["Flat land surface", "Lower elevation", "Steeper slope", "Gentle slope"],
+    "c": 2,
+    "exp": "When contour lines are close together, it indicates that the elevation changes rapidly over a short distance, signifying a steep slope."
+  },
+  {
+    "subject": "Geography",
+    "q": "If the contour interval on a topo map is 10 meters, and one contour line is labeled 50 meters the adjacent contour line would represent",
+    "o": ["150 meter in elevation", "10 meter in elevation", "60 meter in elevation", "20 meter in elevation"],
+    "c": 2,
+    "exp": "The adjacent line would be one interval higher (50 + 10 = 60) or lower (50 - 10 = 40). Based on the options, 60 is the correct fit."
+  },
+  {
+    "subject": "Geography",
+    "q": "How are streams indicated on a topographic map?",
+    "o": [
+      "By contour lines that form U – shape which point upstream",
+      "By contour lines that form V – shape which point upstream",
+      "By contour lines that form U – shape which point downstream",
+      "By contour lines that form V – shape which point downstream"
+    ],
+    "c": 1,
+    "exp": "Contour lines form a 'V' shape when crossing a valley/stream, and the tip of the 'V' always points toward higher ground (upstream)."
+  },
+  {
+    "subject": "Geography",
+    "q": "A scale 1:1000 on a top map indicates that",
+    "o": [
+      "The map represents the entire earth",
+      "1000 unit on the map equals 1 unit in the real world",
+      "1 unit on the map equals 1000 unit in the real world",
+      "1 unit on the map is greater than 1 unit in the real world"
+    ],
+    "c": 2,
+    "exp": "Representative Fraction (RF) scale shows the ratio where 1 unit on the map represents 1000 of the same units on the ground."
+  },
+  {
+    "subject": "Geography",
+    "q": "The distance between contour lines on a topo map is called",
+    "o": ["Contour index", "Contour interval", "Slope", "Gradient"],
+    "c": 1,
+    "exp": "The vertical distance (elevation difference) between two successive contour lines is the contour interval."
+  },
+  {
+    "subject": "Geography",
+    "q": "---- Shows how to measure the real distance between two places on a map.",
+    "o": ["Map scale", "Map key", "Compass rose", "Grid"],
+    "c": 0,
+    "exp": "Map scale is the tool used to convert measurements on a map into actual real-world distances."
+  },
+  {
+    "subject": "Geography",
+    "q": "The population pyramid of Ethiopia looks like",
+    "o": [
+      "triangle with a very broad base tapering to a narrow apex",
+      "indicates the preponderance of the old age population",
+      "the level of mortality is low and that very few people reach old age.",
+      "rectangular with very wide base and narrow apex"
+    ],
+    "c": 0,
+    "exp": "Ethiopia has a young population, resulting in a broad-base pyramid (high birth rate) that thins out toward the top."
+  },
+  {
+    "subject": "Geography",
+    "q": "The age structure of Ethiopia’s population indicates",
+    "o": [
+      "has a high proportion of old age population",
+      "has a high proportion of young age dependent population",
+      "has a low proportion of young age dependent population",
+      "has the lowest Population of child population"
+    ],
+    "c": 1,
+    "exp": "Like most developing nations, Ethiopia has a high youth dependency ratio due to high fertility rates."
+  },
+  {
+    "subject": "Geography",
+    "q": "The population pyramid of developed countries reflects -",
+    "o": [
+      "Low fertility and low mortality",
+      "Balanced proportion of people in various ages",
+      "Shows high proportion of young people",
+      "A and B"
+    ],
+    "c": 3,
+    "exp": "Developed countries usually have stable or declining populations with low birth/death rates, creating a more rectangular or 'top-heavy' pyramid."
+  },
+  {
+    "subject": "Geography",
+    "q": "The three most sparsely populated regions of Ethiopia are",
+    "o": [
+      "Somali, Afar and Gambella",
+      "Harari, Afar and Beneshangul Gumuz regions",
+      "Tigray, Somali and Gambella regions",
+      "Sidama, SNNP and Gambella regions"
+    ],
+    "c": 0,
+    "exp": "Arid regions like Afar and Somali, and the remote lowlands of Gambella, have lower population densities compared to the highlands."
+  },
+  {
+    "subject": "Geography",
+    "q": "Why is Ethiopia’s population distributed unevenly? Because",
+    "o": [
+      "natural and human related factors",
+      "Ethiopia is the land of both Christian and Muslims",
+      "Resource use pattern of the country",
+      "Development of infrastructure within the country"
+    ],
+    "c": 0,
+    "exp": "Population distribution is determined by a mix of physical factors (climate, soil) and human factors (history, economy)."
+  },
+  {
+    "subject": "Geography",
+    "q": "The very high concentration of people over the central highlands of Ethiopia is partly the result of",
+    "o": [
+      "movements of the Semitic and Cushitic (Oromo) People",
+      "Physical factors",
+      "Addis Ababa to Djibouti railway",
+      "None of these"
+    ],
+    "c": 1,
+    "exp": "The temperate climate (Dega/Woina Dega), fertile soil, and relative freedom from tropical diseases make the highlands attractive for settlement."
+  },
+  {
+    "subject": "Geography",
+    "q": "In Ethiopia, a given settlement is said to be urban when it fulfills the following criteria Except",
+    "o": [
+      "The settlement has a minimum of 2000 people.",
+      "Two-thirds of the population are engaged in non-agricultural activities",
+      "The settlement has a chartered municipality.",
+      "The Presence primary economic activities"
+    ],
+    "c": 3,
+    "exp": "Urban areas are defined by secondary and tertiary activities; 'primary economic activities' (like farming) are characteristic of rural areas."
+  },
+  {
+    "subject": "Geography",
+    "q": "The two major historical factors beneath the development of many urban centers in Ethiopia were",
+    "o": [
+      "The movement of Cush People and Ethio-Djibouti railway",
+      "Interconnection of different parts by all-weather roads and the five-year Italian occupation",
+      "The presence of raw materials and Industrial products",
+      "None of these"
+    ],
+    "c": 1,
+    "exp": "The Italian occupation and subsequent road developments significantly spurred the growth of many Ethiopian towns."
+  },
+  {
+    "subject": "Geography",
+    "q": "Permanent rural settlements of Ethiopia are associated with",
+    "o": ["Location of Industries", "Provision of services", "crop farming highlands", "Nomadic herding lowland areas"],
+    "c": 2,
+    "exp": "Sedentary (permanent) life is most common in the highlands where crop cultivation is the main stay."
+  },
+  {
+    "subject": "Geography",
+    "q": "The difference between fertility and mortality is known as",
+    "o": ["Net Natural fertility", "Natural change", "Rate of Natural increase", "Crude death rate"],
+    "c": 2,
+    "exp": "Rate of Natural Increase (RNI) is calculated by subtracting the death rate from the birth rate."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which regional state of Ethiopia has the highest fertility rate?",
+    "o": ["Oromiya region", "Amhara region", "Afar region", "SNNP regional state"],
+    "c": 2,
+    "exp": "According to demographic surveys, Afar and Somali regions often record the highest total fertility rates in the country."
+  },
+  {
+    "subject": "Geography",
+    "q": "All of the following are major objectives of ADLI Except:",
+    "o": [
+      "Improving agricultural productivity",
+      "Improving farmers’ access to fertilizers.",
+      "Assisting farmers with extensional services",
+      "Expanding financial institutions to help improve the financial status of local farmers."
+    ],
+    "c": 4,
+    "exp": "ADLI (Agricultural Development Led Industrialization) focuses on all the listed agricultural improvements; 'None of this' (E) is the likely answer if all others are correct objectives."
+  },
+  {
+    "subject": "Geography",
+    "q": "To which neighboring countries Ethiopia has a minor relationship",
+    "o": ["Eritrea and Somalia", "Sudan and Djibouti", "Kenya and Sudan", "Sudan and Egypt"],
+    "c": 0,
+    "exp": "Due to historical conflicts and border issues, relations with Eritrea and Somalia have historically been more strained/minor compared to others."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following mountain of Ethiopia is different from the others in its location?",
+    "o": ["mt. Chilalo", "Mt. Batu", "mt. Tulu Dimtu", "mt. Gughe"],
+    "c": 3,
+    "exp": "Chilalo, Batu, and Tulu Dimtu are in the South-Eastern Highlands (Arsi/Bale), while Gughe is in the South-Western Highlands (Gamo)."
+  },
+  {
+    "subject": "Geography",
+    "q": "What is metadata in GIS?",
+    "o": ["Data about data", "Spatial analysis outputs", "Map layers", "Raster data"],
+    "c": 0,
+    "exp": "Metadata provides information about the content, quality, and condition of a dataset."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of these is a software component of GIS?",
+    "o": ["Computer", "GPS Unit", "ArcGIS", "Scanner"],
+    "c": 2,
+    "exp": "ArcGIS is one of the most widely used software suites for geographic information systems."
+  },
+  {
+    "subject": "Geography",
+    "q": "What is geospatial data primarily used for?",
+    "o": ["Analyzing historical trends only", "Understanding spatial patterns and relationships"],
+    "c": 1,
+    "exp": "Geospatial data is used to visualize and analyze how things relate to one another in a specific physical space."
+  },
+  {
+    "subject": "Geography",
+    "q": "Identify the correct chronological order",
+    "o": [
+      "Pangea -> Gondwanaland -> Madagascar -> Africa",
+      "Gondwanaland -> Pangea -> Africa -> Madagascar",
+      "Africa -> Pangea -> Gondwanaland -> Madagascar",
+      "Pangea -> Gondwanaland -> Africa -> Madagascar"
+    ],
+    "c": 3,
+    "exp": "The supercontinent Pangea first split into Laurasia and Gondwanaland. Then Gondwanaland broke apart, eventually separating Africa before Madagascar became an island."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following Era is responsible for the formation of the present surface configuration of the African continent?",
+    "o": ["Precambrian Era", "Mesozoic Era", "Paleozoic Era", "Cenozoic Era"],
+    "c": 3,
+    "exp": "The Cenozoic Era, particularly through volcanic activity and the formation of the Rift Valley, shaped much of Africa's current topography."
+  },
+  {
+    "subject": "Geography",
+    "q": "The Great East African Rift Valley was formed as a result of:",
+    "o": ["Faulting processes", "Volcanic eruption", "Folding processes", "Peneplanations"],
+    "c": 0,
+    "exp": "The Rift Valley is a classic example of a landform created by large-scale faulting and the pulling apart of tectonic plates."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which one of the following controls of climate affects the amount of incoming solar radiation a place receives?",
+    "o": ["Altitudinal location", "Latitudinal location", "Ocean currents", "Atmospheric Pressure"],
+    "c": 1,
+    "exp": "Latitude determines the angle of the sun's rays, which directly controls the intensity and amount of solar radiation received."
+  },
+  {
+    "subject": "Geography",
+    "q": "The Atlas and Cape Ranges have the lowest temperature in the continent as a result of",
+    "o": [
+      "Their short distance from the sea",
+      "Dense vegetation covers",
+      "Their high altitudinal and latitudinal location",
+      "High annual mean rainfall"
+    ],
+    "c": 2,
+    "exp": "These ranges are located at the extreme northern and southern tips of Africa (high latitude) and have significant elevation (altitude), both of which lower temperature."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which part of Africa has equatorial type of climate?",
+    "o": ["Northern", "Eastern", "Central", "Southern"],
+    "c": 2,
+    "exp": "Central Africa, particularly the Congo Basin, lies along the equator and experiences high temperatures and rainfall year-round."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which is NOT an example of soil conservation in Ethiopia?",
+    "o": ["Terracing", "Planting trees", "Overgrazing", "Crop rotation"],
+    "c": 2,
+    "exp": "Overgrazing is a cause of soil erosion and land degradation, while the others are methods used to protect and conserve soil."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following represents the correct order of geologic time divisions, from largest to smallest?",
+    "o": [
+      "Eon, Era, Period, Epoch",
+      "Era, Eon, Period, Epoch",
+      "Epoch, Period, Era, Eon",
+      "Period, Epoch, Eon, Era"
+    ],
+    "c": 0,
+    "exp": "In geologic time, an Eon is the largest division, which is subdivided into Eras, then Periods, and finally Epochs."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which force drives the continental drift theory?",
+    "o": [
+      "Gravitational force of the moon",
+      "The rotation of the earth",
+      "Convection currents in the earth's mantle",
+      "The expansion of the earth's crust"
+    ],
+    "c": 2,
+    "exp": "Continental drift is primarily driven by the heat-generated convection currents in the underlying semi-fluid mantle."
+  },
+  {
+    "subject": "Geography",
+    "q": "The Earth's core is primarily composed of:",
+    "o": ["Silicon and oxygen", "Aluminum and silicon", "Iron and nickel", "Magnesium and iron"],
+    "c": 2,
+    "exp": "The inner and outer cores of the Earth are mostly made of heavy metals, specifically iron (Fe) and nickel (Ni)."
+  },
+  {
+    "subject": "Geography",
+    "q": "Which of the following is NOT a major element of weather and climate?",
+    "o": ["Temperature", "Rainfall", "Humidity", "Soil type"],
+    "c": 3,
+    "exp": "Temperature, rainfall, and humidity are atmospheric conditions (elements of weather), whereas soil type is a terrestrial characteristic."
+  },
+  {
+    "subject": "Geography",
+    "q": "Monsoon winds are caused by:",
+    "o": [
+      "Differences in air pressure over land and sea",
+      "The Coriolis effect",
+      "Mountain ranges",
+      "Ocean currents"
+    ],
+    "c": 0,
+    "exp": "Monsoons are seasonal winds caused by the differential heating of land and water, creating distinct pressure differences."
+  },
+  {
+    "subject": "Geography",
+    "q": "The rain shadow effect is most closely associated with:",
+    "o": ["Convectional rainfall", "Orographic rainfall", "Cyclonic rainfall", "Frontal rainfall"],
+    "c": 1,
+    "exp": "Orographic rainfall occurs when mountains block moisture; the side facing the wind gets rain, while the other side remains dry in a 'rain shadow'."
+  },
+  {
+    "subject": "Geography",
+    "q": "The Intertropical Convergence Zone (ITCZ) is associated with:",
+    "o": [
+      "The Polar Highs",
+      "The Sub-polar Low-Pressure Belt",
+      "The Equatorial Low-Pressure Belt",
+      "The Tropical High-Pressure Belt"
+    ],
+    "c": 2,
+    "exp": "The ITCZ is the area near the equator where trade winds meet, characterized by consistent low pressure and heavy precipitation."
   }
 ]
