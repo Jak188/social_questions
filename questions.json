@@ -6937,5 +6937,211 @@
     ],
     "c": 2,
     "exp": "The ITCZ is the area near the equator where trade winds meet, characterized by consistent low pressure and heavy precipitation."
+  },
+  {
+    "subject": "English",
+    "q": "Which of the following is the correct word order? (parents / after / of / your / you / which / take / do?)",
+    "o": [
+      "which of you do take after your parents?",
+      "Which of your parents you do take after?",
+      "Do you take which of your parents after?",
+      "Which of your parents do you take after?"
+    ],
+    "c": 3,
+    "exp": "'Take after' is a phrasal verb, and in a question format, the auxiliary 'do' comes before the subject."
+  },
+  {
+    "subject": "English",
+    "q": "Which sentence is correctly ordered? (Were / the / is / that / it / about / time / presentation / on / the)",
+    "o": [
+      "She is on about time that it were the presentation.",
+      "It is the presentation that she were on about time.",
+      "She is on about time that were it the presentation.",
+      "It is about time that she were on the presentation"
+    ],
+    "c": 3,
+    "exp": "The structure 'It is about time' is followed by a subject and a past subjunctive verb."
+  },
+  {
+    "subject": "English",
+    "q": "Which sentence is correctly ordered? (or / play / tennis / would / like / you / afternoon / this / not?)",
+    "o": [
+      "Would you like or not to play tennis this afternoon?",
+      "Would you like to play tennis this afternoon or not?",
+      "Would you like play tennis or this afternoon not to?",
+      "Would you play tennis like this afternoon or not to?"
+    ],
+    "c": 1,
+    "exp": "The standard polite invitation structure is 'Would you like to [verb]... or not?'"
+  },
+  {
+    "subject": "English",
+    "q": "Which sentence is correctly ordered? (.he / no / knows / why / doesn’t / one / come)",
+    "o": [
+      "No one doesn’t knows why he come.",
+      "No one knows why he doesn’t come.",
+      "Why doesn’t he come no one knows.",
+      "Doesn’t one knows why he no come."
+    ],
+    "c": 1,
+    "exp": "The subject 'No one' is singular and takes 'knows', followed by a noun clause."
+  },
+  {
+    "subject": "English",
+    "q": "Correct word order: (did / say / I / I / not / that / anything / so / was / surprised)",
+    "o": [
+      "I was not so surprised that I did say anything.",
+      "I did say that anything I was not so surprised.",
+      "I was so surprised that I didn’t say anything.",
+      "I didn’t say anything I was so surprised that."
+    ],
+    "c": 2,
+    "exp": "The structure 'so [adjective] that [result]' is used here correctly."
+  },
+  {
+    "subject": "English",
+    "q": "Rearrange to form a coherent paragraph: (a. One day he met a beautiful girl, b. He took money from rich, c. Robin Hood is a hero, d. Her father wanted to marry her to a rich man, e. He lived in the 12th century)",
+    "o": ["e d b a c", "a d b e a", "b a c d e", "c e b a d"],
+    "c": 3,
+    "exp": "The logic starts with the introduction (c), the time period (e), his action (b), the meeting (a), and the conflict (d)."
+  },
+  {
+    "subject": "English",
+    "q": "Lucy says she bought her new trousers suit in __________.",
+    "o": ["a disposal", "an offering", "a sale", "a reduction"],
+    "c": 2,
+    "exp": "'In a sale' is the standard idiomatic expression for buying clothes at a discounted price."
+  },
+  {
+    "subject": "English",
+    "q": "According to Charles Darwin, man is __________ from the apes.",
+    "o": ["originated", "descended", "entailed", "evolved"],
+    "c": 1,
+    "exp": "In biological terms regarding ancestry, 'descended from' is the correct term."
+  },
+  {
+    "subject": "English",
+    "q": "We’ll have to __________ the meeting until next week because no one can come tomorrow.",
+    "o": ["put down", "put up", "put off", "put on"],
+    "c": 2,
+    "exp": "'Put off' is a phrasal verb meaning to postpone or delay."
+  },
+  {
+    "subject": "English",
+    "q": "__________ if Aster should find her purse.",
+    "o": [
+      "She’d never be careless about her possessions again.",
+      "She’ll never be careless about her possessions again.",
+      "She’d never been careless about her possessions again.",
+      "She ‘d never had been careless about her possessions again."
+    ],
+    "c": 0,
+    "exp": "This is a conditional sentence. 'Should' in the if-clause suggests a future possibility, paired with 'would'."
+  },
+  {
+    "subject": "English",
+    "q": "Her principal occupation was finding enough to eat. What is the function of the underlined gerund (finding)?",
+    "o": ["object of a verb", "object of a preposition", "complement", "subject of a preposition"],
+    "c": 2,
+    "exp": "It follows a linking verb ('was') and describes the subject, making it a subject complement."
+  },
+  {
+    "subject": "English",
+    "q": "The more distant a star happens to be, __________ to us.",
+    "o": ["the dimmest it seems", "the dimmer it seems", "it seems dimmer", "it seems dimmest"],
+    "c": 1,
+    "exp": "The double comparative structure: 'The [comparative]..., the [comparative]...'."
+  },
+  {
+    "subject": "English",
+    "q": "I clearly remember __________ it by the window and now it has gone.",
+    "o": ["to put", "putting", "to putting", "put"],
+    "c": 1,
+    "exp": "Remember + gerund refers to a past action (the act of putting it there)."
+  },
+  {
+    "subject": "English",
+    "q": "Which one is odd in pronouncing of the -s ending?",
+    "o": ["brushes", "catches", "baths", "cages"],
+    "c": 2,
+    "exp": "Brushes, catches, and cages end in /iz/, while 'baths' ends in /s/ or /z/ depending on dialect, but lacks the extra syllable /iz/."
+  },
+  {
+    "subject": "English",
+    "q": "Which of the following is the correct word order? (parents after of your you which take do?)",
+    "o": ["which of you do take after your parents?", "Which of your parents you do take after?", "Do you take which of your parents after?", "Which of your parents do you take after?"],
+    "c": 3,
+    "exp": "The correct question structure is 'Which of [noun] + auxiliary + subject + verb?'"
+  },
+  {
+    "subject": "English",
+    "q": "Which sentence is correctly ordered? (Were the is that it about time presentation on the)",
+    "o": ["She is on about time that it were the presentation.", "It is the presentation that she were on about time.", "She is on about time that were it the presentation.", "It is about time that she were on the presentation"],
+    "c": 3,
+    "exp": "'It is about time' is followed by the past subjunctive."
+  },
+  {
+    "subject": "English",
+    "q": "Rearrange: (a. One day he met a beautiful girl, b. He took money from rich, c. Robin Hood is a hero, d. Her father wanted to marry her to a rich man, e. He lived in the 12th century)",
+    "o": ["e d b a c", "a d b e a", "b a c d e", "c e b a d"],
+    "c": 3,
+    "exp": "Intro (c) -> Time (e) -> Action (b) -> Meeting (a) -> Conflict (d)."
+  },
+  {
+    "subject": "English",
+    "q": "A little boy showed his father pen-knife. (a. little boy..., b. 'Are you sure it was lost?', c. 'I saw a man...', d. He said he had found it...)",
+    "o": ["a b c d e", "a d b c e", "a c b e d", "a d b e c"],
+    "c": 1,
+    "exp": "The boy shows the knife (a), says he found it (d), father asks if it was lost (b), boy confirms (e)."
+  },
+  {
+    "subject": "English",
+    "q": "Lucy says she bought her new trousers suit in __________.",
+    "o": ["a disposal", "an offering", "a sale", "a reduction"],
+    "c": 2,
+    "exp": "'On sale' or 'in a sale' is the standard phrase for discounted shopping."
+  },
+  {
+    "subject": "English",
+    "q": "The lighted candles on the altar __________ in the draught from the window.",
+    "o": ["fluttered", "wavered", "flickered", "shivered"],
+    "c": 2,
+    "exp": "Flame 'flickers' when there is a light wind."
+  },
+  {
+    "subject": "English",
+    "q": "Being already a graduate from another university, he was ___________ from the entrance examination.",
+    "o": ["exempted", "precluded", "excluded", "prohibited"],
+    "c": 0,
+    "exp": "'Exempted' means being free from a requirement others must follow."
+  },
+  [
+  {
+    "subject": "English",
+    "q": "Man: We missed you at Mike's party last night. Woman: I was badly engaged elsewhere. Moreover, I can’t tolerate Mike any more. What does the woman mean?",
+    "o": ["She doesn’t like to drink.", "She was too fond of Mike.", "She doesn't like being snubbed.", "She had another appointment and she wished to avoid Mike."],
+    "c": 3,
+    "exp": "'Badly engaged' means she had other plans, and 'can't tolerate' means she wanted to avoid him."
+  },
+  {
+    "subject": "English",
+    "q": "Which one of the following sentences is correctly punctuated?",
+    "o": ["What do you mean when you say “hyphenation?”", "What do you mean when you say “hyphenation”? ", "What do you mean when you say, “hyphenation”?", "What do you mean when you say, “hyphenation”?"],
+    "c": 1,
+    "exp": "The question mark belongs to the whole sentence, so it goes outside the quotation marks of a single word."
+  },
+  {
+    "subject": "English",
+    "q": "“Previous experience as a security guard would be an advantage.” This statement is likely taken from a ____________.",
+    "o": ["Social letter", "letter of application", "job advertisement", "business advertisement"],
+    "c": 2,
+    "exp": "Job requirements are typically found in job advertisements."
+  },
+  {
+    "subject": "English",
+    "q": "The most appropriate closing for a letter to your old college mate is ___________.",
+    "o": ["Sincerely", "Truly yours", "Bye for now", "Faithfully"],
+    "c": 2,
+    "exp": "For an informal/friendly letter, 'Bye for now' is the most appropriate among the options."
   }
 ]
