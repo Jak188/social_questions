@@ -5703,4 +5703,705 @@
     "o": ["The tall building", "fell down", "building", "fell"],
     "c": 0,
     "exp": "The noun phrase performing the action is the subject."
-  }]
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following statement explained history?",
+    "o": ["it advocates nationalism more than diversity", "it stimulates people to concentrate more on their own nation", "it supports us to understand past and current affairs", "it enables people to become more religious"],
+    "c": 2,
+    "exp": "History helps us understand the relationship between the past and the present."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following includes others?",
+    "o": ["Homo erectus", "Homo habilis", "Genus homo", "Homo sapiens"],
+    "c": 2,
+    "exp": "Genus Homo is the category that includes various species like habilis and erectus."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following was the main factor for the beginning of early civilization?",
+    "o": ["the emergence of farming", "introduction of religion", "the formation of states", "the renaissance"],
+    "c": 0,
+    "exp": "Farming led to settled life, which is the foundation of civilization."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following statement is incorrect about the roles of the leaders of the theocratic state?",
+    "o": ["they supervised the construction of irrigation canals", "they predicted the rise and fall of water level", "they devise calendars", "they inherited the properties of their followers"],
+    "c": 3,
+    "exp": "Theocratic leaders were religious/political heads, but inheriting all followers' property was not their defining role."
+  },
+  {
+    "subject": "History",
+    "q": "Which document provides a detailed account of the Aksumite state and its ports around the Red Sea?",
+    "o": ["The Periplus of the Erythraean Sea", "The Histories by Herodotus", "The Epic of Gilgamesh", "The Rosetta Stone"],
+    "c": 0,
+    "exp": "The Periplus of the Erythraean Sea is a key historical trade document for Aksum."
+  },
+  {
+    "subject": "History",
+    "q": "One of the following factors contributed for the emergence of complex communities?",
+    "o": ["the backwardness of internal and external trade", "the growth of agriculture", "poor payment of taxes", "the decline of trade routes"],
+    "c": 1,
+    "exp": "Agricultural growth provided the surplus needed for complex societies to develop."
+  },
+  {
+    "subject": "History",
+    "q": "To which language superfamily does the Arabic language belong?",
+    "o": ["Niger-Congo", "Afro-Asiatic", "Nilo-Saharan", "Khoisan"],
+    "c": 1,
+    "exp": "Arabic belongs to the Semitic branch of the Afro-Asiatic language family."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following combination is incorrect?",
+    "o": ["China-Logographic", "Cuneiform-Sumerian", "Hieroglyphic-Egypt", "Kush-Pictographic"],
+    "c": 3,
+    "exp": "Kush used Meroitic script, not a generic pictographic system like the others listed."
+  },
+  {
+    "subject": "History",
+    "q": "The edict of Milan was declared by one of the following Roman’s emperors?",
+    "o": ["Nero", "Constantine", "Diocletian", "Theodosium"],
+    "c": 1,
+    "exp": "Emperor Constantine issued the Edict of Milan in 313 AD to grant religious tolerance."
+  },
+  {
+    "subject": "History",
+    "q": "During the early Christian era, the two cities that competed for religious power were?",
+    "o": ["Rome and London", "Constantinople and Rome", "Paris and Berlin", "Jerusalem and Berlin"],
+    "c": 1,
+    "exp": "Rome and Constantinople were the main rival centers of Christian authority."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following factor accelerated the downfall of Axumite kingdom?",
+    "o": ["the spread of Christianity", "the expansion of trade", "the destruction of port of Adulis", "earthquake around the Red Sea"],
+    "c": 2,
+    "exp": "The destruction of Adulis by Muslim Arabs cut off Aksum's vital trade route."
+  },
+  {
+    "subject": "History",
+    "q": "The earliest Muslim Sultanate founded in Ethiopian region was?",
+    "o": ["Adal", "Shewa", "Fatagar", "Hadiya"],
+    "c": 1,
+    "exp": "The Sultanate of Shewa (Makhzumite dynasty) is considered the earliest."
+  },
+  {
+    "subject": "History",
+    "q": "Islam was introduced in the Horn of Africa through — gateways",
+    "o": ["Four", "Three", "Five", "Two"],
+    "c": 3,
+    "exp": "Islam mainly entered via the Zeila and Dahlak gateways."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following was the first political center of the Zagwe kingdom?",
+    "o": ["Lalibela", "Dakr", "Adafa", "Yeha"],
+    "c": 2,
+    "exp": "Adafa was the initial capital before Lalibela (Roha)."
+  },
+  {
+    "subject": "History",
+    "q": "One of the following was the cultural feature of the Zagwe dynasty?",
+    "o": ["development of rule about royal succession", "continuation of state structure", "construction of eleven Rock Hewn churches", "use of Agew language as state religion"],
+    "c": 2,
+    "exp": "The monolithic rock-hewn churches of Lalibela are their most famous cultural legacy."
+  },
+  {
+    "subject": "History",
+    "q": "One of the following was the main factor for the decline of Zagwe kingdom?",
+    "o": ["the rise of Islam", "the internal succession problem", "interference of foreign powers", "internal economic development"],
+    "c": 1,
+    "exp": "Constant power struggles among the Zagwe princes weakened the dynasty."
+  },
+  {
+    "subject": "History",
+    "q": "The last king of zagwe kingdom who was defeated by Yekunoamlak?",
+    "o": ["Nakute ab", "Harbe", "Yitbarek", "Lalibela"],
+    "c": 2,
+    "exp": "Yitbarek was the final Zagwe king overthrown by Yekuno Amlak in 1270."
+  },
+  {
+    "subject": "History",
+    "q": "The founder of the Zagwe kingdom was?",
+    "o": ["Yekunoamlak", "Yitbarek", "Meratek lehaimanot", "Dilnaod"],
+    "c": 2,
+    "exp": "Mara Takla Haymanot founded the Zagwe dynasty."
+  },
+  {
+    "subject": "History",
+    "q": "the Zaguwe dynasty came to power next to —",
+    "o": ["Damot", "Axum", "Gondar", "Adal state"],
+    "c": 1,
+    "exp": "The Zagwe dynasty succeeded the Aksumite Empire."
+  },
+  {
+    "subject": "History",
+    "q": "Which one of the following is correct about Christian highland kingdom from 1270 to 1529?",
+    "o": ["it had no permanent capital city", "it had no vast empire", "the rulers expanded relations with Europe", "it had used paper money"],
+    "c": 0,
+    "exp": "During this period, the kingdom used 'roving capitals' or mobile camps."
+  },
+  {
+    "subject": "History",
+    "q": "Which one of the following Sultanates associated with the Walasma dynasty?",
+    "o": ["Shewa", "Bali", "Ifat", "Dawuro"],
+    "c": 2,
+    "exp": "The Walasma dynasty was the ruling house of the Sultanate of Ifat and later Adal."
+  },
+  {
+    "subject": "History",
+    "q": "One of the following is incorrect about the dark age?",
+    "o": ["it was the early part of the medieval period", "civilization in Western Europe declined", "the Eastern Roman empire splitted from Western Roman empire", "dark age was taken place from 500 to 1000"],
+    "c": 2,
+    "exp": "The split of the Roman Empire happened before the 'Dark Ages' began."
+  },
+  {
+    "subject": "History",
+    "q": "New inventions of compass, better ships and maps were the factors for the beginning of:",
+    "o": ["renaissance", "reformation", "exploration and discovery", "enlightenment"],
+    "c": 2,
+    "exp": "Technological advances in navigation triggered the Age of Discovery."
+  },
+  {
+    "subject": "History",
+    "q": "The Seven Years war was taken place between?",
+    "o": ["Germany and Italy", "Britain and France", "Spain and Portugal", "Belgium and Denmark"],
+    "c": 1,
+    "exp": "The Seven Years' War was a global conflict primarily involving Britain and France."
+  },
+  {
+    "subject": "History",
+    "q": "Which one of the following was a key feature of the early capitalism in Europe?",
+    "o": ["the development of banking system facilitated long distance trade", "the decline of the POWER OF Bourgeoisie", "the relocation of manufacturing from cities to the countryside", "heavy investment in the construction of railways and roads"],
+    "c": 0,
+    "exp": "The rise of banking was essential for financing large-scale capitalist trade."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following were elements of capitalist economic relations?",
+    "o": ["long distance trade and banking", "urbanization and industry", "urbanization and long distance trade", "factory and industry"],
+    "c": 0,
+    "exp": "Capitalism grew out of expanded trade and the financial systems that supported it."
+  },
+  {
+    "subject": "History",
+    "q": "Renaissance was –",
+    "o": ["religious movement", "intellectual movement", "counter-reformation", "enlightenment"],
+    "c": 1,
+    "exp": "The Renaissance was primarily an intellectual and cultural rebirth in Europe."
+  },
+  {
+    "subject": "History",
+    "q": "The Holy Roman empire consisted of –",
+    "o": ["France and Italy", "Germany and Italy", "Britain and Spain", "Norway and Denmark"],
+    "c": 1,
+    "exp": "The Holy Roman Empire mainly encompassed German and Italian territories."
+  },
+  {
+    "subject": "History",
+    "q": "One of the following was the factor for the rise of early capitalism?",
+    "o": ["industrial revolution", "the beginning of exploration and discovery", "the decline of industry", "the devastation of agriculture"],
+    "c": 1,
+    "exp": "Exploration opened new markets and resources, fueling early capitalist growth."
+  },
+  {
+    "subject": "History",
+    "q": "one of the following person did not participate in the age of exploration and discovery",
+    "o": ["Christofer Columbus", "Amerigo Vespucci", "Donatelo", "Bartholemeu Dias"],
+    "c": 2,
+    "exp": "Donatello was a Renaissance sculptor, not an explorer."
+  },
+  {
+    "subject": "History",
+    "q": "What is a primary aim of studying history as an academic discipline?",
+    "o": ["To memorize important dates and figures from the past", "To learn how to effectively predict technological advancements", "To understand and analyze past events, recognize patterns, and apply this understanding to present", "To establish the superiority of one culture over another"],
+    "c": 2,
+    "exp": "History aims to provide context for the present by analyzing the past."
+  },
+  {
+    "subject": "History",
+    "q": "What is a major difference between historians and natural scientists?",
+    "o": ["Historians use controlled experiments", "Natural scientists include personal views in their findings", "Both follow the same methodology", "Historians make value judgments, while natural scientists report findings neutrally"],
+    "c": 3,
+    "exp": "History often involves interpretation and perspective, unlike the strict experimental neutrality of hard sciences."
+  },
+  {
+    "subject": "History",
+    "q": "What does the term historiography refer to?",
+    "o": ["The recording of events without any analysis", "The study and methods of writing history", "Writing history based only on myths and legends", "Preserving oral traditions without written records"],
+    "c": 1,
+    "exp": "Historiography is the study of how history is written and the methodologies used."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following is NOT listed as a problem in the study of Ethiopian history?",
+    "o": ["Reluctance to use oral traditions as reliable sources until the 1960s", "The political bias of scholars who studied Ethiopian history", "Lack of access to pertinent historical sources", "The complete absence of economic history studies in Ethiopia"],
+    "c": 3,
+    "exp": "While limited, economic history studies do exist; their 'complete absence' is not the cited problem."
+  },
+  {
+    "subject": "History",
+    "q": "What is considered a defining characteristic of modern academic history?",
+    "o": ["Using a critical, evidence-based approach to reconstruct the past", "Relying solely on oral traditions as historical sources", "Focusing only on political and military events", "Avoiding the use of written documents"],
+    "c": 0,
+    "exp": "Modern history relies on critical analysis of multiple sources."
+  },
+  {
+    "subject": "History",
+    "q": "Who is considered the 'father of modern historiography' in Western history?",
+    "o": ["Thucydides", "Herodotus", "Leopold von Ranke", "Aristotle"],
+    "c": 2,
+    "exp": "Leopold von Ranke established the standards for modern, source-based history."
+  },
+  {
+    "subject": "History",
+    "q": "What did Charles Darwin explain in his book 'Origin of Species'?",
+    "o": ["Humans were created by a divine being", "Humans evolved from simpler beings through gradual changes", "Humans have not changed over time", "The world was created in six days"],
+    "c": 1,
+    "exp": "Darwin's theory centers on evolution through natural selection."
+  },
+  {
+    "subject": "History",
+    "q": "When did Homo erectus likely master the use of fire?",
+    "o": ["1.5 million years ago", "500,000 years ago", "2 million years ago", "10,000 years ago"],
+    "c": 0,
+    "exp": "Homo erectus is generally credited with the first controlled use of fire around 1.5 million years ago."
+  },
+  {
+    "subject": "History",
+    "q": "Which event reached its climax during the New Kingdom period of ancient Egypt?",
+    "o": ["The reign of Queen Hatshepsut and expansion of trade", "The construction of the Great Pyramid of Giza", "The invasion of Egypt by the Persians", "The decline of Egyptian power under Cleopatra"],
+    "c": 0,
+    "exp": "The New Kingdom was marked by great expansion and prosperity, exemplified by Hatshepsut."
+  },
+  {
+    "subject": "History",
+    "q": "What was cuneiform?",
+    "o": ["A type of artwork", "A system of writing using wedge-shaped marks", "A language spoken by the Sumerians", "A tool used for farming"],
+    "c": 1,
+    "exp": "Cuneiform is one of the world's earliest systems of writing, developed by the Sumerians."
+  },
+  {
+    "subject": "History",
+    "q": "What is Hammurabi best known for?",
+    "o": ["Conquering Egypt", "Building the Great Pyramid", "Creating a set of laws", "Writing poetry"],
+    "c": 2,
+    "exp": "Hammurabi's Code is one of the most famous early legal systems."
+  },
+  {
+    "subject": "History",
+    "q": "What event marked the end of the independence of Greek city-states?",
+    "o": ["The outbreak of the Peloponnesian War", "The defeat of Greece by Alexander the Great", "The death of Alexander the Great", "The conquest of Greece by Philip II of Macedonia"],
+    "c": 3,
+    "exp": "Philip II's victory at Chaeronea effectively ended the independence of the Greek city-states."
+  },
+  {
+    "subject": "History",
+    "q": "What event led to the creation of the Roman Empire under Augustus?",
+    "o": ["The assassination of Julius Caesar", "The defeat of Cleopatra and Mark Antony by Octavian", "The establishment of the Pax Romana", "The formation of the Roman Republic"],
+    "c": 1,
+    "exp": "Octavian's (Augustus) victory at the Battle of Actium led to the transition from Republic to Empire."
+  },
+  {
+    "subject": "History",
+    "q": "What allowed the Maya to sustain their growing cities in the tropical environment?",
+    "o": ["Building terraced fields on mountainsides", "Constructing raised fields to prevent flooding", "Relying solely on hunting and gathering", "Importing all their food through trade"],
+    "c": 1,
+    "exp": "Raised field agriculture helped the Maya manage the swampy tropical lowlands."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following technological advancements was NOT attributed to the Incas?",
+    "o": ["Successful brain surgery", "Roads linking distant provinces", "Use of cement type in stone construction", "Treatment of malaria with quinine"],
+    "c": 2,
+    "exp": "The Incas are famous for dry-stone masonry (fitting stones without mortar/cement)."
+  },
+  {
+    "subject": "History",
+    "q": "The doctrine of the Holy Trinity was first confirmed by:",
+    "o": ["The Council of Constantinople in 385 A.D.", "The Patriarch of Rome in 250 A.D.", "The Council of Nicaea in 325 A.D.", "The Jewish priests in Jerusalem"],
+    "c": 2,
+    "exp": "The First Council of Nicaea formulated the early consensus on the Trinity."
+  },
+  {
+    "subject": "History",
+    "q": "Cushitic sub-branch includes which of the following languages?",
+    "o": ["Hadiya", "Gedeo", "Afar", "Kafa"],
+    "c": 2,
+    "exp": "Afar is a well-known Cushitic language in Ethiopia."
+  },
+  {
+    "subject": "History",
+    "q": "In the Oromo indigenous religion, who holds an important religious position similar to a high priest?",
+    "o": ["Qallu and Qalliti", "Abba Muda", "Abba Dulla", "Waqefanna followers"],
+    "c": 0,
+    "exp": "The Qallu is the spiritual leader in the Oromo traditional religion."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following highlights the significance of the Aksumite Kingdom between the 3rd and 7th centuries?",
+    "o": ["It was solely dependent on its internal trade network", "It was one of the world's four great powers, alongside Rome, Persia.", "It restricted maritime trade to the Red Sea region only", "It was known primarily for its conflicts with Rome"],
+    "c": 1,
+    "exp": "Aksum was recognized as a major global power during its peak."
+  },
+  {
+    "subject": "History",
+    "q": "Which factor contributed to the prosperity of the Kingdom of Da’amat?",
+    "o": ["Its advanced shipbuilding technology", "Its control over the Gulf of Aden", "Its dominance over the land of Punt", "Its strategic location for trade with South Arabia"],
+    "c": 3,
+    "exp": "Da'amat's proximity to South Arabia facilitated rich trade and cultural exchange."
+  },
+  {
+    "subject": "History",
+    "q": "Which event marked the end of the Sultanate of Shewa?",
+    "o": ["The invasion by the Kingdom of Damot", "Constant wars with the Zagwe Kingdom", "The overthrow of the Makhzumite dynasty", "The establishment of the Sultanate of Ifat"],
+    "c": 2,
+    "exp": "The Makhzumite dynasty of Shewa was eventually overthrown, leading to the rise of Ifat."
+  },
+  {
+    "subject": "History",
+    "q": "What major craft did the Beta-Israel expand into different region after 1540 to support their livelihood?",
+    "o": ["Farming and weaving", "Building and construction", "Jewelry making", "Shipbuilding"],
+    "c": 1,
+    "exp": "The Beta-Israel became famous for their skilled masonry and construction work."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following was NOT a contributing factor to the decline of the Western Roman Empire?",
+    "o": ["Internal political instability", "The wealth of the Eastern Roman Empire", "The invention of the Turks", "Invasions by Germanic tribes"],
+    "c": 2,
+    "exp": "The 'invention of the Turks' is historically inaccurate for the period of the Western Roman Empire's fall."
+  },
+  {
+    "subject": "History",
+    "q": "What was the main reason for the creation of the College of Cardinals in 1059?",
+    "o": ["To oversee the land holdings of the church", "To elect a pope without interference from kings or mobs", "To establish new trade regulations in Christendom", "To serve as an advisory council to the pope"],
+    "c": 1,
+    "exp": "The College of Cardinals was established to ensure the independence of Papal elections."
+  },
+  {
+    "subject": "History",
+    "q": "What claim did Pope Innocent III make during his reign (1198-1216)?",
+    "o": ["The authority of kings was higher than the church", "Bishops should focus solely on spiritual matters", "The clergy should have no involvement in state affairs", "The word of the church was final and above any other ruler"],
+    "c": 3,
+    "exp": "Pope Innocent III asserted that the Papacy had supreme authority over both church and secular rulers."
+  },
+  {
+    "subject": "History",
+    "q": "The Muslim contributions in medicine during the Middle Ages included all of the following except:",
+    "o": ["The development of the science of optics", "The establishment of hospitals for public health care", "The creation of the first vaccines for infectious diseases", "The compilation of medical knowledge in texts"],
+    "c": 2,
+    "exp": "While they pioneered many medical fields, modern vaccines were a much later invention."
+  },
+  {
+    "subject": "History",
+    "q": "Which Italian cities were predominantly involved in long-distance trade during the medieval period?",
+    "o": ["Florence and Rome", "Venice and Genoa", "Milan and Naples", "Turin and Bologna"],
+    "c": 1,
+    "exp": "Venice and Genoa were the leading maritime trade powers in the Mediterranean."
+  },
+  {
+    "subject": "History",
+    "q": "Which Spanish adventurers are known for their conquests of the Aztec and Inca empires during the 16th C?",
+    "o": ["Hernan Cortes and Francisco Pizarro", "Ferdinand Magellan and Vasco da Gama", "Christopher Columbus and Amerigo Vespucci", "Juan Ponce de León and Hernando de Soto"],
+    "c": 0,
+    "exp": "Cortes conquered the Aztecs (Mexico) and Pizarro conquered the Incas (Peru)."
+  },
+  {
+    "subject": "History",
+    "q": "How did John Calvin's doctrine of predestination influence the Calvinist community?",
+    "o": ["It emphasized the importance of individual salvation through works", "It encouraged a strict moral code and hard work, with the belief that only the 'elect'", "It rejected the need for church leaders or Priests", "It focused on the importance of religious tolerance and coexistence"],
+    "c": 1,
+    "exp": "Calvinism promoted the idea that hard work and moral discipline were signs of being 'elected' for salvation."
+  },
+  {
+    "subject": "History",
+    "q": "What role did Isaac Newton play in the development of Enlightenment ideas?",
+    "o": ["He inspired philosophers to reject science", "He contributed to the arts and culture for social development", "He focused on political reform", "He showed the power of reason in explaining the natural world"],
+    "c": 3,
+    "exp": "Newton's laws demonstrated that the universe follows predictable, rational laws."
+  },
+  {
+    "subject": "History",
+    "q": "According to classical capitalism, what role should government play in the economy?",
+    "o": ["Active regulation and intervention in the market", "Complete control over production and wages", "Limited intervention, following the principle of laissez-faire", "Ensuring equal distribution of wealth among the population"],
+    "c": 2,
+    "exp": "Laissez-faire capitalism advocates for minimal government interference in the market."
+  },
+  {
+    "subject": "History",
+    "q": "How did imperialism relate to the industrial revolution?",
+    "o": ["Imperialism developed after the Age of Exploration, unrelated to industrialization", "Imperialism was a direct result of earlier industrialization", "Industrialization did not impact imperialism at all", "Imperialism declined as industrialization increased"],
+    "c": 1,
+    "exp": "Industrialized nations sought colonies for raw materials and new markets for their goods."
+  },
+  {
+    "subject": "History",
+    "q": "By 1850, which industry in Britain was dominated by the factory system?",
+    "o": ["Iron industry", "Coal mining industry", "Cotton textile industry", "Agricultural industry"],
+    "c": 2,
+    "exp": "The cotton textile industry was the first to be fully transformed by the factory system."
+  },
+  {
+    "subject": "History",
+    "q": "Who was invited to lead the Sicilian uprising in 1860?",
+    "o": ["Cavour", "Victor Emmanuel", "Napoleon III", "Garibaldi"],
+    "c": 3,
+    "exp": "Giuseppe Garibaldi led the 'Red Shirts' to support the uprising in Sicily."
+  },
+  {
+    "subject": "History",
+    "q": "What was one of the primary obstacles to German unification in the 1850s?",
+    "o": ["Austria's desire to maintain leadership in the German Confederation", "The strong feeling German nationalism North and South Germany", "The support of the German princes for unification", "Cultural unity between North and South Germany"],
+    "c": 0,
+    "exp": "Austria rivaled Prussia for dominance over the German states, hindering unification."
+  },
+  {
+    "subject": "History",
+    "q": "What was the outcome of the American Civil War?",
+    "o": ["The Confederacy gained independence", "The Union was preserved, and slavery was abolished", "The North agreed to a peace treaty with the South", "The war ended in a stalemate"],
+    "c": 1,
+    "exp": "The Union victory resulted in the 13th Amendment and the end of slavery."
+  },
+  {
+    "subject": "History",
+    "q": "What caused Pan-Slav nationalists in Serbia to become outraged in 1908?",
+    "o": ["Austria-Hungary's annexation of Bosnia and Herzegovina", "The dissolution of the Ottoman Empire", "The creation of the Entente Cordiale", "The Anglo-Russian Entente"],
+    "c": 0,
+    "exp": "The annexation of Bosnia by Austria-Hungary threatened Serbian nationalist goals."
+  },
+  {
+    "subject": "History",
+    "q": "What was the Entente Cordiale of 1904?",
+    "o": ["An agreement between Britain and Austria-Hungary", "A peace agreement between Germany and France resolving their differences", "An agreement between Britain and France resolving their differences", "A commercial treaty between Britain and Russia"],
+    "c": 2,
+    "exp": "It was a series of agreements between Britain and France, ending colonial disputes."
+  },
+  {
+    "subject": "History",
+    "q": "What was the primary reason the 'Legitimate Trade' replaced the Trans-Atlantic Slave Trade?",
+    "o": ["Slavery was becoming illegal globally", "The demand for human labor declined", "The abolition of the Trans-Atlantic Slave Trade by European", "African rulers stopped participating in the slave trade"],
+    "c": 2,
+    "exp": "The industrial revolution changed economic interests, leading Europeans to favor raw material trade over slaves."
+  },
+  {
+    "subject": "History",
+    "q": "What was a result of the economic decline in the early 1870s for European powers?",
+    "o": ["Increased focus on domestic industrial development", "Europeans turned to non-industrial regions like Africa", "The abolition of colonial expansion", "A retreat from foreign trade"],
+    "c": 1,
+    "exp": "Economic depression in Europe pushed powers to seek new markets and resources in Africa."
+  },
+  {
+    "subject": "History",
+    "q": "Which countries were part of the territories over which Germany declared a protectorate in 1884?",
+    "o": ["Egypt, Libya, and Sudan", "South Africa, Zimbabwe, and Zambia", "Ghana, Kenya, and Somalia", "Togoland, Cameroon, and Southwest Africa"],
+    "c": 3,
+    "exp": "Bismarck declared these West and Southwest African territories as German protectorates."
+  },
+  {
+    "subject": "History",
+    "q": "Where was the Wassoulou Empire located?",
+    "o": ["Present-day Guinea, Sierra Leone, Côte d'Ivoire", "Present-day Egypt, Sudan, and Eritrea", "Present-day Nigeria, Chad, and Cameroon", "Present-day South Africa and Botswana"],
+    "c": 0,
+    "exp": "Samori Toure's Wassoulou Empire was located in West Africa."
+  },
+  {
+    "subject": "History",
+    "q": "What role did Samori Toure play in resisting colonialism?",
+    "o": ["He allied with the British to fight the French", "He introduced Western military tactics to Africa", "He formed a powerful empire and resisted French", "He united all African states to resist colonization"],
+    "c": 2,
+    "exp": "Samori Toure is famous for his long military resistance against French colonial expansion."
+  },
+  {
+    "subject": "History",
+    "q": "What happened to Urabi after the failure of his revolt?",
+    "o": ["He was executed for rebellion", "He fled to Sudan and continued his resistance", "He was pardoned immediately and remained in Egypt", "He was exiled to Ceylon (now Sri Lanka)"],
+    "c": 3,
+    "exp": "Ahmed Urabi was exiled by the British after the defeat of his nationalist revolt."
+  },
+  {
+    "subject": "History",
+    "q": "Who laid the foundations for the French policy of 'Direct Rule'?",
+    "o": ["Charles de Gaulle", "Albert Sarraut", "Léopold Senghor", "Georges Clemenceau"],
+    "c": 1,
+    "exp": "Albert Sarraut was a key colonial administrator who formalized the French system of governance in Africa."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following was a characteristic of the Belgian administrative system in the Congo?",
+    "o": ["Indirect rule through local chiefs", "Large-scale extraction of natural resources through forced labor", "Promotion of democratic governance", "Focus on education and social development"],
+    "c": 1,
+    "exp": "King Leopold II's rule in the Congo was notorious for extreme exploitation and forced labor."
+  },
+  {
+    "subject": "History",
+    "q": "The main goal of the French policy of Assimilation was:",
+    "o": ["To preserve African cultures", "To turn Africans into French citizens by adopting French language and culture", "To prepare African colonies for independence", "To create a separate legal system for Africans"],
+    "c": 1,
+    "exp": "Assimilation aimed to integrate colonial subjects into French cultural and political life."
+  },
+  {
+    "subject": "History",
+    "q": "Which treaty marked the formal end of the First World War?",
+    "o": ["Treaty of London", "Treaty of Versailles", "Treaty of Paris", "Treaty of Berlin"],
+    "c": 1,
+    "exp": "The Treaty of Versailles (1919) officially ended the war between Germany and the Allied Powers."
+  },
+  {
+    "subject": "History",
+    "q": "Which of the following was NOT a major cause of World War I?",
+    "o": ["Imperialism", "Militarism", "The Great Depression", "Nationalism"],
+    "c": 2,
+    "exp": "The Great Depression occurred in 1929, well after World War I (1914-1918) had ended."
+  },
+  {
+    "subject": "History",
+    "q": "The League of Nations was created primarily to:",
+    "o": ["Promote international trade", "Prevent future world conflicts through diplomacy", "Establish a global currency", "Punish the Central Powers"],
+    "c": 1,
+    "exp": "Its main mission was to maintain world peace through collective security and negotiation."
+  },
+  {
+    "subject": "History",
+    "q": "Who was the leader of the Bolshevik Revolution in Russia in 1917?",
+    "o": ["Joseph Stalin", "Vladimir Lenin", "Leon Trotsky", "Nicholas II"],
+    "c": 1,
+    "exp": "Vladimir Lenin led the Bolsheviks to power, establishing the Soviet state."
+  },
+  {
+    "subject": "History",
+    "q": "The 'Zemene Mesafint' (Era of Princes) in Ethiopia was characterized by:",
+    "o": ["A strong central monarchy", "Peace and stability", "The dominance of regional lords and a weak central emperor", "Expansion of foreign trade"],
+    "c": 2,
+    "exp": "During this era, power was fragmented among regional warlords while the Emperor was a figurehead."
+  },
+  {
+    "subject": "History",
+    "q": "Who was the main architect of the modern Ethiopian state during the late 19th century?",
+    "o": ["Emperor Tewodros II", "Emperor Yohannes IV", "Emperor Menelik II", "Emperor Haile Selassie I"],
+    "c": 2,
+    "exp": "Menelik II is credited with significant territorial expansion and modernization (telephones, railways, etc.)."
+  },
+  {
+    "subject": "History",
+    "q": "The Battle of Adwa (1896) was significant because:",
+    "o": ["It led to the colonization of Ethiopia", "It was the first major victory of an African power over a European colonial army", "It marked the beginning of the Italian occupation", "It was a religious conflict"],
+    "c": 1,
+    "exp": "Adwa's victory preserved Ethiopian independence and inspired pan-Africanism globally."
+  },
+  {
+    "subject": "History",
+    "q": "What was the main purpose of the Council of Kormat in 1878?",
+    "o": ["To discuss military strategy against the Mahdists", "To resolve religious differences within the Orthodox Church", "To establish a new administrative capital", "To negotiate with the British"],
+    "c": 1,
+    "exp": "The Council of Boru Meda (often associated with Kormat) aimed to unify Orthodox Christian doctrine."
+  },
+  {
+    "subject": "History",
+    "q": "The Hewett Treaty (1884) was signed between Ethiopia and:",
+    "o": ["Italy", "France", "Great Britain", "Egypt"],
+    "c": 2,
+    "exp": "The treaty was between Emperor Yohannes IV and Britain (Admiral Hewett) regarding Bogos and port access."
+  },
+  {
+    "subject": "History",
+    "q": "Which Italian leader came to power in 1922 and later invaded Ethiopia?",
+    "o": ["Victor Emmanuel III", "Benito Mussolini", "Giuseppe Garibaldi", "Count Cavour"],
+    "c": 1,
+    "exp": "Mussolini led the Fascist party and launched the second Italo-Ethiopian war in 1935."
+  },
+  {
+    "subject": "History",
+    "q": "The main reason for the failure of the League of Nations to stop the Italian invasion of Ethiopia was:",
+    "o": ["Ethiopia was not a member", "The lack of an effective enforcement mechanism (army)", "Italy had the support of the USA", "The League did not recognize the invasion"],
+    "c": 1,
+    "exp": "The League's inability to impose serious sanctions or use force made it ineffective."
+  },
+  {
+    "subject": "History",
+    "q": "The 'Black Lion' organization was:",
+    "o": ["An Italian colonial police force", "An Ethiopian resistance movement against the Italian occupation", "A commercial company during the Menelik era", "A religious sect"],
+    "c": 1,
+    "exp": "It was a patriotic resistance group formed by graduates of the Holeta Military Academy."
+  },
+  {
+    "subject": "History",
+    "q": "In which year was Ethiopia liberated from Italian occupation?",
+    "o": ["1936", "1941", "1945", "1931"],
+    "c": 1,
+    "exp": "Ethiopian patriots and Allied forces defeated the Italians in 1941."
+  },
+  {
+    "subject": "History",
+    "q": "The United Nations (UN) was established in 1945 to replace which organization?",
+    "o": ["The African Union", "The League of Nations", "The Warsaw Pact", "The European Union"],
+    "c": 1,
+    "exp": "The UN was founded after WWII to succeed the failed League of Nations."
+  },
+  {
+    "subject": "History",
+    "q": "The Cold War was a period of tension primarily between:",
+    "o": ["Britain and France", "The USA and the Soviet Union", "Germany and Italy", "China and Japan"],
+    "c": 1,
+    "exp": "It was a global ideological and geopolitical struggle between Western and Eastern blocs."
+  },
+  {
+    "subject": "History",
+    "q": "Which movement aimed to unite all African people in the struggle for independence?",
+    "o": ["The Renaissance", "Pan-Africanism", "The Reformation", "The Enlightenment"],
+    "c": 1,
+    "exp": "Pan-Africanism sought to foster solidarity among all people of African descent."
+  },
+  {
+    "subject": "History",
+    "q": "The Organization of African Unity (OAU) was founded in 1963 in:",
+    "o": ["Nairobi", "Cairo", "Addis Ababa", "Accra"],
+    "c": 2,
+    "exp": "Addis Ababa remains the headquarters for the OAU (now the African Union)."
+  },
+  {
+    "subject": "History",
+    "q": "Which event led to the downfall of the Ethiopian monarchy in 1974?",
+    "o": ["The Battle of Adwa", "The Italian invasion", "The popular revolution and military coup", "A foreign invasion"],
+    "c": 2,
+    "exp": "Economic hardship and political unrest led to the 1974 revolution that ousted Haile Selassie."
+  },
+  {
+    "subject": "History",
+    "q": "What was the 'Derg'?",
+    "o": ["A traditional Ethiopian court", "A committee of military officers that ruled Ethiopia after 1974", "A religious council", "An ancient agricultural tool"],
+    "c": 1,
+    "exp": "The Derg was the military junta that governed Ethiopia following the revolution."
+  },
+  {
+    "subject": "History",
+    "q": "The policy of 'Land to the Tiller' was implemented during which era?",
+    "o": ["The Zagwe Dynasty", "The Reign of Menelik II", "The Derg Regime", "The Gondar Period"],
+    "c": 2,
+    "exp": "The 1975 land reform was a cornerstone policy of the Derg regime."
+  },
+  {
+    "subject": "History",
+    "q": "Which international agreement aims to address climate change?",
+    "o": ["The Treaty of Versailles", "The Paris Agreement", "The Marshall Plan", "The Berlin Act"],
+    "c": 1,
+    "exp": "The Paris Agreement is the current global framework for reducing carbon emissions."
+  },
+  {
+    "subject": "History",
+    "q": "The term 'Globalization' refers to:",
+    "o": ["The isolation of nations", "Increasing global interconnectivity and integration", "The decline of international trade", "A return to traditional farming"],
+    "c": 1,
+    "exp": "Globalization involves the exchange of ideas, products, and culture across borders."
+  },
+  {
+    "subject": "History",
+    "q": "A primary source in history is:",
+    "o": ["A textbook written in 2020", "An eyewitness account or original document from the time of the event", "A fictional movie about history", "A summary found on Wikipedia"],
+    "c": 1,
+    "exp": "Primary sources (letters, diaries, artifacts) provide direct evidence from the past."
+  }
+]
