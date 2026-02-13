@@ -1,4 +1,3 @@
-PK:
 # ===================== IMPORTS =====================
 import os, json, asyncio, random, re
 import aiosqlite
