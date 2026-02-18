@@ -25,7 +25,7 @@ def keep_alive():
     Thread(target=run, daemon=True).start()
 
 # ===================== CONFIG =====================
-TOKEN = os.getenv("8195013346:AAG0oJjZREWEhFVoaZGF4kxSwut1YKSw6lY")  # 🔐 SAFE
+TOKEN = os.getenv("8195013346:AAGSAv770HIJNVeTY0KvF2mmkkUnq7opYo0")  # 🔐 SAFE
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
