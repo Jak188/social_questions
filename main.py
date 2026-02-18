@@ -1,276 +1,213 @@
-# ===================== IMPORTS =====================
-import os, json, asyncio, random, re
-import aiosqlite
-from datetime import datetime, timedelta, timezone
-from flask import Flask
-from threading import Thread
-
-from telegram import Update, Poll
+import os
+import sqlite3
+from datetime import datetime
+from dotenv import load_dotenv
+from telegram import Update
 from telegram.ext import (
-    Application, CommandHandler, PollAnswerHandler,
-    ContextTypes, ChatMemberHandler
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes,
 )
 
-# ===================== FLASK KEEP ALIVE =====================
-app = Flask(__name__)
+# ---------------- LOAD ENV ----------------
+load_dotenv()
 
-@app.route('/')
-def home():
-    return "Bot is Online!"
+TOKEN = os.getenv("BOT_TOKEN")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
-def run():
-    app.run(host='0.0.0.0', port=8080)
+# ---------------- DATABASE ----------------
 
-def keep_alive():
-    Thread(target=run, daemon=True).start()
+def connect():
+    return sqlite3.connect("bot.db")
 
-# ===================== CONFIG =====================
-TOKEN = os.getenv("8195013346:AAGSAv770HIJNVeTY0KvF2mmkkUnq7opYo0")  # 🔐 SAFE
-ADMIN_IDS = [7231324244, 8394878208]
-ADMIN_USERNAME = "@penguiner"
-GLOBAL_STOP = False
+def init_db():
+    conn = connect()
+    cur = conn.cursor()
 
-# ===================== DATABASE =====================
-async def init_db():
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        await db.execute("""
-        CREATE TABLE IF NOT EXISTS users(
-            user_id INTEGER PRIMARY KEY,
-            username TEXT,
-            points REAL DEFAULT 0,
-            status TEXT DEFAULT 'pending',
-            is_blocked INTEGER DEFAULT 0,
-            muted_until TEXT,
-            reg_at TEXT
-        )""")
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users(
+        user_id INTEGER PRIMARY KEY,
+        username TEXT,
+        first_name TEXT,
+        status TEXT DEFAULT 'pending',
+        score REAL DEFAULT 0,
+        registered_at TEXT
+    )
+    """)
 
-        await db.execute("""
-        CREATE TABLE IF NOT EXISTS active_polls(
-            poll_id TEXT PRIMARY KEY,
-            correct_option INTEGER,
-            chat_id INTEGER,
-            first_winner INTEGER DEFAULT 0
-        )""")
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS logs(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action TEXT,
+        user_id INTEGER,
+        time TEXT
+    )
+    """)
 
-        await db.execute("""
-        CREATE TABLE IF NOT EXISTS logs(
-            user_id INTEGER,
-            name TEXT,
-            action TEXT,
-            timestamp TEXT,
-            date TEXT
-        )""")
+    conn.commit()
+    conn.close()
 
-        await db.commit()
+def add_user(user_id, username, first_name):
+    conn = connect()
+    cur = conn.cursor()
 
-# ===================== QUIZ =====================
-async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
-    if GLOBAL_STOP:
+    cur.execute("SELECT user_id FROM users WHERE user_id=?", (user_id,))
+    if cur.fetchone():
+        conn.close()
+        return False
+
+    cur.execute("""
+        INSERT INTO users(user_id, username, first_name, registered_at)
+        VALUES(?,?,?,?)
+    """, (user_id, username, first_name, datetime.now().isoformat()))
+
+    conn.commit()
+    conn.close()
+    return True
+
+def get_user(user_id):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
+    user = cur.fetchone()
+    conn.close()
+    return user
+
+def approve_user(user_id):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("UPDATE users SET status='approved' WHERE user_id=?", (user_id,))
+    conn.commit()
+    conn.close()
+
+def reject_user(user_id):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM users WHERE user_id=?", (user_id,))
+    conn.commit()
+    conn.close()
+
+def get_all_users():
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users")
+    users = cur.fetchall()
+    conn.close()
+    return users
+
+def add_log(action, user_id):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO logs(action,user_id,time)
+        VALUES(?,?,?)
+    """, (action, user_id, datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+
+# ---------------- COMMANDS ----------------
+
+async def start2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+
+    if get_user(user.id):
+        await update.message.reply_text("⚠ You already requested registration.")
         return
 
-    job = context.job
-    try:
-        with open("questions.json", "r", encoding="utf-8") as f:
-            all_q = json.load(f)
+    add_user(user.id, user.username, user.first_name)
 
-        sub = job.data.get("subject")
-        questions = [q for q in all_q if q.get("subject","").lower()==sub] if sub else all_q
-        if not questions:
-            return
+    await update.message.reply_text("✅ Registration request sent to admin.")
 
-        q = random.choice(questions)
+    await context.bot.send_message(
+        ADMIN_ID,
+        f"📥 New Registration Request\n\n"
+        f"Name: {user.first_name}\n"
+        f"Username: @{user.username}\n"
+        f"ID: {user.id}\n\n"
+        f"Reply with /approve or /anapprove"
+    )
 
-        msg = await context.bot.send_poll(
-            job.chat_id,
-            f"📚 [{q.get('subject','General')}] {q['q']}",
-            q["o"],
-            type=Poll.QUIZ,
-            is_anonymous=False,
-            correct_option_id=int(q["c"]),
-            explanation=q.get("exp","")
-        )
+async def approve(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
 
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute(
-                "INSERT INTO active_polls VALUES(?,?,?,0)",
-                (msg.poll.id, int(q["c"]), job.chat_id)
-            )
-            await db.commit()
+    if not update.message.reply_to_message:
+        return
 
-    except Exception as e:
-        print("Quiz Error:", e)
+    text = update.message.reply_to_message.text
 
-# ===================== ANSWER =====================
-async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    ans = update.poll_answer
+    if "ID:" not in text:
+        return
 
-    async with aiosqlite.connect("quiz_bot.db") as db:
+    user_id = int(text.split("ID:")[1].strip())
 
-        async with db.execute("SELECT * FROM users WHERE user_id=?", (ans.user.id,)) as c:
-            user = await c.fetchone()
+    approve_user(user_id)
+    add_log("approved", user_id)
 
-        if not user or user[3] != "approved" or user[4] == 1:
-            return
+    await context.bot.send_message(user_id, "🎉 Your registration is approved!")
+    await update.message.reply_text("✔ User approved.")
 
-        if user[5] and datetime.now(timezone.utc) < datetime.fromisoformat(user[5]):
-            return
+async def anapprove(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
 
-        async with db.execute(
-            "SELECT correct_option, first_winner, chat_id FROM active_polls WHERE poll_id=?",
-            (ans.poll_id,)
-        ) as c:
-            poll = await c.fetchone()
+    if not update.message.reply_to_message:
+        return
 
-        if not poll:
-            return
+    text = update.message.reply_to_message.text
 
-        is_correct = ans.option_ids[0] == poll[0]
+    if "ID:" not in text:
+        return
 
-        if is_correct and poll[1] == 0:
-            points = 8
-            await db.execute(
-                "UPDATE active_polls SET first_winner=? WHERE poll_id=?",
-                (ans.user.id, ans.poll_id)
-            )
-            await context.bot.send_message(
-                poll[2],
-                f"🏆 {ans.user.first_name} ቀድሞ መልሶ 8 ነጥብ አግኝቷል!"
-            )
-        elif is_correct:
-            points = 4
-        else:
-            points = 1.5
+    user_id = int(text.split("ID:")[1].strip())
 
-        await db.execute(
-            "UPDATE users SET points = points + ? WHERE user_id=?",
-            (points, ans.user.id)
-        )
+    reject_user(user_id)
+    add_log("rejected", user_id)
 
-        now = datetime.now()
-        await db.execute(
-            "INSERT INTO logs VALUES(?,?,?,?,?)",
-            (
-                ans.user.id,
-                ans.user.first_name,
-                "✔️" if is_correct else "❎",
-                now.strftime("%H:%M:%S"),
-                now.strftime("%Y-%m-%d")
-            )
-        )
+    await context.bot.send_message(user_id, "❌ Your registration was rejected.")
+    await update.message.reply_text("❎ User rejected.")
 
-        await db.commit()
+async def gof(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = get_user(update.effective_user.id)
 
-# ===================== START =====================
-async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    chat = update.effective_chat
-    cmd = update.message.text.split("@")[0].lower()
+    if not user:
+        await update.message.reply_text("⚠ You are not registered.")
+        return
 
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        async with db.execute("SELECT * FROM users WHERE user_id=?", (user.id,)) as c:
-            u = await c.fetchone()
+    if user[3] != "approved":
+        await update.message.reply_text("⌛ Waiting for admin approval.")
+        return
 
-        if not u:
-            await db.execute(
-                "INSERT INTO users(user_id, username, reg_at) VALUES(?,?,?)",
-                (user.id, user.first_name,
-                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            )
-            await db.commit()
+    await update.message.reply_text("🚀 Welcome to the system!")
 
-            await update.message.reply_text(
-                f"👋 ውድ {user.first_name}\nምዝገባዎ በሂደት ላይ ነው። አድሚኑ እስኪቀበል ይጠብቁ።"
-            )
+async def pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
 
-            for a in ADMIN_IDS:
-                await context.bot.send_message(
-                    a,
-                    f"👤 New Registration\nName:{user.first_name}\nID:{user.id}"
-                )
-            return
+    users = get_all_users()
 
-        if u[3] == "pending":
-            await update.message.reply_text(
-                "⏳ አድሚኑ busy ነው። በትእግስት ይጠብቁ።"
-            )
-            return
+    if not users:
+        await update.message.reply_text("No users.")
+        return
 
-        if u[4] == 1:
-            await update.message.reply_text(
-                f"🚫 ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME}"
-            )
-            return
+    text = "📌 Registered Users\n\n"
+    for u in users:
+        text += f"{u[2]} (@{u[1]}) - {u[3]}\n"
 
-        # ================= QUIZ START =================
-        if cmd == "/stop2":
+    await update.message.reply_text(text)
 
-            for j in context.job_queue.get_jobs_by_name(str(chat.id)):
-                j.schedule_removal()
+# ---------------- MAIN ----------------
 
-            if chat.type == "private":
-                async with db.execute(
-                    "SELECT points FROM users WHERE user_id=?",
-                    (user.id,)
-                ) as c:
-                    pts = (await c.fetchone())[0]
-
-                await update.message.reply_text(
-                    f"🛑 ቆሟል።\nነጥብዎ: {pts}"
-                )
-            else:
-                async with db.execute(
-                    "SELECT username, points FROM users ORDER BY points DESC LIMIT 15"
-                ) as c:
-                    rows = await c.fetchall()
-
-                text = "📊 Best 15\n"
-                for i, r in enumerate(rows, 1):
-                    text += f"{i}. {r[0]} - {r[1]} pts\n"
-
-                await update.message.reply_text(text)
-            return
-
-        subject_map = {
-            "/history_srm2": "history",
-            "/geography_srm2": "geography",
-            "/mathematics_srm2": "mathematics",
-            "/english_srm2": "english",
-        }
-
-        sub = subject_map.get(cmd)
-
-        await update.message.reply_text(
-            "🚀 ውድድር ጀመረ!\n8 ነጥብ | 4 ነጥብ | 1.5 ነጥብ"
-        )
-
-        context.job_queue.run_repeating(
-            send_quiz,
-            interval=180,
-            first=1,
-            chat_id=chat.id,
-            data={"subject": sub},
-            name=str(chat.id)
-        )
-
-# ===================== MAIN =====================
-def main():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(init_db())
-
-    app_bot = Application.builder().token(TOKEN).build()
-
-    app_bot.add_handler(CommandHandler(
-        ["start2","history_srm2","geography_srm2",
-         "mathematics_srm2","english_srm2","stop2"],
-        start_handler
-    ))
-
-    app_bot.add_handler(PollAnswerHandler(receive_answer))
-
-    keep_alive()
-    app_bot.run_polling()
-
-# 🔥 FIXED MAIN BUG
 if __name__ == "__main__":
-    main()
+    init_db()
+
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start2", start2))
+    app.add_handler(CommandHandler("approve", approve))
+    app.add_handler(CommandHandler("anapprove", anapprove))
+    app.add_handler(CommandHandler("gof", gof))
+    app.add_handler(CommandHandler("pin", pin))
+
+    print("Bot running...")
+    app.run_polling()
