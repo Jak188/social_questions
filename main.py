@@ -15,7 +15,7 @@ def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run).start()
 
 # --- Configuration ---
-TOKEN = "YOUR_BOT_TOKEN"
+TOKEN = "8195013346:AAGe1GBW_I3HB6cfY4FwajbsJouJcwCDo08"
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
