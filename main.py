@@ -400,5 +400,5 @@ def main():
     bot_app.add_handler(PollAnswerHandler(receive_answer))
     bot_app.run_polling()
 
-if __name__ == "": 
+if __name__ == "__main__":
     main()
