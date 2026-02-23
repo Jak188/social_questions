@@ -211,7 +211,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.execute("INSERT OR REPLACE INTO active_paths VALUES(?,?,?,?,?)", (chat.id, chat.title or "Private", user.first_name, now_t, sub))
             await db.commit()
         for a in ADMIN_IDS: await context.bot.send_message(a, f"🚀 Start: {chat.title or 'Private'} | በ: {user.first_name} | {sub}")
-
+          
 # ===================== ADMIN SYSTEM =====================
 async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS: return
