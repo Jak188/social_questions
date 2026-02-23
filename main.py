@@ -132,6 +132,21 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if u and u[4] == 1:
         await update.message.reply_text(f"🚫 ከአድሚን በመጣ ትዕዛዝ መሰረት ለጊዜው ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME} ን ያናግሩ።")
         return
+    
+    if u and u[5]:
+        try:
+            m_until = datetime.fromisoformat(u[5])
+            if datetime.now(timezone.utc) < m_until:
+                return
+        except: pass
+
+    if chat.type != "private" and cmd.startswith("/") and cmd not in ["/start2","/stop2"] and user.id not in ADMIN_IDS:
+        m_time = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
+        async with aiosqlite.connect("quiz_bot.db") as db:
+            await db.execute("UPDATE users SET points = points - 3.17, muted_until=? WHERE user_id=?", (m_time, user.id))
+            await db.commit()
+        await update.message.reply_text(f"⚠️ {user.first_name} በግሩፕ ውስጥ ያልተፈቀደ ትዕዛዝ በመጠቀምዎ 3.17 ነጥብ ተቀንሶ ለ17 ደቂቃ ታግደዋል።")
+        return
 
     if GLOBAL_STOP and user.id not in ADMIN_IDS:
         await update.message.reply_text(f"⛔️ ቦቱ ከአድሚን በመጣ ትዕዛዝ ለተወሰነ ጊዜ ቆሟል። ለበለጠ መረጃ {ADMIN_USERNAME}")
@@ -165,15 +180,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.commit()
         await update.message.reply_text(f"⚠️ የህግ ጥሰት! ያልተፈቀደ ትዕዛዝ በመጠቀሞ ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME}")
         for a in ADMIN_IDS: await context.bot.send_message(a, f"🚫 Blocked: {user.first_name} (ID: {user.id}) በግል የተከለከለ ትዕዛዝ በማዘዙ።")
-        return
-
-    if chat.type != "private" and cmd.startswith("/") and cmd not in ["/start2","/stop2"] and user.id not in ADMIN_IDS:
-        m_time = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute("UPDATE users SET points = points - 3.17, muted_until=? WHERE user_id=?", (m_time, user.id))
-            await db.commit()
-        await update.message.reply_text(f"⚠️ {user.first_name} በግሩፕ ውስጥ ያልተፈቀደ ትዕዛዝ በመጠቀምዎ 3.17 ነጥብ ተቀንሶ ለ17 ደቂቃ ታግደዋል።")
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"⚠️ Muted: {user.first_name} በግሩፕ ጥፋት። ለማንሳት /unmute2 {user.id} በል")
         return
 
     if cmd == "/stop2":
