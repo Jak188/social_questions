@@ -229,6 +229,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.commit()
             await m.reply_text("🛑 ውድድሩ በአድሚን ትዕዛዝ ቆሟል።")
             return
+        
     match = re.search(r"ID: (\d+)|ID:<code>(\d+)</code>", m.reply_to_message.text)
     if match: target_id = int(match.group(1) or match.group(2))
     elif len(m.text.split()) > 1:
