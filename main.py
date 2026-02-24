@@ -153,14 +153,27 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not u:
+        # Step 1 & 41: ለመጀመሪያ ጊዜ ሲመዘገቡ
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         async with aiosqlite.connect("quiz_bot.db") as db:
-            uname = f"{user.first_name} (@{user.username})" if user.username else user.first_name
-            await db.execute("INSERT INTO users(user_id, username, reg_at, status) VALUES(?,?,?,'pending')", (user.id, user.first_name, now_str))
+            # የተማሪውን መረጃ እና የጀመረበትን ሰዓት ይመዘግባል (last_active ተጨምሯል)
+            await db.execute("INSERT INTO users(user_id, username, reg_at, status, last_active) VALUES(?,?,?,'pending',?)", 
+                           (user.id, user.first_name, now_str, datetime.now(timezone.utc).isoformat()))
             await db.commit()
+        
         await update.message.reply_text(f"👋 ውድ ተማሪ {user.first_name}\nምዝገባዎ በሂደት ላይ ነው። አድሚኑ እስኪቀበልዎ ድረስ እባክዎ በትዕግስት ይጠብቁ።")
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"👤 አዲስ ተመዝጋቢ:\nID: <code>{user.id}</code>\nስም: {user.first_name}\n/approve {user.id}", parse_mode="HTML")
+        
+        # ለአድሚኑ መረጃ መላክ (Step 61, 65)
+        for a in ADMIN_IDS: 
+            await context.bot.send_message(a, f"👤 አዲስ ተመዝጋቢ:\nID: <code>{user.id}</code>\nስም: {user.first_name}\n/approve {user.id}\nለማነጋገር፦ {ADMIN_USERNAME}", parse_mode="HTML")
         return
+
+    # Step 26: የ 29 ሰዓት እገዳ ማረጋገጫ (ከመስመር 169 ቀጥሎ ያለው)
+    if u[7]:
+        last_active = datetime.fromisoformat(u[7])
+        if datetime.now(timezone.utc) - last_active > timedelta(hours=29):
+            await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል እገዳዎትን ለማስነሳት {ADMIN_USERNAME} ን ይጠይቁ : እናመሰግናለን")
+            return
 
     if u[3] == 'pending':
         await update.message.reply_text(f"⏳ ውድ ተማሪ {user.first_name} አድሚኑ ለጊዜው busy ነው ጥያቄዎ ተቀባይነት ሲያገኝ እናሳውቃለን እናመሰግናለን።")
@@ -328,6 +341,68 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.execute("UPDATE users SET points = 0")
             await db.commit()
             await m.reply_text("Rankings Cleared 🧹")
+            
+# 32. የሁሉንም ተወዳዳሪ ሎግ ለማየት
+        elif cmd == "log":
+            async with db.execute("SELECT name, action, timestamp, date FROM logs ORDER BY date DESC, timestamp DESC LIMIT 20") as c:
+                rows = await c.fetchall()
+                if not rows:
+                    await m.reply_text("ምንም አይነት የሎግ መረጃ የለም።")
+                    return
+                res = "📜 የሙሉ ተወዳዳሪዎች ዝርዝር ታሪክ፦\n\n"
+                for r in rows:
+                    res += f"👤 {r[0]} | {r[1]} | ⏰ {r[2]} ({r[3]})\n"
+                await m.reply_text(res)
+
+        # 53. ሎግ ለማጽዳት
+        elif cmd == "clear_log":
+            await db.execute("DELETE FROM logs")
+            await db.commit()
+            await m.reply_text("Log Cleared 🧹")
+
+        # 20 & 43. የትኛው ግሩፕ/ሰው ላይ ቦቱ እንደሚሰራ ለማየት
+        elif cmd == "keep":
+            async with db.execute("SELECT * FROM active_paths") as c:
+                rows = await c.fetchall()
+                if not rows:
+                    await m.reply_text("አሁን ላይ በምንም አይነት ግሩፕ ወይም ሰው ላይ ቦቱ እየሰራ አይደለም።")
+                    return
+                res = "📍 አሁን ቦቱ ACTIVE የሆነባቸው መንገዶች፦\n\n"
+                for r in rows:
+                    res += f"🔹 ቦታ: {r[1]} (ID: <code>{r[0]}</code>)\n👤 የጀመረው: {r[2]}\n⏰ ሰዓት: {r[3]}\n📚 ትምህርት: {r[4]}\n\n"
+                await m.reply_text(res, parse_mode="HTML")
+
+        # 16 & 54. ተመዝጋቢዎችን እና ግሩፖችን ለማየት
+        elif cmd == "pin":
+            async with db.execute("SELECT user_id, username FROM users") as c1:
+                u_rows = await c1.fetchall()
+                async with db.execute("SELECT chat_id, chat_title FROM active_paths") as c2:
+                    g_rows = await c2.fetchall()
+                res = f"📊 አጠቃላይ መረጃ፦\n\n👥 ተመዝጋቢዎች ({len(u_rows)}):\n"
+                for u in u_rows: res += f"- {u[1]} (ID: {u[0]})\n"
+                res += f"\n📍 ቦቱ ያለባቸው ግሩፖች ({len(g_rows)}):\n"
+                for g in g_rows: res += f"- {g[1]} (ID: {g[0]})\n"
+                await m.reply_text(res)
+
+        # 33 & 48. የታገዱ ሰዎችን ለይቶ ለማየት
+        elif cmd == "hmute":
+            async with db.execute("SELECT user_id, username, is_blocked, muted_until FROM users WHERE is_blocked=1 OR muted_until IS NOT NULL") as c:
+                rows = await c.fetchall()
+                if not rows:
+                    await m.reply_text("የታገደ ወይም Mute የሆነ ሰው የለም።")
+                    return
+                res = "🔇 የታገዱ/Mute የሆኑ ዝርዝር፦\n\n"
+                for r in rows:
+                    status = "🚫 Blocked" if r[2] == 1 else "🔇 Muted"
+                    res += f"👤 {r[1]} | ID: <code>{r[0]}</code> | {status}\n"
+                await m.reply_text(res, parse_mode="HTML")
+
+        # 34. ስለ ተጠቃሚው ሙሉ መረጃ ለማየት
+        elif cmd == "info" and target_id:
+            u_info = await get_user(target_id)
+            if u_info:
+                res = f"ℹ️ የተጠቃሚ መረጃ፦\n\n👤 ስም: {u_info[1]}\n🆔 ID: <code>{u_info[0]}</code>\n💰 ነጥብ: {u_info[2]}\n📅 የተመዘገበበት: {u_info[6]}\n⏳ መጨረሻ የታየው: {u_info[7]}"
+                await m.reply_text(res, parse_mode="HTML")
 
 # ===================== RUNNER =====================
 def main():
