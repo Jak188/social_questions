@@ -156,10 +156,10 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Step 1 & 41: ለመጀመሪያ ጊዜ ሲመዘገቡ
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         async with aiosqlite.connect("quiz_bot.db") as db:
-            # የተማሪውን መረጃ እና የጀመረበትን ሰዓት ይመዘግባል (last_active ተጨምሯል)
-            await db.execute("INSERT INTO users(user_id, username, reg_at, status, last_active) VALUES(?,?,?,'pending',?)", 
-                           (user.id, user.first_name, now_str, datetime.now(timezone.utc).isoformat()))
-            await db.commit()
+            u_name = f"@{user.username}" if user.username else user.first_name
+        #የተማሪውን መረጃ እና የጀመረበትን ሰዓት ይመዘግባል (last_active ተጨምሯል)
+        await db.execute("INSERT INTO users(user_id, username, reg_at, status, last_active) VALUES(?,?,?,'pending',?)", (user.id, u_name, now_str, datetime.now(timezone.utc).isoformat()))
+        await db.commit()
         
         await update.message.reply_text(f"👋 ውድ ተማሪ {user.first_name}\nምዝገባዎ በሂደት ላይ ነው። አድሚኑ እስኪቀበልዎ ድረስ እባክዎ በትዕግስት ይጠብቁ።")
         
