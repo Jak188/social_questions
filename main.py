@@ -17,7 +17,7 @@ ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
 
 # ያንቺ የ Supabase አድራሻ (ከፓስወርድሽ ጋር ተስተካክሏል)
-DATABASE_URL = "postgresql://postgres:aman88@5r27@db.zektvzohaujzivecjfxe.supabase.co:5432/postgres"
+DATABASE_URL = "postgresql://postgres:aman88%405r27@db.zektvzohaujzivecjfxe.supabase.co:5432/postgres"
 
 # ===================== FLASK (KEEP ALIVE) =====================
 app = Flask(__name__)
