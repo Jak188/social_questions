@@ -1,4 +1,5 @@
 python-telegram-bot
-aiosqlite
 flask
-apscheduler
+asyncio
+psycopg2-binary
+SQLAlchemy
