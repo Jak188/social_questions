@@ -16,7 +16,6 @@ ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
 
-# ያንቺ የ Supabase አድራሻ (ከፓስወርድሽ ጋር ተስተካክሏል)
 DATABASE_URL = "postgresql://postgres:aman88%405r27@db.zektvzohaujzivecjfxe.supabase.co:5432/postgres"
 
 # ===================== FLASK (KEEP ALIVE) =====================
@@ -272,6 +271,8 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global GLOBAL_STOP
     if update.effective_user.id not in ADMIN_IDS: return
     m = update.message
+    if not m or not m.text: return
+    
     cmd = m.text.split()[0][1:].lower()
     target_id = None
 
@@ -309,8 +310,10 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cur.execute("UPDATE users SET status='approved' WHERE user_id=%s", (target_id,))
         conn.commit()
         await m.reply_text(f"ተማሪ {target_id} ተቀባይነት አግኝቷል ✅")
-        try: await context.bot.send_message(target_id, "✅ ምዝገባዎ ተቀባይነት አግኝቷል። አሁን መወዳደር ይችላሉ!")
-        except: pass
+        try: 
+            await context.bot.send_message(target_id, "✅ ምዝገባዎ ተቀባይነት አግኝቷል። አሁን መወዳደር ይችላሉ!")
+        except: 
+            pass
 
     elif cmd == "anapprove" and target_id:
         cur.execute("DELETE FROM users WHERE user_id=%s", (target_id,))
