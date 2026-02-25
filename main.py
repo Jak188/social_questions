@@ -117,30 +117,36 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     chat = update.effective_chat
     if not update.message: return
+    
+    # የትዕዛዙን ስም ለይቶ ማውጣት
     cmd = update.message.text.split()[0].split("@")[0].lower()
-
     u = await get_user(user.id)
 
+    # --- 1. የደረጃ ሰንጠረዥ (/rank2) ---
     if cmd == "/rank2":
         async with aiosqlite.connect("quiz_bot.db") as db:
             async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 20") as c:
-                res = "🏆 ደረጃ እና ነጥብ:\n"
-                for i, r in enumerate(await c.fetchall(), 1): res += f"{i}. {r[0]} - {r[1]} pts\n"
+                rows = await c.fetchall()
+                res = "🏆 ደረጃ እና ነጥብ:\n\n"
+                for i, r in enumerate(rows, 1):
+                    res += f"{i}. {r[0]} - {r[1]} pts\n"
         await update.message.reply_text(res)
         return
 
-    if u and u[4] == 1:
-        await update.message.reply_text(f"🚫 ከአድሚን በመጣ ትዕዛዝ መሰረት ለጊዜው ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME} ን ያናግሩ።")
-        return
-    
-    if u and u[5]:
-        try:
-            m_until = datetime.fromisoformat(u[5])
-            if datetime.now(timezone.utc) < m_until:
-                return
-        except: pass
+    # --- 2. እገዳዎችን ማረጋገጫ (Blocked & Muted) ---
+    if u:
+        if u[4] == 1: # Blocked
+            await update.message.reply_text(f"🚫 ከአድሚን በመጣ ትዕዛዝ መሰረት ለጊዜው ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME} ን ያናግሩ።")
+            return
+        
+        if u[5]: # Muted
+            try:
+                m_until = datetime.fromisoformat(u[5])
+                if datetime.now(timezone.utc) < m_until: return
+            except: pass
 
-    if chat.type != "private" and cmd.startswith("/") and cmd not in ["/start2","/stop2"] and user.id not in ADMIN_IDS:
+    # --- 3. ህገ-ወጥ ትዕዛዝ በግሩፕ ውስጥ ---
+    if chat.type != "private" and cmd.startswith("/") and cmd not in ["/start2", "/stop2"] and user.id not in ADMIN_IDS:
         m_time = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
         async with aiosqlite.connect("quiz_bot.db") as db:
             await db.execute("UPDATE users SET points = points - 3.17, muted_until=? WHERE user_id=?", (m_time, user.id))
@@ -148,44 +154,42 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"⚠️ {user.first_name} በግሩፕ ውስጥ ያልተፈቀደ ትዕዛዝ በመጠቀምዎ 3.17 ነጥብ ተቀንሶ ለ17 ደቂቃ ታግደዋል።")
         return
 
+    # --- 4. ቦቱ በአድሚን ከቆመ ---
     if GLOBAL_STOP and user.id not in ADMIN_IDS:
         await update.message.reply_text(f"⛔️ ቦቱ ከአድሚን በመጣ ትዕዛዝ ለተወሰነ ጊዜ ቆሟል። ለበለጠ መረጃ {ADMIN_USERNAME}")
         return
 
+    # --- 5. አዲስ ምዝገባ (መጀመሪያ የመጣ ተማሪ) ---
     if not u:
-        # Step 1 & 41: ለመጀመሪያ ጊዜ ሲመዘገቡ
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        u_name = f"@{user.username}" if user.username else user.first_name
         async with aiosqlite.connect("quiz_bot.db") as db:
-            u_name = f"@{user.username}" if user.username else user.first_name
-        #የተማሪውን መረጃ እና የጀመረበትን ሰዓት ይመዘግባል (last_active ተጨምሯል)
-        await db.execute("INSERT INTO users(user_id, username, reg_at, status, last_active) VALUES(?,?,?,'pending',?)", (user.id, u_name, now_str, datetime.now(timezone.utc).isoformat()))
-        await db.commit()
+            await db.execute(
+                "INSERT INTO users(user_id, username, reg_at, status, last_active) VALUES(?,?,?,'pending',?)",
+                (user.id, u_name, now_str, datetime.now(timezone.utc).isoformat())
+            )
+            await db.commit()
         
         await update.message.reply_text(f"👋 ውድ ተማሪ {user.first_name}\nምዝገባዎ በሂደት ላይ ነው። አድሚኑ እስኪቀበልዎ ድረስ እባክዎ በትዕግስት ይጠብቁ።")
         
-        # ለአድሚኑ መረጃ መላክ (Step 61, 65)
-        for a in ADMIN_IDS: 
-            await context.bot.send_message(a, f"👤 አዲስ ተመዝጋቢ:\nID: <code>{user.id}</code>\nስም: {user.first_name}\n/approve {user.id}\nለማነጋገር፦ {ADMIN_USERNAME}", parse_mode="HTML")
+        for a in ADMIN_IDS:
+            await context.bot.send_message(a, f"👤 አዲስ ተመዝጋቢ:\nID: <code>{user.id}</code>\nስም: {user.first_name}\nUsername: {u_name}\n/approve {user.id}", parse_mode="HTML")
         return
 
-    # Step 26: የ 29 ሰዓት እገዳ ማረጋገጫ (ከመስመር 169 ቀጥሎ ያለው)
+    # --- 6. የ 29 ሰዓት ተሳትፎ እገዳ ማረጋገጫ ---
     if u[7]:
         last_active = datetime.fromisoformat(u[7])
         if datetime.now(timezone.utc) - last_active > timedelta(hours=29):
-            await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል እገዳዎትን ለማስነሳት {ADMIN_USERNAME} ን ይጠይቁ : እናመሰግናለን")
+            await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል። እገዳውን ለማስነሳት {ADMIN_USERNAME} ን ያናግሩ።")
             return
 
+    # --- 7. ያልጸደቀ ምዝገባ ---
     if u[3] == 'pending':
-        await update.message.reply_text(f"⏳ ውድ ተማሪ {user.first_name} አድሚኑ ለጊዜው busy ነው ጥያቄዎ ተቀባይነት ሲያገኝ እናሳውቃለን እናመሰግናለን።")
+        await update.message.reply_text(f"⏳ ውድ ተማሪ {user.first_name} አድሚኑ እስኪቀበልዎ ድረስ ጥያቄዎ በሂደት ላይ ነው።")
         return
 
-    if u[7]:
-        last_active = datetime.fromisoformat(u[7])
-        if datetime.now(timezone.utc) - last_active > timedelta(hours=29):
-            await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል እገዳዎትን ለማስነሳት {ADMIN_USERNAME} ን ይጠይቁ : እናመሰግናለን")
-            return
-
-    start_cmds = ["/start2","/history_srm2","/geography_srm2","/mathematics_srm2","/english_srm2"]
+    # --- 8. በግል (Private) ውስጥ ያልተፈቀዱ ትዕዛዞች ---
+    start_cmds = ["/start2", "/history_srm2", "/geography_srm2", "/mathematics_srm2", "/english_srm2"]
     all_allowed = start_cmds + ["/stop2", "/rank2"]
 
     if chat.type == "private" and cmd not in all_allowed and user.id not in ADMIN_IDS:
@@ -193,38 +197,52 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await db.execute("UPDATE users SET is_blocked=1 WHERE user_id=?", (user.id,))
             await db.commit()
         await update.message.reply_text(f"⚠️ የህግ ጥሰት! ያልተፈቀደ ትዕዛዝ በመጠቀሞ ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME}")
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"🚫 Blocked: {user.first_name} (ID: {user.id}) በግል የተከለከለ ትዕዛዝ በማዘዙ።")
+        for a in ADMIN_IDS:
+            await context.bot.send_message(a, f"🚫 Blocked: {user.first_name} (ID: {user.id}) በግል የተከለከለ ትዕዛዝ በማዘዙ።")
         return
 
+    # --- 9. ውድድር ማቆሚያ (/stop2) ---
     if cmd == "/stop2":
         for j in context.job_queue.get_jobs_by_name(str(chat.id)): j.schedule_removal()
         async with aiosqlite.connect("quiz_bot.db") as db:
             await db.execute("DELETE FROM active_paths WHERE chat_id=?", (chat.id,))
             await db.commit()
+        
         res = "🛑 ውድድር ቆሟል።\n"
         if chat.type == "private":
             res += f"የግል ነጥብዎ: {u[2]}"
         else:
             async with aiosqlite.connect("quiz_bot.db") as db:
                 async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 15") as c:
-                    res += "\n📊 Best 15:\n"
-                    for i, r in enumerate(await c.fetchall(), 1): res += f"{i}. {r[0]} - {r[1]} pts\n"
+                    res += "\n📊 የደረጃ ሰንጠረዥ (Top 15):\n"
+                    for i, r in enumerate(await c.fetchall(), 1):
+                        res += f"{i}. {r[0]} - {r[1]} pts\n"
         await update.message.reply_text(res)
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"🛑 Stop: {chat.title or 'Private'} | በ: {user.first_name}")
         return
 
+    # --- 10. ውድድር ማስጀመሪያ (Start Commands) ---
     if cmd in start_cmds:
-        s_map = {"/history_srm2":"history","/geography_srm2":"geography","/mathematics_srm2":"mathematics","/english_srm2":"english"}
+        s_map = {
+            "/history_srm2": "history",
+            "/geography_srm2": "geography",
+            "/mathematics_srm2": "mathematics",
+            "/english_srm2": "english"
+        }
         sub = s_map.get(cmd, "All")
+        
+        # የቆየ ስራ ካለ ያጠፋል
         for j in context.job_queue.get_jobs_by_name(str(chat.id)): j.schedule_removal()
+        
         await update.message.reply_text(f"🚀 የ {sub} ውድድር ተጀምሯል! በየ 3 ደቂቃ ጥያቄ ይላካል።")
         context.job_queue.run_repeating(send_quiz, interval=180, first=1, chat_id=chat.id, data={"subject": sub}, name=str(chat.id))
+        
         now_t = datetime.now().strftime("%Y-%m-%d %H:%M")
         async with aiosqlite.connect("quiz_bot.db") as db:
             await db.execute("INSERT OR REPLACE INTO active_paths VALUES(?,?,?,?,?)", (chat.id, chat.title or "Private", user.first_name, now_t, sub))
             await db.commit()
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"🚀 Start: {chat.title or 'Private'} | በ: {user.first_name} | {sub}")
-
+        
+        for a in ADMIN_IDS:
+            await context.bot.send_message(a, f"🚀 Start: {chat.title or 'Private'} | በ: {user.first_name} | Subject: {sub}")
 # ===================== ADMIN SYSTEM =====================
 async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global GLOBAL_STOP
