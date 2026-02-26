@@ -16,7 +16,8 @@ ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
 
-DATABASE_URL = "postgresql://postgres:aman88%405r27@db.zektvzohaujzivecjfxe.supabase.co:5432/postgres"
+# ለ Render ተስማሚ የሆነው የ Pooler አድራሻ (Port 6543 በመጠቀም)
+DATABASE_URL = "postgresql://postgres:aman88%405r27@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
 
 # ===================== FLASK (KEEP ALIVE) =====================
 app = Flask(__name__)
