@@ -16,7 +16,7 @@ ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
 
-DATABASE_URL = "postgresql://postgres.zektvzohaujzivecjfxe:aman885r275@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?options=-c%20search_path%3Dpublic"
+DATABASE_URL = "postgresql://neondb_owner:npg_aRi7qp2QdYWr@ep-red-pond-ai6ow5wf-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
 
 # ===================== FLASK (KEEP ALIVE) =====================
 app = Flask(__name__)
