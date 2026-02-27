@@ -16,7 +16,7 @@ ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
 
-DATABASE_URL = "postgresql://postgres.zektvzohaujzivecjfxe:aman88%405r27@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?options=-c%20search_path%3Dpublic"
+DATABASE_URL = "postgresql://postgres.zektvzohaujzivecjfxe:aman885r275@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?options=-c%20search_path%3Dpublic"
 
 # ===================== FLASK (KEEP ALIVE) =====================
 app = Flask(__name__)
