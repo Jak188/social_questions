@@ -335,21 +335,39 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif cmd == "yam":
         broadcast_text = m.text.replace("/yam", "").strip()
+        # የጸደቁ ተማሪዎችን እና ቦቱ ያለባቸውን ግሩፖች መፈለግ
         cur.execute("SELECT user_id FROM users WHERE status='approved'")
         users = cur.fetchall()
         cur.execute("SELECT chat_id FROM active_paths")
         groups = cur.fetchall()
+        
+        # ደጋግሞ ላለመላክ Set መጠቀም
         all_targets = set([u[0] for u in users] + [g[0] for g in groups])
         count = 0
+        
+        if not broadcast_text and not m.reply_to_message:
+            await m.reply_text("❌ እባክህ የምታሰራጨውን መልእክት ጻፍ ወይም ለአንድ መልእክት Reply አድርገህ /yam በል!")
+            return
+
         for target in all_targets:
             try:
                 if m.reply_to_message:
-                    await context.bot.copy_message(chat_id=target, from_chat_id=m.chat_id, message_id=m.reply_to_message.message_id, caption=broadcast_text if broadcast_text else m.reply_to_message.caption)
-                elif broadcast_text: await context.bot.send_message(chat_id=target, text=broadcast_text)
+                    # ፎቶ፣ ቪዲዮ ወይም ፋይል ከሆነ ኮፒ አድርጎ መላክ
+                    await context.bot.copy_message(
+                        chat_id=target, 
+                        from_chat_id=m.chat_id, 
+                        message_id=m.reply_to_message.message_id, 
+                        caption=broadcast_text if broadcast_text else m.reply_to_message.caption
+                    )
+                else:
+                    # ጽሁፍ ብቻ ከሆነ
+                    await context.bot.send_message(chat_id=target, text=broadcast_text)
                 count += 1
-                await asyncio.sleep(0.05)
-            except: continue
-        await m.reply_text(f"📢 መልእክቱ ለ {count} ተቀባዮች ተልኳል!")
+                await asyncio.sleep(0.05) # እንዳይታገድ ፍጥነት መቀነስ
+            except Exception as e:
+                print(f"Error sending to {target}: {e}")
+                continue
+        await m.reply_text(f"📢 ማሰራጫ ተጠናቋል!\n✅ ለ {count} ተቀባዮች ደርሷል።")
 
     elif cmd == "clear_rank2":
         cur.execute("UPDATE users SET points = 0")
@@ -410,14 +428,35 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cur.close()
     conn.close()
 
+async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    # ተማሪው የላከው መልእክት ትዕዛዝ (Command) ካልሆነ እና የግል መልእክት ከሆነ
+    if update.message and update.message.text and not update.message.text.startswith('/') and update.effective_chat.type == "private":
+        for admin_id in ADMIN_IDS:
+            try:
+                # መልእክቱን ለአድሚኖቹ Forward ማድረግ
+                await update.message.forward(chat_id=admin_id)
+                # ከማን እንደመጣ መረጃ ለመስጠት
+                await context.bot.send_message(chat_id=admin_id, text=f"☝️ መልእክት ከ: {user.first_name} (ID: {user.id})")
+            except:
+                continue
+
 # ===================== RUNNER =====================
 def main():
     init_db()
     keep_alive()
     bot_app = Application.builder().token(TOKEN).build()
+    
+    # የትዕዛዝ ማስተናገጃዎች
     bot_app.add_handler(CommandHandler(["start2","history_srm2","geography_srm2","mathematics_srm2","english_srm2","stop2","rank2"], start_handler))
     bot_app.add_handler(CommandHandler(["approve","anapprove","block","unblock","log","clear_log","oppt","opptt","pin","keep","hmute","info","clear_rank2","close","gof"], admin_ctrl))
+    
+    # ተራ መልእክቶችን ለአድሚን Forward ማድረጊያ መስመር
+    bot_app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), forward_to_admin))
+    
     bot_app.add_handler(PollAnswerHandler(receive_answer))
+    
+    print("Bot is starting...")
     bot_app.run_polling()
 
 if __name__ == "__main__":
