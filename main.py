@@ -1,5 +1,10 @@
 import os, json, asyncio, random, re, logging
-import psycopg2
+try:
+    import psycopg2
+except ImportError:
+    import subprocess
+    subprocess.check_call(["pip", "install", "psycopg2-binary"])
+    import psycopg2
 from datetime import datetime, timedelta, timezone
 from flask import Flask
 from threading import Thread
