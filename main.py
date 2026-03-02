@@ -346,28 +346,6 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cmd == "oppt": GLOBAL_STOP = True; await m.reply_text("⛔️ Global Stop በርቷል።")
     elif cmd == "opptt": GLOBAL_STOP = False; await m.reply_text("✅ Global Stop ተነስቷል።")
 
-    elif cmd == "yam":
-        broadcast_text = m.text.replace("/yam", "").strip()
-        cur.execute("SELECT user_id FROM users WHERE status='approved'")
-        users = cur.fetchall()
-        cur.execute("SELECT chat_id FROM active_paths")
-        groups = cur.fetchall()
-        all_targets = set([u[0] for u in users] + [g[0] for g in groups])
-        count = 0
-        if not broadcast_text and not m.reply_to_message:
-            await m.reply_text("❌ እባክህ የምታሰራጨውን መልእክት ጻፍ ወይም ለአንድ መልእክት Reply አድርገህ /yam በል!")
-            return
-        for target in all_targets:
-            try:
-                if m.reply_to_message:
-                    await context.bot.copy_message(chat_id=target, from_chat_id=m.chat_id, message_id=m.reply_to_message.message_id, caption=broadcast_text if broadcast_text else m.reply_to_message.caption)
-                else:
-                    await context.bot.send_message(chat_id=target, text=broadcast_text)
-                count += 1
-                await asyncio.sleep(0.05)
-            except: continue
-        await m.reply_text(f"📢 ማሰራጫ ተጠናቋል!\n✅ ለ {count} ተቀባዮች ደርሷል።")
-
     elif cmd == "clear_rank2":
         cur.execute("UPDATE users SET points = 0")
         conn.commit()
