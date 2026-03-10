@@ -16,7 +16,7 @@ from telegram.ext import (
 )
 
 # ===================== CONFIG =====================
-TOKEN = "8529843626:AAF83t_s0JIhv1zyLA3kIRV5viVHoegBq5E"
+TOKEN = "8529843626:AAGcQoUd-1cp4alrgWvhrXf5lvaGyHU9ik8"
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
