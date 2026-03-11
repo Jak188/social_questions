@@ -1,19 +1,13 @@
-import os, json, asyncio, random, re, logging, sys, subprocess
+import os, json, asyncio, random, re, logging
+import psycopg2
 from datetime import datetime, timedelta, timezone
 from flask import Flask
 from threading import Thread
 
-# Psycopg2 Installation Fix
-try:
-    import psycopg2
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "psycopg2-binary"])
-    import psycopg2
-
 from telegram import Update, Poll, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, PollAnswerHandler,
-    ContextTypes, ChatMemberHandler, filters, MessageHandler, ApplicationBuilder
+    ContextTypes, ChatMemberHandler, filters, MessageHandler
 )
 
 # ===================== CONFIG =====================
@@ -81,15 +75,11 @@ async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
     if GLOBAL_STOP: return
     job = context.job
     chat_id = job.chat_id
-    sub = str(job.data.get("subject")).strip().lower()
+    sub = job.data.get("subject")
 
     try:
-        # ፋይል ስም ማረጋገጫ (questions.json መሆኑን አረጋግጥ)
-        with open("questions.json", "r", encoding="utf-8") as f: 
-            all_q = json.load(f)
-        
-        # የፊደል ልዩነት ማስተካከያ (Case Sensitivity Fix)
-        filtered = [q for q in all_q if not sub or sub == "all" or str(q.get("subject","")).strip().lower() == sub]
+        with open("questions.json", "r", encoding="utf-8") as f: all_q = json.load(f)
+        filtered = [q for q in all_q if not sub or sub == "All" or q.get("subject","").lower() == sub.lower()]
         
         conn = get_db_connection()
         cur = conn.cursor()
@@ -97,7 +87,7 @@ async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
         asked = [r[0] for r in cur.fetchall()]
         
         remaining = [q for q in filtered if q['q'] not in asked]
-        if not remaining and filtered:
+        if not remaining:
             cur.execute("DELETE FROM asked_questions WHERE chat_id=%s", (chat_id,))
             remaining = filtered
         
@@ -117,8 +107,7 @@ async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
         conn.commit()
         cur.close()
         conn.close()
-    except Exception as e: 
-        print(f"Quiz Error: {e}")
+    except Exception as e: print(f"Quiz Error: {e}")
 
 async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ans = update.poll_answer
@@ -127,6 +116,7 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if not u or u[3] != 'approved' or u[4] == 1: return
     
+    # የ 43 ሰዓት ቼክ በምላሽ ጊዜ
     if u[7]:
         last_active = datetime.fromisoformat(u[7])
         if datetime.now(timezone.utc) - last_active > timedelta(hours=43):
@@ -193,6 +183,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if datetime.now(timezone.utc) < m_until: return
             except: pass
         
+        # የ 43 ሰዓት ቼክ
         if u[7]:
             last_active = datetime.fromisoformat(u[7])
             if datetime.now(timezone.utc) - last_active > timedelta(hours=43):
@@ -350,6 +341,28 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cmd == "oppt": GLOBAL_STOP = True; await m.reply_text("⛔️ Global Stop በርቷል።")
     elif cmd == "opptt": GLOBAL_STOP = False; await m.reply_text("✅ Global Stop ተነስቷል።")
 
+    elif cmd == "yam":
+        broadcast_text = m.text.replace("/yam", "").strip()
+        cur.execute("SELECT user_id FROM users WHERE status='approved'")
+        users = cur.fetchall()
+        cur.execute("SELECT chat_id FROM active_paths")
+        groups = cur.fetchall()
+        all_targets = set([u[0] for u in users] + [g[0] for g in groups])
+        count = 0
+        if not broadcast_text and not m.reply_to_message:
+            await m.reply_text("❌ እባክህ የምታሰራጨውን መልእክት ጻፍ ወይም ለአንድ መልእክት Reply አድርገህ /yam በል!")
+            return
+        for target in all_targets:
+            try:
+                if m.reply_to_message:
+                    await context.bot.copy_message(chat_id=target, from_chat_id=m.chat_id, message_id=m.reply_to_message.message_id, caption=broadcast_text if broadcast_text else m.reply_to_message.caption)
+                else:
+                    await context.bot.send_message(chat_id=target, text=broadcast_text)
+                count += 1
+                await asyncio.sleep(0.05)
+            except: continue
+        await m.reply_text(f"📢 ማሰራጫ ተጠናቋል!\n✅ ለ {count} ተቀባዮች ደርሷል።")
+
     elif cmd == "clear_rank2":
         cur.execute("UPDATE users SET points = 0")
         conn.commit()
@@ -390,6 +403,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await m.reply_text(res)
 
     elif cmd == "hmute":
+        # ሁሉንም አይነት እገዳዎች በዝርዝር ማውጣት
         cur.execute("SELECT user_id, username, is_blocked, muted_until, last_active FROM users")
         all_users = cur.fetchall()
         res = "🔇 የታገዱ/Mute የሆኑ ዝርዝር፦\n\n"
@@ -437,16 +451,13 @@ async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     init_db()
     keep_alive()
-    # JobQueue Fix: ApplicationBuilder በ JobQueue ድጋፍ መጠቀም
-    bot_app = ApplicationBuilder().token(TOKEN).build()
-    
+    bot_app = Application.builder().token(TOKEN).build()
     bot_app.add_handler(CommandHandler(["start2","history_srm2","geography_srm2","mathematics_srm2","english_srm2","stop2","rank2"], start_handler))
     bot_app.add_handler(CommandHandler(["approve","anapprove","block","unblock","log","clear_log","oppt","opptt","pin","keep","hmute","info","clear_rank2","close","gof","yam"], admin_ctrl))
     bot_app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), forward_to_admin))
     bot_app.add_handler(PollAnswerHandler(receive_answer))
-    
     print("Bot is starting...")
-    bot_app.run_polling(drop_pending_updates=True)
+    bot_app.run_polling()
 
 if __name__ == "__main__":
     main()
