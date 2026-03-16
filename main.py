@@ -263,8 +263,8 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         s_map = {"/history_srm2": "history", "/geography_srm2": "geography", "/mathematics_srm2": "mathematics", "/english_srm2": "english"}
         sub = s_map.get(cmd, "All")
         for j in context.job_queue.get_jobs_by_name(str(chat.id)): j.schedule_removal()
-        await update.message.reply_text(f"🚀 የ {sub} ውድድር ተጀምሯል! በየ 3 ደቂቃ ጥያቄ ይላካል።")
-        context.job_queue.run_repeating(send_quiz, interval=180, first=1, chat_id=chat.id, data={"subject": sub}, name=str(chat.id))
+        await update.message.reply_text(f"🚀 የ {sub} ውድድር ተጀምሯል! በየ 1 ደቂቃ ጥያቄ ይላካል።")
+        context.job_queue.run_repeating(send_quiz, interval=60, first=1, chat_id=chat.id, data={"subject": sub}, name=str(chat.id))
         now_t = datetime.now().strftime("%Y-%m-%d %H:%M")
         conn = get_db_connection()
         cur = conn.cursor()
