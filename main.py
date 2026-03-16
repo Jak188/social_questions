@@ -116,10 +116,10 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if not u or u[3] != 'approved' or u[4] == 1: return
     
-    # የ 43 ሰዓት ቼክ በምላሽ ጊዜ
+    # የ 120 ሰዓት ቼክ በምላሽ ጊዜ
     if u[7]:
         last_active = datetime.fromisoformat(u[7])
-        if datetime.now(timezone.utc) - last_active > timedelta(hours=43):
+        if datetime.now(timezone.utc) - last_active > timedelta(hours=120):
             return
 
     await update_activity(user_id)
@@ -183,11 +183,11 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if datetime.now(timezone.utc) < m_until: return
             except: pass
         
-        # የ 43 ሰዓት ቼክ
+        # የ 120 ሰዓት ቼክ
         if u[7]:
             last_active = datetime.fromisoformat(u[7])
-            if datetime.now(timezone.utc) - last_active > timedelta(hours=43):
-                await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} ለ 43 ሰዓታት ያህል ምንም አይነት ተሳትፎ ስላላደረጉ ሲስተሙ አግዶዎታል። እባክዎ {ADMIN_USERNAME} ን ያናግሩ።")
+            if datetime.now(timezone.utc) - last_active > timedelta(hours=120):
+                await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} ለ 120 ሰዓታት ያህል ምንም አይነት ተሳትፎ ስላላደረጉ ሲስተሙ አግዶዎታል። እገዳዎትን ለማስወገድ እባክዎ {ADMIN_USERNAME} ን ያናግሩ።")
                 return
 
     if chat.type != "private" and cmd.startswith("/") and cmd not in ["/start2", "/stop2"] and user.id not in ADMIN_IDS:
