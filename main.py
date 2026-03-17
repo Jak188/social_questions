@@ -523,7 +523,7 @@ def main():
     keep_alive()
     bot_app = Application.builder().token(TOKEN).build()
     bot_app.add_handler(CommandHandler(["start2","history_srm2","geography_srm2","mathematics_srm2","english_srm2","stop2","rank2"], start_handler))
-    bot_app.add_handler(CommandHandler(["approve","anapprove","block","unblock","log","clear_log","oppt","opptt","pin","keep","hmute","info","clear_rank2","close","gof","yam"], admin_ctrl))
+    bot_app.add_handler(CommandHandler(["approve","anapprove","block","unblock","log","clear_log","oppt","opptt","pin","keep","hmute","info","clear_rank2","close","gof","yam","send"], admin_ctrl))
     bot_app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), forward_to_admin))
     bot_app.add_handler(PollAnswerHandler(receive_answer))
     print("Bot is starting...")
