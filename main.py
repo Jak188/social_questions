@@ -70,6 +70,15 @@ async def update_activity(user_id):
     cur.close()
     conn.close()
 
+# አዲሱ የተጨመረው ፈንክሽን (ስህተቱን ለመፍታት)
+async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if update.effective_chat.type == "private":
+        admin_msg = f"📩 መልእክት ከ {user.first_name} (ID: {user.id}):\n\n{update.message.text}"
+        for a in ADMIN_IDS:
+            try: await context.bot.send_message(a, admin_msg)
+            except: continue
+
 # ===================== QUIZ ENGINE =====================
 async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
     if GLOBAL_STOP: return
@@ -116,7 +125,6 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if not u or u[3] != 'approved' or u[4] == 1: return
     
-    # የ 120 ሰዓት ቼክ በምላሽ ጊዜ
     if u[7]:
         last_active = datetime.fromisoformat(u[7])
         if datetime.now(timezone.utc) - last_active > timedelta(hours=120):
@@ -183,7 +191,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if datetime.now(timezone.utc) < m_until: return
             except: pass
         
-        # የ 120 ሰዓት ቼክ
         if u[7]:
             last_active = datetime.fromisoformat(u[7])
             if datetime.now(timezone.utc) - last_active > timedelta(hours=120):
@@ -208,11 +215,10 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not u:
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         u_name = f"@{user.username}" if user.username else "No Username"
-        f_name = user.first_name # የተጠቃሚው ስም
+        f_name = user.first_name 
         
         conn = get_db_connection()
         cur = conn.cursor()
-        # እዚህ ጋር username ላይ የሁለቱንም ጥምረት እናስገባለን (ለጊዜው ዳታቤዝ ስትራክቸሩን ላለመቀየር)
         full_info = f"{f_name} ({u_name})" 
         
         cur.execute(
@@ -224,7 +230,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         conn.close()
         
         await update.message.reply_text(f"👋 ውድ ተማሪ {f_name}\nምዝገባዎ በሂደት ላይ ነው።")
-        # ለአድሚን የሚላከው መረጃ
         admin_msg = (f"👤 አዲስ ተመዝጋቢ:\n"
                      f"ID: <code>{user.id}</code>\n"
                      f"ስም: {f_name}\n"
@@ -296,7 +301,6 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cmd = m.text.split()[0][1:].lower()
     target_id = None
 
-    # መጀመሪያ IDን ከ Reply ወይም ከጽሁፍ መፈለግ (ለሁሉም ትዕዛዞች እንዲያገለግል)
     if m.reply_to_message:
         match = re.search(r"ID: (\d+)|ID:<code>(\d+)</code>", m.reply_to_message.text)
         if match: target_id = int(match.group(1) or match.group(2))
@@ -308,8 +312,6 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # --- ትዕዛዞች ---
-
     if cmd == "send":
         parts = m.text.split(maxsplit=2)
         if len(parts) < 3:
@@ -317,7 +319,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 t_id = target_id
                 msg_to_send = parts[1]
             else:
-                await m.reply_text("⚠️ አጠቃቀም፦ /send [ID] [መልእክት]\nወይም Reply በማድረግ `/send [መልእክት]` ይበሉ።", parse_mode="Markdown")
+                await m.reply_text("⚠️ አጠቃቀም፦ /send [ID] [መልእክት]")
                 cur.close()
                 conn.close()
                 return
@@ -329,23 +331,19 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_message(chat_id=t_id, text=f"📩 **ከአድሚን የተላከ መልእክት፦**\n\n{msg_to_send}", parse_mode="Markdown")
             await m.reply_text(f"✅ መልእክቱ ለ {t_id} ተልኳል።")
         except Exception as e:
-            await m.reply_text(f"❌ መልእክቱን መላክ አልተቻለም።\nምክንያት፦ {e}")
+            await m.reply_text(f"❌ ስህተት፦ {e}")
 
     elif cmd == "close":
-        # target_id ካለ እሱን ይጠቀማል ካልሆነ መልእክቱ የተጻፈበትን ግሩፕ ይዘጋል
         target_chat_id = target_id if target_id else m.chat_id
-        
         for j in context.job_queue.get_jobs_by_name(str(target_chat_id)):
             j.schedule_removal()
-            
         cur.execute("DELETE FROM active_paths WHERE chat_id=%s", (target_chat_id,))
         conn.commit()
-        
         try:
             await context.bot.send_message(target_chat_id, "🛑 ውድድሩ በአድሚን ትዕዛዝ ቆሟል።")
             await m.reply_text(f"✅ በ ID {target_chat_id} ላይ ያለው ውድድር ቆሟል።")
         except:
-            await m.reply_text(f"✅ ውድድሩ ከዳታቤዝ ተሰርዟል (ለተጠቃሚው ግን መልእክት መላክ አልተቻለም)።")
+            await m.reply_text(f"✅ ውድድሩ ከዳታቤዝ ተሰርዟል።")
 
     elif cmd == "gof":
         cur.execute("SELECT user_id, username, reg_at FROM users WHERE status='pending'")
@@ -361,8 +359,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cur.execute("UPDATE users SET status='approved' WHERE user_id=%s", (target_id,))
         conn.commit()
         await m.reply_text(f"ተማሪ {target_id} ተቀባይነት አግኝቷል ✅")
-        try: 
-            await context.bot.send_message(target_id, "✅ ምዝገባዎ ተቀባይነት አግኝቷል። አሁን መወዳደር ይችላሉ!")
+        try: await context.bot.send_message(target_id, "✅ ምዝገባዎ ተቀባይነት አግኝቷል።")
         except: pass
 
     elif cmd == "anapprove" and target_id:
@@ -390,7 +387,7 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cmd == "yam":
         broadcast_text = m.text.replace("/yam", "").strip()
         if not broadcast_text and not m.reply_to_message:
-            await m.reply_text("❌ እባክህ የምታሰራጨውን መልእክት ጻፍ ወይም Reply አድርገህ /yam በል!")
+            await m.reply_text("❌ መልእክት ጻፍ!")
         else:
             cur.execute("SELECT user_id FROM users WHERE status='approved'")
             users = cur.fetchall()
@@ -401,13 +398,13 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for target in all_targets:
                 try:
                     if m.reply_to_message:
-                        await context.bot.copy_message(chat_id=target, from_chat_id=m.chat_id, message_id=m.reply_to_message.message_id, caption=broadcast_text if broadcast_text else m.reply_to_message.caption)
+                        await context.bot.copy_message(chat_id=target, from_chat_id=m.chat_id, message_id=m.reply_to_message.message_id)
                     else:
                         await context.bot.send_message(chat_id=target, text=broadcast_text)
                     count += 1
                     await asyncio.sleep(0.05)
                 except: continue
-            await m.reply_text(f"📢 ማሰራጫ ተጠናቋል!\n✅ ለ {count} ተቀባዮች ደርሷል።")
+            await m.reply_text(f"📢 ለ {count} ተቀባዮች ደርሷል።")
 
     elif cmd == "clear_rank2":
         cur.execute("UPDATE users SET points = 0")
@@ -417,10 +414,10 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cmd == "log":
         cur.execute("SELECT name, action, timestamp, date FROM logs ORDER BY date DESC, timestamp DESC LIMIT 20")
         rows = cur.fetchall()
-        if not rows: await m.reply_text("ምንም አይነት የሎግ መረጃ የለም።")
+        if not rows: await m.reply_text("የሎግ መረጃ የለም።")
         else:
-            res = "📜 የሙሉ ተወዳዳሪዎች ዝርዝር ታሪክ፦\n\n"
-            for r in rows: res += f"👤 {r[0]} | {r[1]} | ⏰ {r[2]} ({r[3]})\n"
+            res = "📜 የሎግ ታሪክ፦\n\n"
+            for r in rows: res += f"👤 {r[0]} | {r[1]} | ⏰ {r[2]}\n"
             await m.reply_text(res)
 
     elif cmd == "clear_log":
@@ -431,10 +428,10 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cmd == "keep":
         cur.execute("SELECT * FROM active_paths")
         rows = cur.fetchall()
-        if not rows: await m.reply_text("አሁን ላይ በምንም አይነት ግሩፕ ላይ ቦቱ እየሰራ አይደለም።")
+        if not rows: await m.reply_text("ቦቱ በምንም ግሩፕ ላይ ACTIVE አይደለም።")
         else:
-            res = "📍 አሁን ቦቱ ACTIVE የሆነባቸው መንገዶች፦\n\n"
-            for r in rows: res += f"🔹 ቦታ: {r[1]} (ID: <code>{r[0]}</code>)\n👤 የጀመረው: {r[2]}\n📚 ትምህርት: {r[4]}\n\n"
+            res = "📍 ACTIVE መንገዶች፦\n\n"
+            for r in rows: res += f"🔹 {r[1]} (ID: <code>{r[0]}</code>)\n"
             await m.reply_text(res, parse_mode="HTML")
 
     elif cmd == "pin":
@@ -442,37 +439,29 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
         u_rows = cur.fetchall()
         cur.execute("SELECT chat_id, chat_title FROM active_paths")
         g_rows = cur.fetchall()
-        res = f"📊 አጠቃላይ መረጃ፦\n\n👥 ተመዝጋቢዎች ({len(u_rows)}):\n"
-        for u in u_rows: res += f"- {u[1]} (ID: {u[0]})\n"
-        res += f"\n📍 ቦቱ ያለባቸው ግሩፖች ({len(g_rows)}):\n"
-        for g in g_rows: res += f"- {g[1]} (ID: {g[0]})\n"
+        res = f"📊 መረጃ፦\n👥 ተመዝጋቢዎች ({len(u_rows)})\n📍 ግሩፖች ({len(g_rows)})"
         await m.reply_text(res)
 
     elif cmd == "hmute":
         cur.execute("SELECT user_id, username, is_blocked, muted_until, last_active FROM users")
         all_users = cur.fetchall()
-        res = "🔇 የታገዱ/Mute የሆኑ ዝርዝር፦\n\n"
+        res = "🔇 ዝርዝር፦\n\n"
         found = False
         now = datetime.now(timezone.utc)
         for r in all_users:
             reason = ""
             if r[2] == 1: reason = "🚫 Blocked"
-            elif r[3]:
-                m_until = datetime.fromisoformat(r[3])
-                if now < m_until: reason = "🔇 Muted"
-            if not reason and r[4]:
-                last_active = datetime.fromisoformat(r[4])
-                if now - last_active > timedelta(hours=120): reason = "⏰ Inactive"
+            elif r[3] and now < datetime.fromisoformat(r[3]): reason = "🔇 Muted"
+            if not reason and r[4] and now - datetime.fromisoformat(r[4]) > timedelta(hours=120): reason = "⏰ Inactive"
             if reason:
-                res += f"👤 {r[1]}\nID: <code>{r[0]}</code>\nምክንያት: {reason}\n\n"
+                res += f"👤 {r[1]} | {reason}\n"
                 found = True
-        if not found: await m.reply_text("የታገደ ተማሪ የለም።")
-        else: await m.reply_text(res, parse_mode="HTML")
+        await m.reply_text(res if found else "የለም።")
 
     elif cmd == "info" and target_id:
         u_info = await get_user(target_id)
         if u_info:
-            res = f"ℹ️ የተጠቃሚ መረጃ፦\n\n👤 ስም: {u_info[1]}\n🆔 ID: <code>{u_info[0]}</code>\n💰 ነጥብ: {u_info[2]}\n📅 የተመዘገበበት: {u_info[6]}\n⏳ መጨረሻ የታየው: {u_info[7]}"
+            res = f"ℹ️ መረጃ፦\n👤 {u_info[1]}\n🆔 ID: <code>{u_info[0]}</code>\n💰 ነጥብ: {u_info[2]}"
             await m.reply_text(res, parse_mode="HTML")
 
     cur.close()
@@ -485,6 +474,7 @@ def main():
     bot_app = Application.builder().token(TOKEN).build()
     bot_app.add_handler(CommandHandler(["start2","history_srm2","geography_srm2","mathematics_srm2","english_srm2","stop2","rank2"], start_handler))
     bot_app.add_handler(CommandHandler(["approve","anapprove","block","unblock","log","clear_log","oppt","opptt","pin","keep","hmute","info","clear_rank2","close","gof","yam"], admin_ctrl))
+    # እዚህ ጋር ስህተቱ ተስተካክሏል
     bot_app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), forward_to_admin))
     bot_app.add_handler(PollAnswerHandler(receive_answer))
     print("Bot is starting...")
