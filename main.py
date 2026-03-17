@@ -11,8 +11,8 @@ from threading import Thread
 
 from telegram import Update, Poll, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
-    Application, CommandHandler, PollAnswerHandler,
-    ContextTypes, ChatMemberHandler, filters, MessageHandler
+    Application, CommandHandler, PollAnswerHandler,
+    ContextTypes, ChatMemberHandler, filters, MessageHandler
 )
 
 # ===================== CONFIG =====================
