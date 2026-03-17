@@ -1,4 +1,9 @@
-import os, json, asyncio, random, re, logging
+import os
+import json
+import asyncio
+import random
+import re
+import logging
 import psycopg2
 from datetime import datetime, timedelta, timezone
 from flask import Flask
@@ -6,12 +11,13 @@ from threading import Thread
 
 from telegram import Update, Poll, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
-    Application, CommandHandler, PollAnswerHandler,
-    ContextTypes, ChatMemberHandler, filters, MessageHandler
+    Application, CommandHandler, PollAnswerHandler,
+    ContextTypes, ChatMemberHandler, filters, MessageHandler
 )
 
 # ===================== CONFIG =====================
-TOKEN = "8529843626:AAEpuxGW4U9YT6fGQENwTOelTwgyVHbt74Q"
+# Token-ን ከ Render Environment Variable ላይ እንዲያነብ ተደርጓል
+TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
@@ -323,24 +329,46 @@ async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if cmd == "send":
         parts = m.text.split(maxsplit=2)
-        if len(parts) < 3:
-            if target_id and len(parts) == 2:
-                t_id = target_id
-                msg_to_send = parts[1]
-            else:
-                await m.reply_text("⚠️ አጠቃቀም፦ /send [ID] [መልእክት]\nወይም Reply በማድረግ `/send [መልእክት]` ይበሉ።", parse_mode="Markdown")
-                cur.close()
-                conn.close()
-                return
-        else:
+        t_id = None
+        msg_to_send = None
+
+        # 1. መጀመሪያ በ Reply ውስጥ ID መኖሩን ይፈትሻል
+        if m.reply_to_message:
+            # ከዚህ ቀደም ቦቱ ለላከልህ መልእክት Reply ካደረግክ ID-ውን ይፈልጋል
+            match = re.search(r"ID: (\d+)", m.reply_to_message.text)
+            if match:
+                t_id = match.group(1)
+                if len(parts) >= 2:
+                    msg_to_send = " ".join(parts[1:])
+
+        # 2. በ Reply ካልሆነ በቀጥታ ከትዕዛዙ ID-ውን ይወስዳል (ምሳሌ፦ /send 1234 ሰላም)
+        if not t_id and len(parts) >= 3:
             t_id = parts[1]
             msg_to_send = parts[2]
 
-        try:
-            await context.bot.send_message(chat_id=t_id, text=f"📩 **ከአድሚን የተላከ መልእክት፦**\n\n{msg_to_send}", parse_mode="Markdown")
-            await m.reply_text(f"✅ መልእክቱ ለ {t_id} ተልኳል።")
-        except Exception as e:
-            await m.reply_text(f"❌ መልእክቱን መላክ አልተቻለም።\nምክንያት፦ {e}")
+        # 3. መልእክቱን ይልካል
+        if t_id and msg_to_send:
+            try:
+                await context.bot.send_message(
+                    chat_id=t_id, 
+                    text=f"📩 **ከአድሚን የተላከ መልእክት፦**\n\n{msg_to_send}", 
+                    parse_mode="Markdown"
+                )
+                await m.reply_text(f"✅ መልእክቱ ለ {t_id} ተልኳል።")
+            except Exception as e:
+                await m.reply_text(f"❌ መልእክቱን መላክ አልተቻለም።\nምክንያት፦ {e}")
+        else:
+            await m.reply_text(
+                "⚠️ **አጠቃቀም፦**\n\n"
+                "1. `/send [ID] [መልእክት]`\n"
+                "2. ተማሪው ለላከው መልእክት **Reply** በማድረግ፦ `/send [መልእክት]`", 
+                parse_mode="Markdown"
+            )
+        
+        # ዳታቤዙን መዝጋት እንዳይረሳ
+        cur.close()
+        conn.close()
+        return
 
     elif cmd == "close":
         # target_id ካለ እሱን ይጠቀማል ካልሆነ መልእክቱ የተጻፈበትን ግሩፕ ይዘጋል
