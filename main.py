@@ -46,8 +46,14 @@ def init_db():
         poll_id TEXT PRIMARY KEY, correct_option INTEGER, chat_id BIGINT, first_winner BIGINT DEFAULT 0)""")
     cur.execute("""CREATE TABLE IF NOT EXISTS logs(
         user_id BIGINT, name TEXT, action TEXT, timestamp TEXT, date TEXT)""")
+# መስመር 49 ላይ ያለውን አጥፍተህ ይሄን ተካው
     cur.execute("""CREATE TABLE IF NOT EXISTS active_paths(
-        chat_id BIGINT PRIMARY KEY, chat_title TEXT, starter_name TEXT, start_time TEXT, subject TEXT)""")
+        chat_id BIGINT PRIMARY KEY, 
+        chat_title TEXT, 
+        starter_name TEXT, 
+        start_time TEXT, 
+        subject TEXT,
+        unanswered_count INTEGER DEFAULT 0)""")
     cur.execute("""CREATE TABLE IF NOT EXISTS asked_questions(
         chat_id BIGINT, question_text TEXT)""")
     conn.commit()
@@ -94,12 +100,34 @@ async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
     chat_id = job.chat_id
     sub = job.data.get("subject")
 
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    # 1. መቆጠሪያውን ቼክ ማድረግ (7 ጥያቄ ካለፈ ለማቆም)
+    cur.execute("SELECT unanswered_count FROM active_paths WHERE chat_id=%s", (chat_id,))
+    row = cur.fetchone()
+    
+    if row and row[0] >= 7:
+        for j in context.job_queue.get_jobs_by_name(str(chat_id)): 
+            j.schedule_removal()
+        cur.execute("DELETE FROM active_paths WHERE chat_id=%s", (chat_id,))
+        conn.commit()
+        await context.bot.send_message(chat_id, "⚠️ ተከታታይ 7 ጥያቄዎች መልስ ስላላገኙ ውድድሩ በራሱ ቆሟል። ለመጀመር /start2 ይበሉ።")
+        cur.close()
+        conn.close()
+        return
+
+    # 2. ቁጥሩን በ 1 ጨምር (መልስ እስኪሰጥ ድረስ)
+    cur.execute("UPDATE active_paths SET unanswered_count = unanswered_count + 1 WHERE chat_id=%s", (chat_id,))
+    conn.commit()
+
     try:
-        with open("questions.json", "r", encoding="utf-8") as f: all_q = json.load(f)
+        # ጥያቄዎችን ማንበብ
+        with open("questions.json", "r", encoding="utf-8") as f: 
+            all_q = json.load(f)
+        
         filtered = [q for q in all_q if not sub or sub == "All" or q.get("subject","").lower() == sub.lower()]
         
-        conn = get_db_connection()
-        cur = conn.cursor()
         cur.execute("SELECT question_text FROM asked_questions WHERE chat_id=%s", (chat_id,))
         asked = [r[0] for r in cur.fetchall()]
         
@@ -113,18 +141,26 @@ async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
             conn.close()
             return
 
+        # ጥያቄ መምረጥና መላክ
         q = random.choice(remaining)
         msg = await context.bot.send_poll(
             chat_id, f"📚 [{q.get('subject','General')}] {q['q']}", q["o"],
             type=Poll.QUIZ, is_anonymous=False, correct_option_id=int(q["c"]),
             explanation=q.get("exp","")
         )
+        
+        # ወደ ዳታቤዝ መመዝገብ
         cur.execute("INSERT INTO active_polls (poll_id, correct_option, chat_id, first_winner) VALUES(%s,%s,%s,0)", (msg.poll.id, int(q["c"]), chat_id))
         cur.execute("INSERT INTO asked_questions (chat_id, question_text) VALUES(%s,%s)", (chat_id, q['q']))
         conn.commit()
         cur.close()
         conn.close()
-    except Exception as e: print(f"Quiz Error: {e}")
+        
+    except Exception as e: 
+        print(f"Quiz Error: {e}")
+        if conn:
+            cur.close()
+            conn.close()
 
 async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ans = update.poll_answer
@@ -133,16 +169,18 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if not u or u[3] != 'approved' or u[4] == 1: return
     
-    # የ 120 ሰዓት ቼክ በምላሽ ጊዜ
-    if u[7]:
-        last_active = datetime.fromisoformat(u[7])
-        if datetime.now(timezone.utc) - last_active > timedelta(hours=120):
-            return
-
     await update_activity(user_id)
 
     conn = get_db_connection()
     cur = conn.cursor()
+    
+    # 3. አንድ ሰው መልስ ሲሰጥ መቆጠሪያውን ወደ 0 መመለስ
+    cur.execute("SELECT chat_id FROM active_polls WHERE poll_id=%s", (ans.poll_id,))
+    p_info = cur.fetchone()
+    if p_info:
+        cur.execute("UPDATE active_paths SET unanswered_count = 0 WHERE chat_id=%s", (p_info[0],))
+        conn.commit()
+
     cur.execute("SELECT correct_option, first_winner, chat_id FROM active_polls WHERE poll_id=%s", (ans.poll_id,))
     poll = cur.fetchone()
     
@@ -157,13 +195,16 @@ async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pts = 8
             cur.execute("UPDATE active_polls SET first_winner=%s WHERE poll_id=%s", (user_id, ans.poll_id))
             await context.bot.send_message(poll[2], f"🏆 <b>{ans.user.first_name}</b> ቀድሞ በትክክል በመመለሱ 8 ነጥብ አግኝቷል!", parse_mode="HTML")
-        else: pts = 4
-    else: pts = 1.5
+        else: 
+            pts = 4
+    else: 
+        pts = 1.5
 
     cur.execute("UPDATE users SET points = points + %s WHERE user_id=%s", (pts, user_id))
     now = datetime.now()
     action = "✔️" if is_correct else "❎"
-    cur.execute("INSERT INTO logs (user_id, name, action, timestamp, date) VALUES(%s,%s,%s,%s,%s)", (user_id, ans.user.first_name, action, now.strftime("%H:%M:%S"), now.strftime("%Y-%m-%d")))
+    cur.execute("INSERT INTO logs (user_id, name, action, timestamp, date) VALUES(%s,%s,%s,%s,%s)", 
+                (user_id, ans.user.first_name, action, now.strftime("%H:%M:%S"), now.strftime("%Y-%m-%d")))
     conn.commit()
     cur.close()
     conn.close()
@@ -530,4 +571,5 @@ def main():
     bot_app.run_polling()
 
 if __name__ == "__main__":
+    main()
     main()
