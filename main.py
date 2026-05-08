@@ -1,329 +1,487 @@
-!:
-import os, json, asyncio, random, re, logging
-import aiosqlite
+import os
+import json
+import asyncio
+import random
+import re
+import logging
+import psycopg2
 from datetime import datetime, timedelta, timezone
 from flask import Flask
 from threading import Thread
-
 from telegram import Update, Poll, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, PollAnswerHandler,
-    ContextTypes, ChatMemberHandler, filters, MessageHandler
+    ContextTypes, filters, MessageHandler
 )
 
-# ===================== CONFIG =====================
-TOKEN = "8195013346:AAEyh3J8Q5kLtHPNzo_H-qral_sXMiCfA04"
+# ===================== CONFIGURATION =====================
+TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_IDS = [7231324244, 8394878208]
 ADMIN_USERNAME = "@penguiner"
 GLOBAL_STOP = False
 
-# ===================== FLASK (KEEP ALIVE) =====================
-app = Flask(name)
+# Database Connection (Neon PostgreSQL)
+DATABASE_URL = "postgresql://neondb_owner:npg_aRi7qp2QdYWr@ep-red-pond-ai6ow5wf-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
+
+# ===================== FLASK KEEP ALIVE =====================
+app = Flask(__name__)
 @app.route('/')
-def home(): return "Bot is Online!"
+def home(): return "Quiz Bot is Online and Running!"
 def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run, daemon=True).start()
 
-# ===================== DATABASE INIT =====================
-async def init_db():
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        await db.execute("""CREATE TABLE IF NOT EXISTS users(
-            user_id INTEGER PRIMARY KEY, username TEXT, points REAL DEFAULT 0,
-            status TEXT DEFAULT 'pending', is_blocked INTEGER DEFAULT 0,
-            muted_until TEXT, reg_at TEXT, last_active TEXT)""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS active_polls(
-            poll_id TEXT PRIMARY KEY, correct_option INTEGER, chat_id INTEGER, first_winner INTEGER DEFAULT 0)""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS logs(
-            user_id INTEGER, name TEXT, action TEXT, timestamp TEXT, date TEXT)""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS active_paths(
-            chat_id INTEGER PRIMARY KEY, chat_title TEXT, starter_name TEXT, start_time TEXT, subject TEXT)""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS asked_questions(
-            chat_id INTEGER, question_text TEXT)""")
-        await db.commit()
+# ===================== DATABASE INITIALIZATION =====================
+def get_db_connection():
+    return psycopg2.connect(DATABASE_URL)
 
-# ===================== UTILS =====================
-async def get_user(user_id):
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        async with db.execute("SELECT * FROM users WHERE user_id=?", (user_id,)) as c:
-            return await c.fetchone()
+def init_db():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    # Users Table
+    cur.execute("""CREATE TABLE IF NOT EXISTS users(
+        user_id BIGINT PRIMARY KEY, 
+        username TEXT, 
+        first_name TEXT,
+        points REAL DEFAULT 0,
+        status TEXT DEFAULT 'pending', 
+        is_blocked INTEGER DEFAULT 0,
+        muted_until TEXT, 
+        reg_at TEXT, 
+        last_active TEXT)""")
+    # Active Polls Tracking
+    cur.execute("""CREATE TABLE IF NOT EXISTS active_polls(
+        poll_id TEXT PRIMARY KEY, 
+        correct_option INTEGER, 
+        chat_id BIGINT, 
+        first_winner BIGINT DEFAULT 0)""")
+    # Logs for Activities
+    cur.execute("""CREATE TABLE IF NOT EXISTS logs(
+        user_id BIGINT, 
+        name TEXT, 
+        action TEXT, 
+        timestamp TEXT, 
+        date TEXT)""")
+    # Path Tracking for Groups/Users
+    cur.execute("""CREATE TABLE IF NOT EXISTS active_paths(
+        chat_id BIGINT PRIMARY KEY, 
+        chat_title TEXT, 
+        starter_id BIGINT,
+        starter_name TEXT, 
+        start_time TEXT, 
+        subject TEXT)""")
+    # Asked Questions tracking per chat
+    cur.execute("""CREATE TABLE IF NOT EXISTS asked_questions(
+        chat_id BIGINT, 
+        question_text TEXT)""")
+    conn.commit()
+    cur.close()
+    conn.close()
 
-async def update_activity(user_id):
+# ===================== CORE UTILITIES =====================
+async def is_admin(user_id):
+    return user_id in ADMIN_IDS
+
+async def get_user_data(user_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE user_id=%s", (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+    return user
+
+async def update_last_active(user_id):
     now = datetime.now(timezone.utc).isoformat()
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        await db.execute("UPDATE users SET last_active=? WHERE user_id=?", (now, user_id))
-        await db.commit()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE users SET last_active=%s WHERE user_id=%s", (now, user_id))
+    conn.commit()
+    cur.close()
+    conn.close()
 
-# ===================== QUIZ ENGINE =====================
-async def send_quiz(context: ContextTypes.DEFAULT_TYPE):
+def extract_id_from_text(text):
+    if not text: return None
+    match = re.search(r"ID:\s*(\d+)", text)
+    return int(match.group(1)) if match else None
+
+# ===================== QUIZ LOGIC =====================
+async def send_quiz_job(context: ContextTypes.DEFAULT_TYPE):
     if GLOBAL_STOP: return
-    job = context.job
-    chat_id = job.chat_id
-    sub = job.data.get("subject")
+    
+    chat_id = context.job.chat_id
+    data = context.job.data
+    subject = data.get("subject", "All")
 
     try:
-        with open("questions.json", "r", encoding="utf-8") as f: all_q = json.load(f)
-        filtered = [q for q in all_q if not sub or sub == "All" or q.get("subject","").lower() == sub.lower()]
+        with open("questions.json", "r", encoding="utf-8") as f:
+            all_questions = json.load(f)
         
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            async with db.execute("SELECT question_text FROM asked_questions WHERE chat_id=?", (chat_id,)) as c:
-                asked = [r[0] for r in await c.fetchall()]
-            
-            remaining = [q for q in filtered if q['q'] not in asked]
-            if not remaining:
-                await db.execute("DELETE FROM asked_questions WHERE chat_id=?", (chat_id,))
-                remaining = filtered
-            
-            if not remaining: return
-            q = random.choice(remaining)
-            msg = await context.bot.send_poll(
-                chat_id, f"📚 [{q.get('subject','General')}] {q['q']}", q["o"],
-                type=Poll.QUIZ, is_anonymous=False, correct_option_id=int(q["c"]),
-                explanation=q.get("exp","")
-            )
-            await db.execute("INSERT INTO active_polls VALUES(?,?,?,0)", (msg.poll.id, int(q["c"]), chat_id))
-            await db.execute("INSERT INTO asked_questions VALUES(?,?)", (chat_id, q['q']))
-            await db.commit()
-    except Exception as e: print(f"Quiz Error: {e}")
+        # Filter by subject
+        if subject != "All":
+            pool = [q for q in all_questions if q.get("subject", "").lower() == subject.lower()]
+        else:
+            pool = all_questions
 
-async def receive_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        # Fetch already asked questions for this chat
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT question_text FROM asked_questions WHERE chat_id=%s", (chat_id,))
+        asked = [r[0] for r in cur.fetchall()]
+        
+        # Priority: Not yet asked
+        remaining = [q for q in pool if q['q'] not in asked]
+        if not remaining:
+            cur.execute("DELETE FROM asked_questions WHERE chat_id=%s", (chat_id,))
+            remaining = pool # Reset if all questions finished
+        
+        if not remaining:
+            cur.close()
+            conn.close()
+            return
+
+        q = random.choice(remaining)
+        poll_msg = await context.bot.send_poll(
+            chat_id, 
+            f"📚 [{q.get('subject', 'General')}] {q['q']}", 
+            q["o"],
+            type=Poll.QUIZ, 
+            is_anonymous=False, 
+            correct_option_id=int(q["c"]),
+            explanation=q.get("exp", "ትክክለኛውን መልስ ይምረጡ!")
+        )
+
+        cur.execute("INSERT INTO active_polls (poll_id, correct_option, chat_id) VALUES (%s, %s, %s)", 
+                    (poll_msg.poll.id, int(q["c"]), chat_id))
+        cur.execute("INSERT INTO asked_questions (chat_id, question_text) VALUES (%s, %s)", (chat_id, q['q']))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Quiz Error: {e}")
+
+# ===================== POLL ANSWER HANDLER =====================
+async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ans = update.poll_answer
     user_id = ans.user.id
-    u = await get_user(user_id)
+    user = await get_user_data(user_id)
+
+    # Validation
+    if not user or user[4] != 'approved' or user[5] == 1: return
     
-    if not u or u[3] != 'approved' or u[4] == 1: return
-    await update_activity(user_id)
+    # 29-hour inactivity check
+    if user[8]:
+        last_act = datetime.fromisoformat(user[8])
+        if datetime.now(timezone.utc) - last_act > timedelta(hours=29):
+            await context.bot.send_message(user_id, f"⚠️ ውድ ተማሪ {user[2]} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል እገዳዎትን ለማስነሳት {ADMIN_USERNAME} ን ይጠይቁ : እናመሰግናለን")
+            return
 
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        async with db.execute("SELECT correct_option, first_winner, chat_id FROM active_polls WHERE poll_id=?", (ans.poll_id,)) as c:
-            poll = await c.fetchone()
-        if not poll: return
-
-        is_correct = ans.option_ids[0] == poll[0]
-        if is_correct:
-            if poll[1] == 0:
-                pts = 8
-                await db.execute("UPDATE active_polls SET first_winner=? WHERE poll_id=?", (user_id, ans.poll_id))
-                await context.bot.send_message(poll[2], f"🏆 <b>{ans.user.first_name}</b> ቀድሞ በትክክል በመመለሱ 8 ነጥብ አግኝቷል!", parse_mode="HTML")
-            else: pts = 4
-        else: pts = 1.5
-
-        await db.execute("UPDATE users SET points = points + ? WHERE user_id=?", (pts, user_id))
-        now = datetime.now()
-        action = "✔️" if is_correct else "❎"
-        await db.execute("INSERT INTO logs VALUES(?,?,?,?,?)", (user_id, ans.user.first_name, action, now.strftime("%H:%M:%S"), now.strftime("%Y-%m-%d")))
-        await db.commit()
-
-# ===================== MAIN HANDLER =====================
-async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    chat = update.effective_chat
-    if not update.message: return
-    cmd = update.message.text.split()[0].split("@")[0].lower()
-
-    u = await get_user(user.id)
-
-    if cmd == "/rank2":
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 20") as c:
-                res = "🏆 ደረጃ እና ነጥብ:\n"
-                for i, r in enumerate(await c.fetchall(), 1): res += f"{i}. {r[0]} - {r[1]} pts\n"
-        await update.message.reply_text(res)
+    await update_last_active(user_id)
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT correct_option, first_winner, chat_id FROM active_polls WHERE poll_id=%s", (ans.poll_id,))
+    poll_data = cur.fetchone()
+    
+    if not poll_data:
+        cur.close()
+        conn.close()
         return
 
-    if u and u[4] == 1:
+    is_correct = ans.option_ids[0] == poll_data[0]
+    points_to_add = 0
+    action_mark = "❎"
+
+    if is_correct:
+        action_mark = "✔️"
+        if poll_data[1] == 0: # First winner
+            points_to_add = 8
+            cur.execute("UPDATE active_polls SET first_winner=%s WHERE poll_id=%s", (user_id, ans.poll_id))
+            await context.bot.send_message(poll_data[2], f"🏆 <b>{ans.user.first_name}</b> ቀድሞ በትክክል በመመለሱ 8 ነጥብ አግኝቷል!", parse_mode="HTML")
+        else:
+            points_to_add = 4
+    else:
+        points_to_add = 1.5
+
+    cur.execute("UPDATE users SET points = points + %s WHERE user_id=%s", (points_to_add, user_id))
+    cur.execute("INSERT INTO logs (user_id, name, action, timestamp, date) VALUES (%s, %s, %s, %s, %s)",
+                (user_id, ans.user.first_name, action_mark, datetime.now().strftime("%H:%M:%S"), datetime.now().strftime("%Y-%m-%d")))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+# ===================== COMMAND HANDLERS =====================
+async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    chat = update.effective_chat
+    text = update.message.text.lower()
+    
+    # Identify subject
+    subject = "All"
+    if "history" in text: subject = "history"
+    elif "geography" in text: subject = "geography"
+    elif "mathematics" in text: subject = "mathematics"
+    elif "english" in text: subject = "english"
+
+    user_db = await get_user_data(user.id)
+
+    # 1. Registration Check
+    if not user_db:
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("INSERT INTO users (user_id, username, first_name, reg_at, status, last_active) VALUES (%s, %s, %s, %s, 'pending', %s)",
+                    (user.id, f"@{user.username}" if user.username else "NoUser", user.first_name, now_str, datetime.now(timezone.utc).isoformat()))
+        conn.commit()
+        cur.close()
+        conn.close()
+        await update.message.reply_text(f"👋 ውድ ተማሪ {user.first_name} ለምዝገባ ጥያቄዎ በትክክል ደርሶናል። አድሚኑ እስኪቀበልዎ ድረስ እባክዎ በትዕግስት ይጠብቁ።")
+        
+        # Notify Admin
+        for admin in ADMIN_IDS:
+            await context.bot.send_message(admin, f"👤 አዲስ የምዝገባ ጥያቄ (ID: {user.id}):\nስም: {user.first_name}\nUsername: @{user.username}\n\nለመቀበል Reply: /approve")
+        return
+
+    # 2. Pending Status
+    if user_db[4] == 'pending':
+        await update.message.reply_text(f"⏳ ውድ ተማሪ {user.first_name} አድሚኑ ለጊዜው ስራ ስለበዛበት ነው፤ ጥያቄዎ ተቀባይነት ሲያገኝ እናሳውቅዎታለን። እናመሰግናለን።")
+        return
+
+    # 3. Blocked Status
+    if user_db[5] == 1:
         await update.message.reply_text(f"🚫 ከአድሚን በመጣ ትዕዛዝ መሰረት ለጊዜው ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME} ን ያናግሩ።")
         return
 
-    if GLOBAL_STOP and user.id not in ADMIN_IDS:
-        await update.message.reply_text(f"⛔️ ቦቱ ከአድሚን በመጣ ትዕዛዝ ለተወሰነ ጊዜ ቆሟል። ለበለጠ መረጃ {ADMIN_USERNAME}")
-        return
-
-    if not u:
-        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute("INSERT INTO users(user_id, username, reg_at, status) VALUES(?,?,?,'pending')", (user.id, user.first_name, now_str))
-            await db.commit()
-        await update.message.reply_text(f"👋 ውድ ተማሪ {user.first_name}\nምዝገባዎ በሂደት ላይ ነው። አድሚኑ እስኪቀበልዎ ድረስ እባክዎ በትዕግስት ይጠብቁ።")
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"👤 አዲስ ተመዝጋቢ:\nID: <code>{user.id}</code>\nስም: {user.first_name}\n/approve {user.id}", parse_mode="HTML")
-        return
-
-    if u[3] == 'pending':
-        await update.message.reply_text(f"⏳ ውድ ተማሪ {user.first_name} አድሚኑ ለጊዜው busy ነው ጥያቄዎ ተቀባይነት ሲያገኝ እናሳውቃለን እናመሰግናለን።")
-        return
-
-    if u[7]:
-        last_active = datetime.fromisoformat(u[7])
-        if datetime.now(timezone.utc) - last_active > timedelta(hours=29):
-            await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል እገዳዎትን ለማስነሳት {ADMIN_USERNAME} ን ይጠይቁ : እናመሰግናለን")
+    # 4. Inactivity Check
+    if user_db[8]:
+        last_act = datetime.fromisoformat(user_db[8])
+        if datetime.now(timezone.utc) - last_act > timedelta(hours=29):
+            await update.message.reply_text(f"⚠️ ውድ ተማሪ {user.first_name} የተሳትፎ ሰዓትዎ በጣም ስለቆየ ሲስተሙ አግዶዎታል እገዳዎትን ለማስነሳት {ADMIN_USERNAME} ን ይጠይቁ።")
             return
 
-    start_cmds = ["/start2","/history_srm2","/geography_srm2","/mathematics_srm2","/english_srm2"]
-    all_allowed = start_cmds + ["/stop2", "/rank2"]
-
-    if chat.type == "private" and cmd not in all_allowed and user.id not in ADMIN_IDS:
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute("UPDATE users SET is_blocked=1 WHERE user_id=?", (user.id,))
-
-await db.commit()
-        await update.message.reply_text(f"⚠️ የህግ ጥሰት! ያልተፈቀደ ትዕዛዝ በመጠቀሞ ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME}")
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"🚫 Blocked: {user.first_name} (ID: {user.id}) በግል የተከለከለ ትዕዛዝ በማዘዙ።")
+    # 5. Global Stop Check
+    if GLOBAL_STOP and not await is_admin(user.id):
+        await update.message.reply_text(f"🚫 ውድድሩ ከአድሚን በመጣ ትዕዛዝ ለጊዜው ተቋርጧል። ለበለጠ መረጃ {ADMIN_USERNAME} ን ያናግሩ።")
         return
 
-    if chat.type != "private" and cmd.startswith("/") and cmd not in ["/start2","/stop2"] and user.id not in ADMIN_IDS:
-        m_time = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute("UPDATE users SET points = points - 3.17, muted_until=? WHERE user_id=?", (m_time, user.id))
-            await db.commit()
+    # 6. Command Permissions
+    allowed_private = ["/start2", "/stop2", "/history_srm2", "/geography_srm2", "/mathematics_srm2", "/english_srm2", "/rank2"]
+    if chat.type == "private" and update.message.text.split()[0] not in allowed_private and not await is_admin(user.id):
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET is_blocked=1 WHERE user_id=%s", (user.id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        await update.message.reply_text(f"⚠️ የህግ ጥሰት! ያልተፈቀደ ትዕዛዝ በመጠቀሞ ታግደዋል። {ADMIN_USERNAME} ን ያናግሩ።")
+        return
+
+    if chat.type != "private" and not await is_admin(user.id) and update.message.text.split()[0] not in ["/start2", "/stop2"]:
+        # Penalty for wrong group command
+        conn = get_db_connection()
+        cur = conn.cursor()
+        m_until = (datetime.now(timezone.utc) + timedelta(minutes=17)).isoformat()
+        cur.execute("UPDATE users SET points = points - 3.17, muted_until=%s WHERE user_id=%s", (m_until, user.id))
+        conn.commit()
+        cur.close()
+        conn.close()
         await update.message.reply_text(f"⚠️ {user.first_name} በግሩፕ ውስጥ ያልተፈቀደ ትዕዛዝ በመጠቀምዎ 3.17 ነጥብ ተቀንሶ ለ17 ደቂቃ ታግደዋል።")
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"⚠️ Muted: {user.first_name} በግሩፕ ጥፋት። ለማንሳት /unmute2 {user.id} በል")
         return
 
-    if cmd == "/stop2":
-        for j in context.job_queue.get_jobs_by_name(str(chat.id)): j.schedule_removal()
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute("DELETE FROM active_paths WHERE chat_id=?", (chat.id,))
-            await db.commit()
-        res = "🛑 ውድድር ቆሟል።\n"
-        if chat.type == "private":
-            res += f"የግል ነጥብዎ: {u[2]}"
-        else:
-            async with aiosqlite.connect("quiz_bot.db") as db:
-                async with db.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 15") as c:
-                    res += "\n📊 Best 15:\n"
-                    for i, r in enumerate(await c.fetchall(), 1): res += f"{i}. {r[0]} - {r[1]} pts\n"
-        await update.message.reply_text(res)
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"🛑 Stop: {chat.title or 'Private'} | በ: {user.first_name}")
-        return
+    # 7. Start Quiz
+    for job in context.job_queue.get_jobs_by_name(str(chat.id)): job.schedule_removal()
+    
+    # Interval set to 3 minutes
+    context.job_queue.run_repeating(send_quiz_job, interval=180, first=1, chat_id=chat.id, data={"subject": subject}, name=str(chat.id))
+    
+    now_t = datetime.now().strftime("%Y-%m-%d %H:%M")
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO active_paths (chat_id, chat_title, starter_id, starter_name, start_time, subject) VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT (chat_id) DO UPDATE SET subject=EXCLUDED.subject",
+                (chat.id, chat.title if chat.title else "Private", user.id, user.first_name, now_t, subject))
+    conn.commit()
+    cur.close()
+    conn.close()
 
-    if cmd in start_cmds:
-        s_map = {"/history_srm2":"history","/geography_srm2":"geography","/mathematics_srm2":"mathematics","/english_srm2":"english"}
-        sub = s_map.get(cmd, "All")
-        for j in context.job_queue.get_jobs_by_name(str(chat.id)): j.schedule_removal()
-        await update.message.reply_text(f"🚀 የ {sub} ውድድር ተጀምሯል! በየ 3 ደቂቃ ጥያቄ ይላካል።")
-        context.job_queue.run_repeating(send_quiz, interval=180, first=1, chat_id=chat.id, data={"subject": sub}, name=str(chat.id))
-        now_t = datetime.now().strftime("%Y-%m-%d %H:%M")
-        async with aiosqlite.connect("quiz_bot.db") as db:
-            await db.execute("INSERT OR REPLACE INTO active_paths VALUES(?,?,?,?,?)", (chat.id, chat.title or "Private", user.first_name, now_t, sub))
-            await db.commit()
-        for a in ADMIN_IDS: await context.bot.send_message(a, f"🚀 Start: {chat.title or 'Private'} | በ: {user.first_name} | {sub}")
+    await update.message.reply_text(f"🚀 የ {subject} ውድድር በ {user.first_name} ተጀምሯል! በየ 3 ደቂቃ ጥያቄ ይላካል።")
+    
+    # Notify Admin
+    for admin in ADMIN_IDS:
+        await context.bot.send_message(admin, f"✅ ውድድር ተጀመረ!\nቦታ: {chat.title if chat.title else 'Private'}\nID: {chat.id}\nበ: {user.first_name} (ID: {user.id})\nትምህርት: {subject}\nሰዓት: {now_t}")
 
-# ===================== ADMIN SYSTEM =====================
-async def admin_ctrl(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id not in ADMIN_IDS: return
-    m = update.message
-    cmd = m.text.split()[0][1:].lower()
+async def stop_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat = update.effective_chat
+    user = update.effective_user
+    
+    for job in context.job_queue.get_jobs_by_name(str(chat.id)): job.schedule_removal()
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM active_paths WHERE chat_id=%s", (chat.id,))
+    conn.commit()
+
+    # Result Display
+    if chat.type == "private":
+        cur.execute("SELECT points FROM users WHERE user_id=%s", (user.id,))
+        pts = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM users WHERE points > %s", (pts,))
+        rank = cur.fetchone()[0] + 1
+        await update.message.reply_text(f"🛑 ውድድሩ ቆሟል።\nየእርስዎ ነጥብ: {pts}\nደረጃ: {rank}\n\nእንደገና ለማስጀመር /start2 ይበሉ።")
+    else:
+        cur.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 15")
+        rows = cur.fetchall()
+        res = "📊 የደረጃ ሰንጠረዥ (Best of 15):\n\n"
+        for i, r in enumerate(rows, 1):
+            res += f"{i}. {r[0]} - {r[1]} pts\n"
+        await update.message.reply_text(f"🛑 ውድድሩ ቆሟል።\n\n{res}")
+
+    cur.close()
+    conn.close()
+    
+    # Notify Admin
+    for admin in ADMIN_IDS:
+        await context.bot.send_message(admin, f"🛑 ውድድር ቆመ በ: {chat.title if chat.title else 'Private'} (ID: {chat.id})")
+
+# ===================== ADMIN CONTROLS =====================
+async def admin_dispatch(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not await is_admin(update.effective_user.id): return
+    
+    msg = update.message
+    cmd_raw = msg.text.split()[0].lower()
+    cmd = cmd_raw[1:] # remove /
+    
     target_id = None
-
-    if m.reply_to_message:
-        match = re.search(r"ID: (\d+)|ID:<code>(\d+)</code>", m.reply_to_message.text)
-        if match: target_id = int(match.group(1) or match.group(2))
-    elif len(m.text.split()) > 1:
-        try: target_id = int(m.text.split()[1])
+    # Extract ID from reply or text
+    if msg.reply_to_message:
+        target_id = extract_id_from_text(msg.reply_to_message.text)
+    
+    if not target_id and len(msg.text.split()) > 1:
+        try: target_id = int(msg.text.split()[1])
         except: pass
 
-    async with aiosqlite.connect("quiz_bot.db") as db:
-        if cmd == "gof":
-            async with db.execute("SELECT user_id, username, reg_at FROM users WHERE status='pending'") as c:
-                rows = await c.fetchall()
-                if not rows:
-                    await m.reply_text("የምዝገባ ጥያቄ ያቀረበ አዲስ ተማሪ የለም።")
-                    return
-                res = "📝 የምዝገባ ጥያቄ ያቀረቡ ተማሪዎች ዝርዝር፦\n\n"
-                for r in rows:
-                    res += f"👤 ስም: {r[1]}\nID: <code>{r[0]}</code>\nቀን: {r[2]}\n"
-                await m.reply_text(res, parse_mode="HTML")
+    conn = get_db_connection()
+    cur = conn.cursor()
 
-elif cmd == "approve" and target_id:
-            await db.execute("UPDATE users SET status='approved' WHERE user_id=?", (target_id,))
-            await db.commit()
-            await m.reply_text(f"ተማሪ {target_id} ተቀባይነት አግኝቷል ✅")
-            try: await context.bot.send_message(target_id, "✅ ምዝገባዎ ተቀባይነት አግኝቷል። አሁን መወዳደር ይችላሉ!")
-            except: pass
+    # 1. Approve/Anapprove
+    if cmd == "approve" and target_id:
+        cur.execute("UPDATE users SET status='approved' WHERE user_id=%s", (target_id,))
+        conn.commit()
+        await msg.reply_text(f"✅ ተማሪ {target_id} ተቀባይነት አግኝቷል።")
+        try: await context.bot.send_message(target_id, "✅ ምዝገባዎ ተቀባይነት አግኝቷል! አሁን መሳተፍ ይችላሉ።")
+        except: pass
+    
+    elif cmd == "anapprove" and target_id:
+        cur.execute("DELETE FROM users WHERE user_id=%s", (target_id,))
+        conn.commit()
+        await msg.reply_text(f"❌ ተማሪ {target_id} ውድቅ ተደርጓል።")
+        try: await context.bot.send_message(target_id, "❌ የምዝገባ ጥያቄዎ ተቀባይነት አላገኘም፤ እባክዎ እንደገና ይሞክሩ።")
+        except: pass
 
-        elif cmd == "anapprove" and target_id:
-            await db.execute("DELETE FROM users WHERE user_id=?", (target_id,))
-            await db.commit()
-            await m.reply_text(f"ተማሪ {target_id} ውድቅ ተደርጓል ❌")
-            try: await context.bot.send_message(target_id, "❌ የምዝገባ ጥያቄዎ ተቀባይነት አላገኘም እባክዎ እንደገና ይሞክሩ።")
-            except: pass
+    # 2. Block/Unblock
+    elif cmd == "block" and target_id:
+        cur.execute("UPDATE users SET is_blocked=1 WHERE user_id=%s", (target_id,))
+        conn.commit()
+        await msg.reply_text(f"🚫 ID: {target_id} ታግዷል።")
+        try: await context.bot.send_message(target_id, f"🚫 ከአድሚን በመጣ ትዕዛዝ ታግደዋል፤ @penguiner ን ያናግሩ።")
+        except: pass
 
-        elif cmd == "block" and target_id:
-            await db.execute("UPDATE users SET is_blocked=1 WHERE user_id=?", (target_id,))
-            await db.commit()
-            await m.reply_text("🚫 Blocked")
-            try: await context.bot.send_message(target_id, f"🚫 ከአድሚን በመጣ ትዕዛዝ መሰረት ለጊዜው ታግደዋል። ለበለጠ መረጃ {ADMIN_USERNAME}")
-            except: pass
+    elif cmd == "unblock" and target_id:
+        cur.execute("UPDATE users SET is_blocked=0, last_active=%s WHERE user_id=%s", (datetime.now(timezone.utc).isoformat(), target_id))
+        conn.commit()
+        await msg.reply_text(f"🔓 ID: {target_id} እገዳው ተነስቷል።")
+        try: await context.bot.send_message(target_id, "🔓 እገዳዎ ተነስቷል! በድጋሚ ላለመሳሳት ይሞክሩ።")
+        except: pass
 
-        elif cmd == "unblock" and target_id:
-            await db.execute("UPDATE users SET is_blocked=0 WHERE user_id=?", (target_id,))
-            await db.commit()
-            await m.reply_text("✅ Unblocked")
-            try: await context.bot.send_message(target_id, "✅ እገዳዎ ተነስቷል!")
-            except: pass
+    # 3. Global Stop/Start
+    elif cmd == "oppt":
+        global GLOBAL_STOP
+        GLOBAL_STOP = True
+        await msg.reply_text("⛔️ Global Stop: ቦቱ በሁሉም ቦታ ቆሟል።")
+    elif cmd == "opptt":
+        GLOBAL_STOP = False
+        await msg.reply_text("✅ Global Start: ቦቱ ወደ ስራ ተመልሷል።")
 
-        elif cmd == "unmute2" and target_id:
-            await db.execute("UPDATE users SET muted_until=NULL WHERE user_id=?", (target_id,))
-            async with db.execute("SELECT username FROM users WHERE user_id=?", (target_id,)) as c: r = await c.fetchone()
-            await db.commit()
-            await m.reply_text("✅ Unmuted")
-            try: await context.bot.send_message(target_id, f"ተማሪ {r[0] if r else ''} እገዳዎ በአድሚኑ ትእዛዝ ተነስቶልዎታል በድጋሚ ላለመሳሳት ይሞክሩ።")
-            except: pass
+    # 4. Status Commands
+    elif cmd == "pin":
+        cur.execute("SELECT first_name, user_id, username FROM users")
+        u = cur.fetchall()
+        cur.execute("SELECT chat_title, chat_id FROM active_paths")
+        g = cur.fetchall()
+        res = f"📊 PIN መረጃ:\n\n👥 ተመዝጋቢዎች ({len(u)}):\n"
+        for r in u: res += f"- {r[0]} (ID: {r[1]}) @{r[2]}\n"
+        res += f"\n📍 አክቲቭ ግሩፖች ({len(g)}):\n"
+        for r in g: res += f"- {r[0]} (ID: {r[1]})\n"
+        await msg.reply_text(res)
 
-        elif cmd == "oppt":
-            global GLOBAL_STOP
-            GLOBAL_STOP = True
-            await m.reply_text("⛔️ Global Stop Active")
+    elif cmd == "gof":
+        cur.execute("SELECT first_name, user_id, username FROM users WHERE status='pending'")
+        rows = cur.fetchall()
+        res = "📝 የምዝገባ ጥያቄዎች:\n\n"
+        for r in rows: res += f"👤 {r[0]} | ID: {r[1]} | @{r[2]}\n"
+        await msg.reply_text(res if rows else "ምንም ጥያቄ የለም።")
 
-        elif cmd == "opptt":
-            GLOBAL_STOP = False
-            await m.reply_text("✅ Global Stop Removed")
+    elif cmd == "hmute":
+        cur.execute("SELECT first_name, user_id, username, is_blocked, muted_until FROM users")
+        res = "🔇 የታገዱ ዝርዝር:\n\n"
+        for r in cur.fetchall():
+            status = ""
+            if r[3] == 1: status = "🚫 Blocked"
+            elif r[4] and datetime.now(timezone.utc) < datetime.fromisoformat(r[4]): status = "🔇 Muted"
+            if status: res += f"👤 {r[0]} (ID: {r[1]}) - {status}\n"
+        await msg.reply_text(res)
 
-        elif cmd == "log":
-            async with db.execute("SELECT name, action, date, timestamp FROM logs ORDER BY rowid DESC LIMIT 50") as c:
-                res = "📜 Logs:\n"
-                for r in await c.fetchall(): res += f"{r[2]} {r[3]} | {r[0]} {r[1]}\n"
-            await m.reply_text(res or "No logs.")
+    elif cmd == "log": #
+        cur.execute("SELECT name, action, timestamp, date FROM logs ORDER BY date DESC, timestamp DESC LIMIT 30")
+        res = "📜 የጥያቄዎች ሎግ (ያለፉት 30):\n\n"
+        for r in cur.fetchall(): res += f"{r[1]} {r[0]} | {r[2]} | {r[3]}\n"
+        await msg.reply_text(res)
 
-        elif cmd == "pin":
-            async with db.execute("SELECT user_id, username, status FROM users") as c:
-                res = "👥 ተመዝጋቢዎች:\n"
-                for r in await c.fetchall(): res += f"ID: <code>{r[0]}</code> | {r[1]} | {r[2]}\n"
-            await m.reply_text(res, parse_mode="HTML")
+    cur.close()
+    conn.close()
 
-        elif cmd == "hmute":
-            res = "🚫 Blocked/Muted:\n"
-            async with db.execute("SELECT user_id, username, is_blocked, muted_until FROM users WHERE is_blocked=1 OR muted_until IS NOT NULL") as c:
-                for r in await c.fetchall():
-                    s = "Blocked" if r[2]==1 else "Muted"
-                    res += f"ID: <code>{r[0]}</code> | {r[1]} | {s}\n"
-            await m.reply_text(res or "None.", parse_mode="HTML")
+# ===================== RANKING =====================
+async def rank_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 20")
+    rows = cur.fetchall()
+    res = "🏆 የደረጃ ሰንጠረዥ (Top 20):\n\n"
+    for i, r in enumerate(rows, 1):
+        res += f"{i}. {r[0]} - {r[1]} pts\n"
+    cur.close()
+    conn.close()
+    await update.message.reply_text(res)
 
-        elif cmd == "info" and target_id:
-            async with db.execute("SELECT * FROM users WHERE user_id=?", (target_id,)) as c:
-                r = await c.fetchone()
-                if r: await m.reply_text(f"ℹ️ Info:\nID: {r[0]}\nName: {r[1]}\nPoints: {r[2]}\nStatus: {r[3]}\nReg: {r[6]}", parse_mode="HTML")
+async def clear_rank_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not await is_admin(update.effective_user.id): return
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE users SET points = 0")
+    conn.commit()
+    cur.close()
+    conn.close()
+    await update.message.reply_text("🧹 ሁሉም ነጥቦች ተሰርዘው በአዲስ ተጀምረዋል።")
 
-        elif cmd == "keep":
-            async with db.execute("SELECT * FROM active_paths") as c:
-                res = "📡 Active:\n"
-                for r in await c.fetchall(): res += f"ID: <code>{r[0]}</code> | {r[1]} | {r[4]}\n"
-            await m.reply_text(res or "None.", parse_mode="HTML")
-
-        elif cmd == "clear_rank2":
-            await db.execute("UPDATE users SET points = 0"); await db.commit()
-            await m.reply_text("Rankings Cleared 🧹")
-
-# ===================== RUNNER =====================
+# ===================== MAIN RUNNER =====================
 def main():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(init_db())
+    init_db()
     keep_alive()
-    bot_app = Application.builder().token(TOKEN).build()
-    bot_app.add_handler(CommandHandler(["start2","history_srm2","geography_srm2","mathematics_srm2","english_srm2","stop2","rank2"], start_handler))
-    bot_app.add_handler(CommandHandler(["approve","anapprove","block","unblock","unmute2","log","clear_log","oppt","opptt","pin","keep","hmute","info","clear_rank2","close","gof"], admin_ctrl))
-    bot_app.add_handler(PollAnswerHandler(receive_answer))
-    bot_app.run_polling()
+    bot = Application.builder().token(TOKEN).build()
 
-if name == "main": 
+    # User Commands
+    user_cmds = ["start2", "stop2", "history_srm2", "geography_srm2", "mathematics_srm2", "english_srm2", "rank2"]
+    bot.add_handler(CommandHandler(user_cmds, start_cmd))
+    bot.add_handler(CommandHandler("stop2", stop_cmd))
+    bot.add_handler(CommandHandler("rank2", rank_cmd))
+
+    # Admin Commands
+    admin_cmds = ["approve", "anapprove", "block", "unblock", "oppt", "opptt", "pin", "gof", "hmute", "log", "clear_rank2", "keep", "info", "close"]
+    bot.add_handler(CommandHandler(admin_cmds, admin_dispatch))
+
+    # Handlers
+    bot.add_handler(PollAnswerHandler(handle_poll_answer))
+    
+    print("Bot is fully active...")
+    bot.run_polling()
+
+if __name__ == "__main__":
     main()
